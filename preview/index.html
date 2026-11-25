@@ -342,7 +342,7 @@ function table(s){if(s.official)return`<table><thead><tr><th>#</th><th>${T().thP
 function vCats(){let G=groupsOfUs().filter(x=>!st.cat||x.c===st.cat);const q=st.q.trim().toLowerCase();
  if(q)G=G.filter(x=>M.some(m=>m.c===x.c&&m.ph===x.g&&m.us&&(m.a+' '+m.b).toLowerCase().includes(q)));
  if(!G.length)return'<div class="empty">'+T().noGroups+'</div>';
- return`<section class="sec"><div class="grid">${G.map(x=>{const s=standings(x.c,x.g);return`<div class="card"><div class="card-h"><span class="cat">${esc(catLabel(x.c))}</span><h3>${esc(trPh(x.g))}</h3><span class="tag">${s.official?T().official:(s.done?T().closed:T().prov)+' · '+T().calc}</span></div>${table(s)}<div class="lbl">${T().ourGames}</div><div class="mini">${s.games.filter(m=>m.us).map(m=>card(m,false)).join('')}</div></div>`}).join('')}</div></section>`}
+ return`<section class="sec"><div class="grid">${G.map(x=>{const s=standings(x.c,x.g);return`<div class="card"><div class="card-h"><span class="cat">${esc(catLabel(x.c))}</span><h3>${esc(trPh(x.g))}</h3><span class="tag">${s.official?T().official:(s.done?T().closed:T().prov)}</span></div>${table(s)}<div class="lbl">${T().ourGames}</div><div class="mini">${s.games.filter(m=>m.us).map(m=>card(m,false)).join('')}</div></div>`}).join('')}</div></section>`}
 function koCats(){return[...new Set(pairs().map(p=>p.c))].sort((a,b)=>catRank(a)-catRank(b))}
 function bmCard(m){const w=winner(m);const[sc,sl]=status(m);const us=isUs(m.a)||isUs(m.b);const fv=isFavM(m);
  const row=(t,s)=>{const u=isUs(t),p=split(t);return`<div class="tm${u?' us':''}${w===s?' w':''}${w&&w!==s?' lost':''}"><span class="ico">${u?'<img src="../assets/lobo-white.svg" alt="">':'<i></i>'}</span><span class="nm">${esc(p.n)}</span><span class="sc">${scoreCells(m,s)}</span></div>`};
@@ -353,7 +353,7 @@ function stagesOf(c){const G=M.filter(m=>m.c===c);const st0=[];
  const fin=G.filter(m=>['1/4','1/2','Final'].includes(m.ph)||(isKO(m.ph)&&!['1/16','1/8'].includes(m.ph)));if(fin.length)st0.push(['final',T().stFinal,fin]);
  const p2=G.filter(m=>/fase/i.test(m.ph));if(p2.length)st0.push(['p2',T().stP2,p2]);return st0}
 function groupCards(c){const gs=[...new Set(M.filter(m=>m.c===c&&m.us&&/^Grupo/.test(m.ph)).map(m=>m.ph))].sort();
- return`<div class="grid">${gs.map(g=>{const s=standings(c,g);return`<div class="card"><div class="card-h"><h3>${esc(trPh(g))}</h3><span class="tag">${s.official?T().official:(s.done?T().closed:T().prov)+' · '+T().calc}</span></div>${table(s)}<div class="lbl">${T().ourGames}</div><div class="mini">${s.games.filter(m=>m.us).map(m=>card(m,false)).join('')}</div></div>`}).join('')}</div>`}
+ return`<div class="grid">${gs.map(g=>{const s=standings(c,g);return`<div class="card"><div class="card-h"><h3>${esc(trPh(g))}</h3><span class="tag">${s.official?T().official:(s.done?T().closed:T().prov)}</span></div>${table(s)}<div class="lbl">${T().ourGames}</div><div class="mini">${s.games.filter(m=>m.us).map(m=>card(m,false)).join('')}</div></div>`}).join('')}</div>`}
 function vDraws(){const cats=koCats().filter(c=>!st.cat||c===st.cat);if(!cats.length)return`<div class="empty">${T().noGroups}</div>`;
  if(!st.kc||!cats.includes(st.kc))st.kc=cats[0];
  const pills=cats.map(c=>`<button class="chip" data-kc="${esc(c)}" aria-pressed="${st.kc===c}">${esc(catLabel(c))}</button>`).join('');

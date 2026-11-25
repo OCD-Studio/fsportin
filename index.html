@@ -122,6 +122,36 @@ td.pts{color:var(--ink);font-weight:500}
 .form{display:flex;gap:5px}
 .form i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:500 10px degular,Figtree,sans-serif;font-style:normal;border:1px solid var(--line);color:var(--dim)}
 .form i.v{border-color:var(--y);color:var(--y)}.form i.d{border-color:#e5484d;color:#e5484d}
+.sub{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:4px 0 6px}
+.seg{display:inline-flex;gap:4px;background:var(--card);padding:4px;border-radius:999px}
+.seg button{font:500 13px degular,Figtree,sans-serif;color:var(--mut);background:none;border:0;border-radius:999px;padding:8px 14px;cursor:pointer;min-height:34px}
+.seg button[aria-pressed=true]{background:var(--card2);color:var(--ink)}
+.bracket-card{background:var(--card);border-radius:var(--r);padding:20px;margin-top:8px}
+.bracket-card .card-h{margin-bottom:16px}
+.bracket{display:flex;gap:var(--gap);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px}
+.round{flex:1 0 270px;display:flex;flex-direction:column;scroll-snap-align:start;min-width:270px}
+.round h4{font-size:11px;font-weight:400;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin:0 0 10px}
+.round .col{flex:1;display:flex;flex-direction:column;justify-content:space-around;gap:10px}
+.bm{background:var(--card2);border-radius:var(--rs);padding:12px 14px;display:flex;flex-direction:column;gap:8px;position:relative}
+.bm.us{box-shadow:inset 3px 0 0 var(--y)}
+.bm .tm{grid-template-columns:24px minmax(0,1fr) auto;gap:8px}
+.bm .tm .ico{width:24px;height:24px}.bm .tm .ico img{width:15px}
+.bm .tm .nm{font-size:14px}.bm .tm.lost .nm{color:var(--dim)}
+.bm .sc span{font-size:14px;min-width:18px}
+.bm .mc-f{padding-top:8px;margin-top:0}
+.sc sup{font-size:10px;color:var(--mut);margin-left:1px;vertical-align:super;font-weight:400}
+.sc span.stb{font-size:12px;color:var(--mut)}.sc span.stb.win{color:var(--ink)}
+.chg{font-size:11px;font-weight:500;color:#000;background:var(--y);border-radius:999px;padding:2px 8px;margin-left:8px;white-space:nowrap}
+.mc.fav,.bm.fav{box-shadow:inset 0 0 0 1px rgba(255,210,31,.55)}
+.mc-f .acts{display:flex;align-items:center;gap:10px}
+.ics{background:none;border:0;padding:4px;margin:-4px;color:var(--dim);cursor:pointer;display:grid;place-items:center;border-radius:8px}
+.ics:hover{color:var(--ink)}
+.star{background:none;border:0;padding:4px;margin:-4px 0 -4px auto;color:var(--dim);cursor:pointer;font-size:18px;line-height:1}
+.star[aria-pressed=true]{color:var(--y)}
+.card-h .star+.tag{margin-left:8px}
+.stage{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:6px 0 14px}
+.st.wo::before{background:var(--soft)}
+.demo{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:#000;background:var(--y);border-radius:999px;padding:5px 12px;margin-bottom:6px}
 .empty{background:var(--card);border-radius:var(--r);padding:40px;text-align:center;color:var(--mut)}
 
 /* rodapé */
@@ -139,6 +169,7 @@ td.pts{color:var(--ink);font-weight:500}
 
 @media(min-width:1024px){
  body{font-size:16px}
+ .round{flex-basis:300px}.bm .tm .nm{font-size:15px}
  .bar1 img{height:24px}.bar1 .ed{font-size:14px}.lang button{font-size:13px;padding:7px 12px}
  .hero h1 span{font-size:14px}
  .stats{grid-template-columns:repeat(4,minmax(0,1fr)) minmax(0,1.5fr)}
@@ -178,7 +209,7 @@ td.pts{color:var(--ink);font-weight:500}
  <div class="ctrl">
   <nav class="tabs" role="tablist" id="tabs">
    <button role="tab" data-v="calendario" data-i="tCal">Calendário</button>
-   <button role="tab" data-v="categorias" data-i="tGroups">Grupos</button>
+   <button role="tab" data-v="categorias" data-i="tDraws">Quadros</button>
    <button role="tab" data-v="duplas" data-i="tPairs">Duplas</button>
   </nav>
   <label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Procurar jogador" aria-label="Procurar jogador"></label>
@@ -205,21 +236,21 @@ td.pts{color:var(--ink);font-weight:500}
 const S=JSON.parse(document.getElementById('schedule').textContent);
 /* ---------- idiomas ---------- */
 const I18N={
-pt:{loc:'pt-PT',wd:['dom','seg','ter','qua','qui','sex','sáb'],tCal:'Calendário',tGroups:'Grupos',tPairs:'Duplas',search:'Procurar jogador',cat:'Categoria',allCats:'Todas as categorias',when:'Quando',where:'Onde',
+pt:{loc:'pt-PT',wd:['dom','seg','ter','qua','qui','sex','sáb'],tCal:'Calendário',tGroups:'Grupos',tDraws:'Quadros',stGroups:'Grupos',stFinal:'Quadro final',stP2:'2.ª fase',onlyUs:'Só FSportIN',allG:'Todos',noUsRound:'Sem duplas FSportIN nesta ronda.',chg:'Alterado',ret:'Desistência',wo:'W.O.',official:'Oficial',calc:'Calculada',myPairs:'As minhas duplas',star:'Marcar como minha dupla',addCal:'Adicionar ao calendário',subKO:'Eliminatórias',r16:'1/16',r8:'1/8',r4:'Quartos',r2:'Meias',rF:'Final',noKO:'Sem jogos de eliminatórias nesta categoria (ainda).',koNote:'Quadro igual ao padelteams; as duplas por definir actualizam-se quando a organização as confirmar.',demo:'Pré-visualização com dados fictícios',tPairs:'Duplas',search:'Procurar jogador',cat:'Categoria',allCats:'Todas as categorias',when:'Quando',where:'Onde',
  today:'Hoje',all:'Ver todos',games:n=>n+(n===1?' jogo':' jogos'),noGames:'Sem jogos da FSportIN com este filtro.',noGroups:'Sem grupos com este filtro.',noPairs:'Nenhuma dupla com este filtro.',
  live:'A jogar',win:'Vitória',loss:'Derrota',done:'Terminado',todo:'Por jogar',court:'Campo',game:'Jogo',group:'Grupo',phase2:'2.ª fase',tbd:'Dupla por definir',winnerOf:x=>'Vencedor do jogo '+x,place:(n,g)=>n+'.º Grupo '+g,
  thPair:'Dupla',thP:'J',thW:'V',thSets:'Sets',thGames:'Jogos',closed:'Fechado',prov:'Provisório',ourGames:'Jogos da FSportIN',path:'Percurso',groupStage:'Fase de grupos',
  pos:(p,v,d)=>p+'.º · '+v+'V '+d+'D',notPlayed:'por jogar',won:'Ganhou',lost:'Perdeu',ifPlace:n=>'Se ficar <b>'+n+'.º</b>',ko:'Eliminatórias',koWhen:'quando a organização sortear',fW:'V',fL:'D',
  sPairs:'Duplas',sCats:'Categorias',sGames:'Jogos',sWL:'Vitórias–derrotas',sNext:'Próximo jogo',
  updated:d=>'Resultados actualizados a '+d+'. ',noRes:'Ainda sem resultados: o torneio começa a 28/11. ',src:'Dados do <a href="https://padelteams.pt/info/matches?k=Y2lkPTc3MDUmdGlkPTA=">padelteams.pt</a>, lidos de hora a hora. Classificação calculada aqui (vitórias, diferença de sets, diferença de jogos): confirmar sempre no site da organização.'},
-es:{loc:'es-ES',wd:['dom','lun','mar','mié','jue','vie','sáb'],tCal:'Calendario',tGroups:'Grupos',tPairs:'Parejas',search:'Buscar jugador',cat:'Categoría',allCats:'Todas las categorías',when:'Cuándo',where:'Dónde',
+es:{loc:'es-ES',wd:['dom','lun','mar','mié','jue','vie','sáb'],tCal:'Calendario',tGroups:'Grupos',tDraws:'Cuadros',stGroups:'Grupos',stFinal:'Cuadro final',stP2:'2.ª fase',onlyUs:'Solo FSportIN',allG:'Todos',noUsRound:'No hay parejas de FSportIN en esta ronda.',chg:'Cambiado',ret:'Abandono',wo:'W.O.',official:'Oficial',calc:'Calculada',myPairs:'Mis parejas',star:'Marcar como mi pareja',addCal:'Añadir al calendario',subKO:'Eliminatorias',r16:'1/16',r8:'1/8',r4:'Cuartos',r2:'Semifinales',rF:'Final',noKO:'Todavía no hay partidos de eliminatorias en esta categoría.',koNote:'Cuadro igual al de padelteams; las parejas por definir se actualizan cuando la organización las confirme.',demo:'Vista previa con datos ficticios',tPairs:'Parejas',search:'Buscar jugador',cat:'Categoría',allCats:'Todas las categorías',when:'Cuándo',where:'Dónde',
  today:'Hoy',all:'Ver todos',games:n=>n+(n===1?' partido':' partidos'),noGames:'No hay partidos de FSportIN con este filtro.',noGroups:'No hay grupos con este filtro.',noPairs:'Ninguna pareja con este filtro.',
  live:'En juego',win:'Victoria',loss:'Derrota',done:'Finalizado',todo:'Por jugar',court:'Pista',game:'Partido',group:'Grupo',phase2:'2.ª fase',tbd:'Pareja por definir',winnerOf:x=>'Ganador del partido '+x,place:(n,g)=>n+'.º Grupo '+g,
  thPair:'Pareja',thP:'PJ',thW:'G',thSets:'Sets',thGames:'Juegos',closed:'Cerrado',prov:'Provisional',ourGames:'Partidos de FSportIN',path:'Recorrido',groupStage:'Fase de grupos',
  pos:(p,v,d)=>p+'.º · '+v+'G '+d+'P',notPlayed:'por jugar',won:'Ganó',lost:'Perdió',ifPlace:n=>'Si queda <b>'+n+'.º</b>',ko:'Eliminatorias',koWhen:'cuando la organización haga el sorteo',fW:'G',fL:'P',
  sPairs:'Parejas',sCats:'Categorías',sGames:'Partidos',sWL:'Victorias–derrotas',sNext:'Próximo partido',
  updated:d=>'Resultados actualizados el '+d+'. ',noRes:'Aún sin resultados: el torneo empieza el 28/11. ',src:'Datos de <a href="https://padelteams.pt/info/matches?k=Y2lkPTc3MDUmdGlkPTA=">padelteams.pt</a>, leídos cada hora. Clasificación calculada aquí (victorias, diferencia de sets, diferencia de juegos): confirmar siempre en la web de la organización.'},
-en:{loc:'en-GB',wd:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],tCal:'Schedule',tGroups:'Groups',tPairs:'Pairs',search:'Search player',cat:'Category',allCats:'All categories',when:'When',where:'Where',
+en:{loc:'en-GB',wd:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],tCal:'Schedule',tGroups:'Groups',tDraws:'Draws',stGroups:'Groups',stFinal:'Final draw',stP2:'2nd phase',onlyUs:'FSportIN only',allG:'All',noUsRound:'No FSportIN pairs in this round.',chg:'Changed',ret:'Retired',wo:'W/O',official:'Official',calc:'Calculated',myPairs:'My pairs',star:'Mark as my pair',addCal:'Add to calendar',subKO:'Knockout',r16:'Round of 32',r8:'Round of 16',r4:'Quarter-finals',r2:'Semi-finals',rF:'Final',noKO:'No knockout matches in this category yet.',koNote:'Bracket mirrors padelteams; TBD pairs update once the organiser confirms them.',demo:'Preview with dummy data',tPairs:'Pairs',search:'Search player',cat:'Category',allCats:'All categories',when:'When',where:'Where',
  today:'Today',all:'See all',games:n=>n+(n===1?' match':' matches'),noGames:'No FSportIN matches for this filter.',noGroups:'No groups for this filter.',noPairs:'No pairs for this filter.',
  live:'Live',win:'Win',loss:'Loss',done:'Finished',todo:'Upcoming',court:'Court',game:'Match',group:'Group',phase2:'2nd phase',tbd:'Pair TBD',winnerOf:x=>'Winner of match '+x,place:(n,g)=>n+(n==1?'st':n==2?'nd':n==3?'rd':'th')+' Group '+g,
  thPair:'Pair',thP:'P',thW:'W',thSets:'Sets',thGames:'Games',closed:'Final',prov:'Provisional',ourGames:'FSportIN matches',path:'Path',groupStage:'Group stage',
@@ -246,55 +277,102 @@ const catLabel=c=>c.replace(/^MX/,'Mx').replace(/^KIDS/,'Kids').replace(/ - M$/,
 const dobj=d=>{const[dd,mm]=d.split('/').map(Number);return new Date(2026,mm-1,dd)};
 const dlabel=d=>{const o=dobj(d);return T().wd[o.getDay()]+' '+d};
 const sortKey=m=>dobj(m.d).getTime()+(+m.t.slice(0,2))*60+(+m.t.slice(3));
-let R={results:{},extra:[],updated:null};let M=[];
-function build(){const by=new Map();
- for(const r of S){const[c,n,ph,a,b,court,d,t]=r;by.set(c+'|'+n,{c,n,ph,a,b,court,d,t})}
+let R={results:{},extra:[],updated:null};let M=[];let ORIG=null;
+function build(){if(!ORIG)ORIG=new Map(S.filter(r=>!(DEMO&&isKO(r[2]))).map(r=>[r[0]+'|'+r[1],r]));const by=new Map();
+ for(const r of S){const[c,n,ph,a,b,court,d,t]=r;if(DEMO&&isKO(ph))continue;by.set(c+'|'+n,{c,n,ph,a,b,court,d,t})}
  for(const r of (R.extra||[])){if(!Array.isArray(r)||r.length<8)continue;const[c,n,ph,a,b,court,d,t]=r.map(String);by.set(c+'|'+n,{c,n,ph,a,b,court,d,t})}
- M=[...by.values()].map(m=>{const k=m.c+'|'+m.n;return{...m,k,res:R.results?.[k]||null,us:isUs(m.a)||isUs(m.b)}});
+ M=[...by.values()].map(m=>{const k=m.c+'|'+m.n;const o=ORIG.get(k);const real=x=>!isPh(x)&&!trSlot(x);const chg=!!o&&(o[5]!==m.court||o[6]!==m.d||o[7]!==m.t||(real(o[3])&&o[3]!==m.a)||(real(o[4])&&o[4]!==m.b));return{...m,k,chg,res:R.results?.[k]||null,us:isUs(m.a)||isUs(m.b)}});
  M.sort((x,y)=>sortKey(x)-sortKey(y))}
-function sets(sc){const p=String(sc||'').match(/\d+\s*[-–]\s*\d+/g)||[];return p.map(s=>s.split(/[-–]/).map(x=>+x.trim()))}
-function winner(m){if(!m.res)return 0;if(m.res.w==1||m.res.w==2)return +m.res.w;let a=0,b=0;sets(m.res.sc).forEach(([x,y])=>x>y?a++:y>x&&b++);return /fim/i.test(m.res.st||'')||a+b>=2?(a>b?1:b>a?2:0):0}
+function parseSc(sc){const o=[];String(sc||'').replace(/(\d+)\s*[-–]\s*(\d+)(?:\s*\(\s*(\d+)\s*[-–]\s*(\d+)\s*\))?/g,(_,a,b,c,d)=>{o.push({a:+a,b:+b,ta:c==null?null:+c,tb:d==null?null:+d});return''});return o}
+function sets(sc){return parseSc(sc).map(s=>[s.a,s.b])}
+const isWO=m=>/w\.?\s?o|falta|walk/i.test(m.res?.st||'');const isRet=m=>/desist|retir|abandon/i.test(m.res?.st||'');
+function winner(m){if(!m.res)return 0;if(/jog|live|curso/i.test(m.res.st||''))return 0;if(m.res.w==1||m.res.w==2)return +m.res.w;let a=0,b=0;sets(m.res.sc).forEach(([x,y])=>x>y?a++:y>x&&b++);return /fim/i.test(m.res.st||'')||a+b>=2?(a>b?1:b>a?2:0):0}
 const usSide=m=>isUs(m.a)?1:2;
+const isKO=ph=>!/^Grupo/.test(ph)&&!/fase/i.test(ph);
+const roundNo=m=>+(String(m.n).match(/^#(\d+)/)||[0,0])[1];
+const roundLabel=ph=>({'1/16':T().r16,'1/8':T().r8,'1/4':T().r4,'1/2':T().r2,'Final':T().rF})[ph]||trPh(ph);
 function status(m){const w=winner(m);if(/jog|live|curso/i.test(m.res?.st||'')&&!w)return['live',T().live];
- if(w&&m.us)return w===usSide(m)?['win',T().win]:['loss',T().loss];if(w)return['done',T().done];return['',T().todo]}
-function scoreCells(m,side){return sets(m.res?.sc).map(([x,y])=>{const me=side===1?x:y,op=side===1?y:x;return`<span class="${me>op?'win':''}">${me}</span>`}).join('')}
+ const x=isWO(m)?' · '+T().wo:isRet(m)?' · '+T().ret:'';
+ if(w&&m.us)return w===usSide(m)?['win',T().win+x]:['loss',T().loss+x];if(w)return[x?'wo':'done',x?x.slice(3):T().done];return['',T().todo]}
+function scoreCells(m,side){const S2=parseSc(m.res?.sc);return S2.map((s,i)=>{const me=side===1?s.a:s.b,op=side===1?s.b:s.a;const tb=s.ta==null||me>op?'':`<sup>${side===1?s.ta:s.tb}</sup>`;const stb=i===2&&Math.max(s.a,s.b)>=10;return`<span class="${me>op?'win':''}${stb?' stb':''}"${stb?' title="Super tie-break"':''}>${me}${tb}</span>`}).join('')}
 function teamRow(m,t,side,w){const us=isUs(t),p=split(t);
  return`<div class="tm${us?' us':''}${w===side?' w':''}"><span class="ico">${us?'<img src="assets/lobo-white.svg" alt="">':'<i></i>'}</span><span class="nm">${esc(p.n)}${p.c?`<small>${esc(p.c)}</small>`:''}</span><span class="sc">${scoreCells(m,side)}</span></div>`}
+function icsFile(m){const[dd,mm]=m.d.split('/').map(Number);const[h,mi]=m.t.split(':').map(Number);const p=n=>String(n).padStart(2,'0');
+ const s=new Date(2026,mm-1,dd,h,mi),e=new Date(s.getTime()+3600e3);const f=d=>`${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}T${p(d.getHours())}${p(d.getMinutes())}00`;
+ const sum=`${catLabel(m.c)} · ${nm(m.a)} vs ${nm(m.b)}`.replace(/[,;]/g,' ');
+ const body=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//OCD Studio//FSportIN//PT','BEGIN:VEVENT','UID:'+encodeURIComponent(m.k)+'@fsportin.ocd.pt','DTSTAMP:'+f(new Date()),'DTSTART;TZID=Europe/Lisbon:'+f(s),'DTEND;TZID=Europe/Lisbon:'+f(e),'SUMMARY:'+sum,'LOCATION:D\'Ouro Padel','DESCRIPTION:'+trPh(m.ph)+' · '+T().court+' '+m.court+' · fsportin.ocd.pt','END:VEVENT','END:VCALENDAR'].join('\r\n');
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([body],{type:'text/calendar'}));a.download='fsportin-'+m.c.replace(/\W+/g,'')+'-'+m.n.replace(/\W+/g,'')+'.ics';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+const icsBtn=m=>`<button class="ics" data-ics="${esc(m.k)}" title="${esc(T().addCal)}" aria-label="${esc(T().addCal)}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/></svg></button>`;
 /* cartão de jogo: hora + categoria no topo, nossa dupla primeiro, meta e estado no rodapé */
 function card(m,showCat=true){const w=winner(m);const order=(!isUs(m.a)&&isUs(m.b))?[[m.b,2],[m.a,1]]:[[m.a,1],[m.b,2]];const[sc,sl]=status(m);
- return`<article class="mc"><div class="mc-h"><div class="when"><span class="t">${esc(m.t)}</span><span class="d">${esc(dlabel(m.d))}</span></div>${showCat?`<span class="cat">${esc(catLabel(m.c))}</span>`:''}</div>
+ return`<article class="mc${isFavM(m)?' fav':''}"><div class="mc-h"><div class="when"><span class="t">${esc(m.t)}</span><span class="d">${esc(dlabel(m.d))}</span>${m.chg?`<span class="chg">${T().chg}</span>`:''}</div>${showCat?`<span class="cat">${esc(catLabel(m.c))}</span>`:''}</div>
  <div class="teams">${order.map(([t,s])=>teamRow(m,t,s,w)).join('')}</div>
- <div class="mc-f"><span class="meta">${esc(trPh(m.ph))} · ${T().court} ${esc(m.court)} · ${T().game} ${esc(m.n.replace('#',''))}</span><span class="st ${sc}">${sl}</span></div></article>`}
-const st={v:'calendario',q:'',cat:'',day:null};
+ <div class="mc-f"><span class="meta">${esc(trPh(m.ph))} · ${T().court} ${esc(m.court)} · ${T().game} ${esc(m.n.replace('#',''))}</span><span class="acts"><span class="st ${sc}">${sl}</span>${winner(m)?'':icsBtn(m)}</span></div></article>`}
+const st={v:'calendario',q:'',cat:'',day:null,only:true,mine:false};
+let FAV=new Set();try{FAV=new Set(JSON.parse(localStorage.getItem('fsp-fav')||'[]'))}catch(e){}
+const favKey=(c,t)=>c+'|'+nm(t);const isFavM=m=>[m.a,m.b].some(t=>isUs(t)&&FAV.has(favKey(m.c,t)));
+function toggleFav(k){FAV.has(k)?FAV.delete(k):FAV.add(k);try{localStorage.setItem('fsp-fav',JSON.stringify([...FAV]))}catch(e){}}
 try{const s=JSON.parse(localStorage.getItem('fsp')||'{}');Object.assign(st,{q:s.q||'',cat:s.cat||''})}catch(e){}
 function save(){try{localStorage.setItem('fsp',JSON.stringify({q:st.q,cat:st.cat}))}catch(e){}}
 function filt(l){const q=st.q.trim().toLowerCase();return l.filter(m=>(!st.cat||m.c===st.cat)&&(!q||(m.a+' '+m.b).toLowerCase().includes(q)))}
-const ours=()=>filt(M.filter(m=>m.us));
-function todayStr(){const n=new Date();return String(n.getDate()).padStart(2,'0')+'/'+String(n.getMonth()+1).padStart(2,'0')}
-const today0=()=>new Date(new Date().toDateString());
+const ours=()=>filt(M.filter(m=>m.us&&(!st.mine||isFavM(m))));
+const DEMO=new URLSearchParams(location.search).has('demo');
+const NOW=()=>DEMO?new Date(2026,11,6,15,0):new Date();
+function todayStr(){const n=NOW();return String(n.getDate()).padStart(2,'0')+'/'+String(n.getMonth()+1).padStart(2,'0')}
+const today0=()=>new Date(NOW().toDateString());
+
 function defaultDay(L){const td=todayStr();if(DAYS.includes(td)&&L.some(m=>m.d===td))return td;const nx=L.find(m=>dobj(m.d)>=today0());return nx?nx.d:(L.length?L[L.length-1].d:'all')}
 function vCal(){const L=ours();if(!st.day||(st.day!=='all'&&!L.some(m=>m.d===st.day)))st.day=defaultDay(L);
  const td=todayStr();
  const chips=[...DAYS,'all'].map(d=>{const n=d==='all'?L.length:L.filter(m=>m.d===d).length;if(!n&&d!=='all')return'';const lab=d==='all'?T().all:(d===td?T().today:dlabel(d));return`<button class="chip" data-day="${d}" aria-pressed="${st.day===d}">${esc(lab)}<small>${n}</small></button>`}).join('');
  const body=(st.day==='all'?DAYS:[st.day]).map(d=>{const l=L.filter(m=>m.d===d);return l.length?`<section class="sec"><h2>${d===td?T().today:esc(dlabel(d))}<small>${d===td?esc(dlabel(d))+' · ':''}${T().games(l.length)}</small></h2><div class="grid">${l.map(m=>card(m)).join('')}</div></section>`:''}).join('');
- return`<div class="chips">${chips}</div>${body||'<div class="empty">'+T().noGames+'</div>'}`}
+ const mineChip=FAV.size?`<button class="chip" data-mine="1" aria-pressed="${st.mine}">★ ${esc(T().myPairs)}<small>${FAV.size}</small></button>`:'';
+ return`<div class="chips">${mineChip}${chips}</div>${body||'<div class="empty">'+T().noGames+'</div>'}`}
 function standings(c,g){const gm=M.filter(m=>m.c===c&&m.ph===g&&/^#1\./.test(m.n));const T=new Map();
  const add=t=>{if(!T.has(t))T.set(t,{t,j:0,v:0,d:0,sp:0,sc:0,gp:0,gc:0})};
  for(const m of gm){add(m.a);add(m.b);const w=winner(m);if(!w)continue;const A=T.get(m.a),B=T.get(m.b);A.j++;B.j++;if(w===1){A.v++;B.d++}else{B.v++;A.d++}
-  for(const[x,y]of sets(m.res.sc)){A.gp+=x;A.gc+=y;B.gp+=y;B.gc+=x;if(x>y){A.sp++;B.sc++}else if(y>x){B.sp++;A.sc++}}}
+  for(const[i,[x,y]]of sets(m.res.sc).entries()){if(!(i===2&&Math.max(x,y)>=10)){A.gp+=x;A.gc+=y;B.gp+=y;B.gc+=x}if(x>y){A.sp++;B.sc++}else if(y>x){B.sp++;A.sc++}}}
  const arr=[...T.values()].sort((x,y)=>y.v-x.v||(y.sp-y.sc)-(x.sp-x.sc)||(y.gp-y.gc)-(x.gp-x.gc));
- return{arr,done:gm.length&&gm.every(m=>winner(m)),games:gm}}
+ const official=R.standings?.[c+'|'+g]||null;
+ return{arr,done:gm.length&&gm.every(m=>winner(m)),games:gm,official}}
 function groupsOfUs(){const s=new Map();for(const m of M)if(m.us&&/^Grupo/.test(m.ph)&&/^#1\./.test(m.n)){const k=m.c+'|'+m.ph;if(!s.has(k))s.set(k,{c:m.c,g:m.ph})}
  return[...s.values()].sort((a,b)=>catRank(a.c)-catRank(b.c)||a.g.localeCompare(b.g,'pt'))}
 const sg=n=>(n>0?'+':'')+n;
-function table(s){return`<table><thead><tr><th>#</th><th>${T().thPair}</th><th>${T().thP}</th><th>${T().thW}</th><th>${T().thSets}</th><th>${T().thGames}</th></tr></thead><tbody>${s.arr.map((r,i)=>`<tr class="${isUs(r.t)?'us':''}"><td>${i+1}</td><td>${esc(nm(r.t))}</td><td>${r.j}</td><td class="pts">${r.v}</td><td>${sg(r.sp-r.sc)}</td><td>${sg(r.gp-r.gc)}</td></tr>`).join('')}</tbody></table>`}
+function table(s){if(s.official)return`<table><thead><tr><th>#</th><th>${T().thPair}</th><th>${T().thP}</th><th>${T().thW}</th><th>${T().thSets}</th><th>${T().thGames}</th></tr></thead><tbody>${s.official.map((r,i)=>`<tr class="${isUs(r[0])?'us':''}"><td>${i+1}</td><td>${esc(nm(r[0]))}</td><td>${esc(r[1]??'')}</td><td class="pts">${esc(r[2]??'')}</td><td>${esc(r[3]??'')}</td><td>${esc(r[4]??'')}</td></tr>`).join('')}</tbody></table>`;return`<table><thead><tr><th>#</th><th>${T().thPair}</th><th>${T().thP}</th><th>${T().thW}</th><th>${T().thSets}</th><th>${T().thGames}</th></tr></thead><tbody>${s.arr.map((r,i)=>`<tr class="${isUs(r.t)?'us':''}"><td>${i+1}</td><td>${esc(nm(r.t))}</td><td>${r.j}</td><td class="pts">${r.v}</td><td>${sg(r.sp-r.sc)}</td><td>${sg(r.gp-r.gc)}</td></tr>`).join('')}</tbody></table>`}
 function vCats(){let G=groupsOfUs().filter(x=>!st.cat||x.c===st.cat);const q=st.q.trim().toLowerCase();
  if(q)G=G.filter(x=>M.some(m=>m.c===x.c&&m.ph===x.g&&m.us&&(m.a+' '+m.b).toLowerCase().includes(q)));
  if(!G.length)return'<div class="empty">'+T().noGroups+'</div>';
- return`<section class="sec"><div class="grid">${G.map(x=>{const s=standings(x.c,x.g);return`<div class="card"><div class="card-h"><span class="cat">${esc(catLabel(x.c))}</span><h3>${esc(trPh(x.g))}</h3><span class="tag">${s.done?T().closed:T().prov}</span></div>${table(s)}<div class="lbl">${T().ourGames}</div><div class="mini">${s.games.filter(m=>m.us).map(m=>card(m,false)).join('')}</div></div>`}).join('')}</div></section>`}
+ return`<section class="sec"><div class="grid">${G.map(x=>{const s=standings(x.c,x.g);return`<div class="card"><div class="card-h"><span class="cat">${esc(catLabel(x.c))}</span><h3>${esc(trPh(x.g))}</h3><span class="tag">${s.official?T().official:(s.done?T().closed:T().prov)}</span></div>${table(s)}<div class="lbl">${T().ourGames}</div><div class="mini">${s.games.filter(m=>m.us).map(m=>card(m,false)).join('')}</div></div>`}).join('')}</div></section>`}
+function koCats(){return[...new Set(pairs().map(p=>p.c))].sort((a,b)=>catRank(a)-catRank(b))}
+function bmCard(m){const w=winner(m);const[sc,sl]=status(m);const us=isUs(m.a)||isUs(m.b);const fv=isFavM(m);
+ const row=(t,s)=>{const u=isUs(t),p=split(t);return`<div class="tm${u?' us':''}${w===s?' w':''}${w&&w!==s?' lost':''}"><span class="ico">${u?'<img src="assets/lobo-white.svg" alt="">':'<i></i>'}</span><span class="nm">${esc(p.n)}</span><span class="sc">${scoreCells(m,s)}</span></div>`};
+ return`<div class="bm${us?' us':''}${fv?' fav':''}">${row(m.a,1)}${row(m.b,2)}<div class="mc-f"><span class="meta">${esc(dlabel(m.d))} ${esc(m.t)} · ${T().court} ${esc(m.court)}${m.chg?` <span class="chg">${T().chg}</span>`:''}</span><span class="st ${sc}">${sl}</span></div></div>`}
+function stagesOf(c){const G=M.filter(m=>m.c===c);const st0=[];
+ const grp=G.filter(m=>/^Grupo/.test(m.ph));if(grp.length)st0.push(['groups',T().stGroups,grp]);
+ for(const ph of['1/16','1/8']){const l=G.filter(m=>m.ph===ph);if(l.length)st0.push([ph,roundLabel(ph),l])}
+ const fin=G.filter(m=>['1/4','1/2','Final'].includes(m.ph)||(isKO(m.ph)&&!['1/16','1/8'].includes(m.ph)));if(fin.length)st0.push(['final',T().stFinal,fin]);
+ const p2=G.filter(m=>/fase/i.test(m.ph));if(p2.length)st0.push(['p2',T().stP2,p2]);return st0}
+function groupCards(c){const gs=[...new Set(M.filter(m=>m.c===c&&m.us&&/^Grupo/.test(m.ph)).map(m=>m.ph))].sort();
+ return`<div class="grid">${gs.map(g=>{const s=standings(c,g);return`<div class="card"><div class="card-h"><h3>${esc(trPh(g))}</h3><span class="tag">${s.official?T().official:(s.done?T().closed:T().prov)}</span></div>${table(s)}<div class="lbl">${T().ourGames}</div><div class="mini">${s.games.filter(m=>m.us).map(m=>card(m,false)).join('')}</div></div>`}).join('')}</div>`}
+function vDraws(){const cats=koCats().filter(c=>!st.cat||c===st.cat);if(!cats.length)return`<div class="empty">${T().noGroups}</div>`;
+ if(!st.kc||!cats.includes(st.kc))st.kc=cats[0];
+ const pills=cats.map(c=>`<button class="chip" data-kc="${esc(c)}" aria-pressed="${st.kc===c}">${esc(catLabel(c))}</button>`).join('');
+ const S0=stagesOf(st.kc);if(!S0.length)return`<div class="chips">${pills}</div><div class="empty">${T().noKO}</div>`;
+ const cur=(S0.find(([,,l])=>l.some(m=>!winner(m)))||S0[S0.length-1])[0];
+ const key=st.stg&&st.stg[st.kc]&&S0.some(s=>s[0]===st.stg[st.kc])?st.stg[st.kc]:cur;
+ const seg=`<div class="seg">${S0.map(([k,lab])=>`<button data-stg="${k}" aria-pressed="${key===k}">${esc(lab)}</button>`).join('')}</div>`;
+ const [,,games]=S0.find(s=>s[0]===key);const byN=(a,b)=>String(a.n).localeCompare(String(b.n),'pt',{numeric:true});
+ let body='',tools='';
+ if(key==='groups')body=groupCards(st.kc);
+ else if(key==='final'){const rounds=[...new Set(games.map(roundNo))].sort((a,b)=>a-b);
+  body=`<div class="bracket-card"><div class="bracket">${rounds.map(r=>{const gs=games.filter(m=>roundNo(m)===r).sort(byN);return`<div class="round"><h4>${esc(roundLabel(gs[0].ph))}</h4><div class="col">${gs.map(bmCard).join('')}</div></div>`}).join('')}</div><p class="meta" style="margin:14px 0 0;white-space:normal">${T().koNote}</p></div>`}
+ else{tools=key==='p2'?'':`<div class="seg"><button data-only="1" aria-pressed="${st.only}">${T().onlyUs}</button><button data-only="0" aria-pressed="${!st.only}">${T().allG}</button></div>`;
+  const l=games.filter(m=>key==='p2'||!st.only||m.us).sort(byN);
+  body=l.length?`<div class="grid">${l.map(m=>card(m,false)).join('')}</div>`:`<div class="empty">${T().noUsRound}</div>`}
+ return`<div class="chips">${pills}</div><div class="stage">${seg}${tools}</div>${body}`}
 function pairs(){const P=new Map();for(const m of M)for(const t of[m.a,m.b])if(isUs(t)&&/^#1\./.test(m.n)&&/^Grupo/.test(m.ph)){const k=m.c+'|'+t;if(!P.has(k))P.set(k,{c:m.c,t,g:m.ph})}
  return[...P.values()].sort((a,b)=>catRank(a.c)-catRank(b.c)||nm(a.t).localeCompare(nm(b.t),'pt'))}
-function vPairs(){const q=st.q.trim().toLowerCase();const P=pairs().filter(p=>(!st.cat||p.c===st.cat)&&(!q||p.t.toLowerCase().includes(q)));
+function vPairs(){const q=st.q.trim().toLowerCase();const P=pairs().filter(p=>(!st.cat||p.c===st.cat)&&(!q||p.t.toLowerCase().includes(q))).sort((a,b)=>(FAV.has(favKey(b.c,b.t))?1:0)-(FAV.has(favKey(a.c,a.t))?1:0));
  if(!P.length)return'<div class="empty">'+T().noPairs+'</div>';
  return`<section class="sec"><div class="grid">${P.map(p=>{const s=standings(p.c,p.g);const pos=s.arr.findIndex(r=>r.t===p.t)+1;const me=s.arr[pos-1];
   const gl=p.g.replace('Grupo ','');const later=M.filter(m=>m.c===p.c&&!/^#1\./.test(m.n));
@@ -307,12 +385,12 @@ function vPairs(){const q=st.q.trim().toLowerCase();const P=pairs().filter(p=>(!
   if(!named.length&&slots.length){const by={};slots.forEach(m=>{const k=(re.test(m.a)?m.a:m.b).match(/^(\d)/)[1];(by[k]??=[]).push(m)});
    Object.keys(by).sort().forEach(k=>{const m=by[k][0];lines.push(`<li><span>${T().ifPlace(k)} · ${esc(trPh(m.ph))}</span><span>${esc(dlabel(m.d)+' '+m.t+' · '+T().court+' '+m.court)}</span></li>`)})}
   if(!named.length&&!slots.length)lines.push('<li><span>'+T().ko+'</span><span>'+T().koWhen+'</span></li>');
-  return`<div class="card"><div class="card-h"><span class="cat">${esc(catLabel(p.c))}</span><h3>${esc(nm(p.t))}</h3><span class="tag form">${form}</span></div><div class="mini">${gms.map(m=>card(m,false)).join('')}</div><div class="lbl">${T().path}</div><ul class="path">${lines.join('')}</ul></div>`}).join('')}</div></section>`}
+  return`<div class="card"><div class="card-h"><span class="cat">${esc(catLabel(p.c))}</span><h3>${esc(nm(p.t))}</h3><button class="star" data-fav="${esc(favKey(p.c,p.t))}" aria-pressed="${FAV.has(favKey(p.c,p.t))}" title="${esc(T().star)}" aria-label="${esc(T().star)}">★</button><span class="tag form">${form}</span></div><div class="mini">${gms.map(m=>card(m,false)).join('')}</div><div class="lbl">${T().path}</div><ul class="path">${lines.join('')}</ul></div>`}).join('')}</div></section>`}
 function stats(){const L=M.filter(m=>m.us);let v=0,d=0;for(const m of L){const w=winner(m);if(!w)continue;w===usSide(m)?v++:d++}
  const pr=pairs();const nx=L.find(m=>!winner(m)&&dobj(m.d)>=today0());
  document.getElementById('stats').innerHTML=[[pr.length,T().sPairs],[new Set(pr.map(p=>p.c)).size,T().sCats],[L.length,T().sGames],[v+'–'+d,T().sWL],[nx?nx.d+' '+nx.t:'—',T().sNext]].map(([b,s])=>`<div class="stat"><b>${esc(b)}</b><span>${esc(s)}</span></div>`).join('')}
 function render(){stats();document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===st.v));
- document.getElementById('view').innerHTML=st.v==='calendario'?vCal():st.v==='categorias'?vCats():vPairs();
+ document.getElementById('view').innerHTML=(DEMO?`<div class="demo">${T().demo}</div>`:'')+(st.v==='calendario'?vCal():st.v==='categorias'?vDraws():vPairs());
  document.getElementById('foot').innerHTML=(R.updated?T().updated(esc(new Date(R.updated).toLocaleString(T().loc,{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}))):T().noRes)+T().src}
 /* textos fixos da página */
 function applyLang(){document.documentElement.lang=LANG==='pt'?'pt-PT':LANG;document.querySelectorAll('[data-i]').forEach(e=>{e.textContent=T()[e.dataset.i]});const q=document.getElementById('q');q.placeholder=T().search;q.setAttribute('aria-label',T().search);document.getElementById('cat').setAttribute('aria-label',T().cat);document.querySelectorAll('#lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===LANG))}
@@ -324,11 +402,43 @@ qi.addEventListener('input',()=>{st.q=qi.value;save();render()});
 cs.addEventListener('change',()=>{st.cat=cs.value;save();render()});
 const VIEWS=['calendario','categorias','duplas'];
 document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;st.v=b.dataset.v;location.hash=st.v;render()});
-document.getElementById('view').addEventListener('click',e=>{const b=e.target.closest('[data-day]');if(!b)return;st.day=b.dataset.day;render()});
+document.getElementById('view').addEventListener('click',e=>{let b=e.target.closest('[data-day]');if(b){st.day=b.dataset.day;render();return}b=e.target.closest('[data-kc]');if(b){st.kc=b.dataset.kc;render();return}b=e.target.closest('[data-stg]');if(b){(st.stg??={})[st.kc]=b.dataset.stg;render();return}b=e.target.closest('[data-only]');if(b){st.only=b.dataset.only==='1';render();return}b=e.target.closest('[data-fav]');if(b){toggleFav(b.dataset.fav);render();return}b=e.target.closest('[data-mine]');if(b){st.mine=!st.mine;st.day=null;render();return}b=e.target.closest('[data-ics]');if(b){const m=M.find(x=>x.k===b.dataset.ics);if(m)icsFile(m)}});
 const fromHash=()=>{const h=location.hash.slice(1);if(h==='hoje')st.v='calendario';else if(VIEWS.includes(h))st.v=h};
 window.addEventListener('hashchange',()=>{fromHash();render()});fromHash();
-applyLang();build();render();
-fetch(new URL('data.json',document.baseURI).href.replace('/preview/data.json','/data.json'),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{if(j&&typeof j==='object'){R={results:j.results||{},extra:Array.isArray(j.extra)?j.extra:[],updated:j.updated||null};build();render()}}).catch(()=>{});
+applyLang();
+/* dados fictícios para ?demo — não afectam o site normal */
+function demoData(){const res={},extra=[];let seed=11;const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280};const pick=a=>a[Math.floor(rnd()*a.length)];
+ /* pro set a 9 (tie-break aos 8-8) até aos 1/8; melhor de 3 com super tie-break a partir dos quartos */
+ const pro=wA=>{if(rnd()<.18){const a=7,b=Math.floor(rnd()*6);return wA?`9-8(${a}-${b})`:`8-9(${b}-${a})`}const l=Math.floor(rnd()*8);return wA?`9-${l}`:`${l}-9`};
+ const bo3=wA=>{const s=()=>{const l=Math.floor(rnd()*5);return[6,l]};const a=s(),b=s();if(rnd()<.45){const c=[10,Math.floor(rnd()*8)];return wA?`${a[0]}-${a[1]} ${b[1]}-${b[0]} ${c[0]}-${c[1]}`:`${a[1]}-${a[0]} ${b[0]}-${b[1]} ${c[1]}-${c[0]}`}
+  return wA?`${a[0]}-${a[1]} 7-6(7-${Math.floor(rnd()*6)})`:`${a[1]}-${a[0]} 6-7(${Math.floor(rnd()*6)}-7)`};
+ for(const r of S){const[c,n,ph,a,b]=r;if(!/^Grupo/.test(ph)||isPh(a)||isPh(b))continue;const wA=isUs(a)?rnd()<.75:isUs(b)?rnd()<.25:rnd()<.5;res[c+'|'+n]={sc:pro(wA),w:wA?1:2,st:'fim'}}
+ /* dois jogos nossos com hora/campo alterados e um W.O. */
+ const ourG=S.filter(r=>/^Grupo/.test(r[2])&&(isUs(r[3])||isUs(r[4])));
+ if(ourG[3]){const r=[...ourG[3]];r[7]='18:30';r[5]='6';extra.push(r)}
+ if(ourG[9]){const r=[...ourG[9]];r[6]='02/12';extra.push(r)}
+ if(ourG[5]){const k=ourG[5][0]+'|'+ourG[5][1];res[k]={sc:'',w:isUs(ourG[5][3])?1:2,st:'W.O.'}}
+ const FN=['Rui','Tiago','Ana','Sara','João','Luís','Inês','Rita','Paulo','Nuno','Marta','Joana','Pedro','Hugo','Carla','Sofia','Diogo','Vasco'];const LN=['Costa','Lima','Reis','Melo','Pinto','Sá','Rocha','Paz','Dias','Vaz','Gil','Cruz','Neves','Mota','Faria','Lopes'];const CL=['Padel Norte','Clube Sul','Arena Padel','Box Padel','Smash Club','Padel One'];
+ const fake=()=>{const a=`${pick(FN)} ${pick(LN)}`;let b;do{b=`${pick(FN)} ${pick(LN)}`}while(b===a);return`${a} / ${b} - ${pick(CL)}`};
+ const cats=[...new Set(S.filter(r=>(isUs(r[3])||isUs(r[4]))&&/^Grupo/.test(r[2])).map(r=>r[0]))].filter(c=>c!=='F7'&&c!=='M7');
+ for(const c of cats){const us=[...new Set(S.filter(r=>r[0]===c&&/^Grupo/.test(r[2])).flatMap(r=>[r[3],r[4]]).filter(isUs))];
+  const oth=[...new Set(S.filter(r=>r[0]===c&&/^Grupo/.test(r[2])).flatMap(r=>[r[3],r[4]]).filter(x=>!isUs(x)&&!isPh(x)))];
+  const small=c==='MX3'||c==='KIDS 2';const size=small?16:32;
+  const pool=[];us.forEach((u,i)=>pool[i*(size/2)]=u);let k=0;for(let i=0;i<size;i++)if(!pool[i])pool[i]=oth[k++]||fake();
+  let round=small?3:2,cur=pool,start=small?'1/8':'1/16';const phs=['1/16','1/8','1/4','1/2','Final'];let pi=phs.indexOf(start);
+  const plan={2:['05/12',9,0,20],3:['06/12',9,0,20],4:['06/12',14,0,40],5:['07/12',18,0,60],6:['08/12',17,0,0]};
+  while(cur.length>=2){const ph=phs[pi],nx=[];const[d,h0]=plan[round];
+   for(let g=0;g<cur.length/2;g++){const A=cur[2*g],B=cur[2*g+1];const n='#'+round+'.'+(g+1);const mins=h0*60+(round===4?g*40:g*20);const tm=String(Math.floor(mins/60)).padStart(2,'0')+':'+String(mins%60).padStart(2,'0');
+    const placeholder=x=>x.startsWith('Vencedor');extra.push([c,n,ph,A,B,String(1+(g%11)),d,tm]);
+    if(placeholder(A)||placeholder(B)||round>=5){nx.push('Vencedor do jogo '+round+'.'+(g+1));continue}
+    if(round===4&&g>=2){if(g===2)res[c+'|'+n]={sc:'6-3 2-1',st:'a jogar'};nx.push('Vencedor do jogo '+round+'.'+(g+1));continue}
+    const lose=c==='F5'&&round===3;const wA=isUs(A)?!lose:isUs(B)?lose:rnd()<.5;
+    if(round===2&&g===5&&!isUs(A)&&!isUs(B)){res[c+'|'+n]={sc:'',w:1,st:'W.O.'};nx.push(A);continue}
+    res[c+'|'+n]={sc:round>=4?bo3(wA):pro(wA),w:wA?1:2,st:'fim'};nx.push(wA?A:B)}
+   cur=nx;round++;pi++;if(pi>=phs.length)break}}
+ return{results:res,extra,updated:new Date(2026,11,6,14,55).toISOString()}}
+if(DEMO)R=demoData();build();render();
+if(!DEMO)fetch(new URL('data.json',document.baseURI).href.replace('/preview/data.json','/data.json'),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{if(j&&typeof j==='object'){R={results:j.results||{},extra:Array.isArray(j.extra)?j.extra:[],updated:j.updated||null,standings:j.standings||null};build();render()}}).catch(()=>{});
 }
 </script>
 </body>
