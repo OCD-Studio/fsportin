@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FSportIN · Türne Fest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://use.typekit.net/dgw5mps.css">
+<style>
+/* Linguagem: concepts de UX/UI desportiva — cartões escuros, muito ar, tipografia leve (400/500),
+   números grandes e finos, informação secundária pequena e cinzenta. Amarelo só para a nossa equipa e estados. */
+:root{color-scheme:dark;
+--bg:#0b0b0c;--card:#161618;--card2:#1e1e21;--line:#26262a;--ink:#f4f4f5;--soft:#c4c4c8;--mut:#8a8a90;--dim:#5e5e64;
+--y:#ffd21f;--yd:rgba(255,210,31,.12);--r:20px;--rs:14px;--pad:clamp(16px,3vw,40px);--gap:clamp(12px,1.4vw,20px)}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:400 15px/1.45 degular,Figtree,system-ui,sans-serif;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;overflow-x:clip}
+b,strong,h1,h2,h3,h4{font-weight:500}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--y);outline-offset:2px;border-radius:8px}
+.wrap{padding-inline:var(--pad)}
+
+/* topo */
+.top{padding-top:28px}
+.bar1{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.bar1 img{height:20px;display:block}
+.bar1 .ed{font-size:13px;color:var(--mut)}
+.hero{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px 40px;margin:40px 0 28px}
+.hero h1{font-size:clamp(40px,6vw,72px);line-height:.95;letter-spacing:-.03em;margin:0}
+.hero h1 span{display:block;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--y);margin-bottom:14px;line-height:1}
+.stats{display:grid;grid-template-columns:repeat(5,minmax(110px,1fr));gap:10px;flex:1 1 560px;max-width:880px}
+.stat{background:var(--card);border-radius:var(--rs);padding:14px 16px}
+.stat b{display:block;font-size:clamp(20px,1.8vw,26px);line-height:1.05;letter-spacing:-.02em;white-space:nowrap}
+.stat span{font-size:12px;color:var(--mut)}
+
+/* controlo */
+.ctrl{position:sticky;top:0;z-index:5;background:linear-gradient(var(--bg) 82%,transparent);padding:14px 0 18px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.tabs{display:flex;gap:6px;background:var(--card);padding:5px;border-radius:999px;overflow-x:auto}
+.tabs button{flex:none;font:500 14px degular,Figtree,sans-serif;color:var(--mut);background:none;border:0;padding:9px 16px;border-radius:999px;cursor:pointer;min-height:38px}
+.tabs button:hover{color:var(--ink)}
+.tabs button[aria-selected=true]{background:var(--ink);color:#000}
+.search{flex:1 1 220px;display:flex;align-items:center;gap:8px;background:var(--card);border-radius:999px;padding:0 16px;min-height:48px}
+.search svg{flex:none;opacity:.5}
+.search input{flex:1;background:none;border:0;color:var(--ink);font:400 15px degular,Figtree,sans-serif;outline:none;min-height:44px}
+.search input::placeholder{color:var(--dim)}
+select{font:400 14px degular,Figtree,sans-serif;color:var(--ink);background:var(--card);border:0;border-radius:999px;padding:0 16px;min-height:48px}
+
+main{padding-bottom:72px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px}
+.chip{flex:none;font:400 13px degular,Figtree,sans-serif;color:var(--soft);background:var(--card);border:0;border-radius:999px;padding:8px 14px;cursor:pointer;min-height:36px}
+.chip small{color:var(--dim);margin-left:6px}
+.chip[aria-pressed=true]{background:var(--ink);color:#000}.chip[aria-pressed=true] small{color:#555}
+.sec{margin-top:28px}
+.sec h2{display:flex;align-items:baseline;gap:12px;font-size:22px;letter-spacing:-.01em;margin:0 0 14px}
+.sec h2 small{font:400 13px degular,Figtree,sans-serif;color:var(--mut)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:var(--gap)}
+.grid.wide{grid-template-columns:repeat(auto-fill,minmax(min(100%,460px),1fr))}
+
+/* cartão de jogo */
+.mc{background:var(--card);border-radius:var(--r);padding:18px 20px 16px;display:flex;flex-direction:column;gap:14px}
+.mc-h{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.when{display:flex;align-items:baseline;gap:8px}
+.when .t{font-size:24px;line-height:1;letter-spacing:-.02em}
+.when .d{font-size:12px;color:var(--mut)}
+.cat{font-size:12px;font-weight:500;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:4px 10px;white-space:nowrap}
+.teams{display:flex;flex-direction:column;gap:8px}
+.tm{display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:10px}
+.tm .ico{width:28px;height:28px;border-radius:50%;background:var(--card2);display:grid;place-items:center}
+.tm .ico img{width:18px;height:auto}
+.tm .ico i{width:6px;height:6px;border-radius:50%;background:var(--dim)}
+.tm .nm{font-size:15px;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm .nm small{color:var(--dim);font-size:12px;margin-left:6px}
+.tm.us .nm{color:var(--ink);font-weight:500}
+.tm.us .ico{background:var(--yd)}
+.tm.w .nm::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--y);margin-left:8px;vertical-align:middle}
+.sc{display:flex;gap:6px}
+.sc span{min-width:22px;text-align:center;font-size:16px;color:var(--soft)}
+.sc span.win{color:var(--ink);font-weight:500}
+.mc-f{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding-top:12px}
+.meta{font-size:12px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st{font-size:12px;white-space:nowrap;color:var(--mut);display:inline-flex;align-items:center;gap:6px}
+.st::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--dim)}
+.st.live{color:var(--y)}.st.live::before{background:var(--y)}
+.st.win{color:var(--y)}.st.win::before{background:var(--y)}
+.st.loss{color:var(--soft)}.st.loss::before{background:#e5484d}
+.st.done::before{background:var(--soft)}
+@media(prefers-reduced-motion:no-preference){.st.live::before{animation:p 1.4s ease-in-out infinite}@keyframes p{50%{opacity:.3}}}
+
+/* cartões de grupo e de dupla */
+.card{background:var(--card);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:16px}
+.card-h{display:flex;align-items:center;gap:10px}
+.card-h h3{font-size:18px;margin:0;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-h .tag{margin-left:auto;font-size:12px;color:var(--mut)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-size:11px;font-weight:400;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);text-align:right;padding:0 6px 8px}
+td{padding:11px 6px;border-top:1px solid var(--line);text-align:right;color:var(--soft)}
+th:nth-child(2),td:nth-child(2){text-align:left}
+td:first-child{color:var(--dim);width:22px}
+td:nth-child(2){white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:0;width:100%}
+tr.us td{color:var(--ink)}tr.us td:nth-child(2){font-weight:500}
+tr.us td:first-child{color:var(--y)}
+td.pts{color:var(--ink);font-weight:500}
+.mini{display:flex;flex-direction:column;gap:8px}
+.mini .mc{background:var(--card2);padding:14px 16px 12px;gap:10px;border-radius:var(--rs)}
+.mini .when .t{font-size:18px}
+.lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin:2px 0 -6px}
+.path{list-style:none;margin:0;padding:0;font-size:13px;color:var(--soft)}
+.path li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.path li span:last-child{color:var(--mut);text-align:right}
+.path li b{color:var(--ink)}
+.form{display:flex;gap:5px}
+.form i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:500 10px degular,Figtree,sans-serif;font-style:normal;border:1px solid var(--line);color:var(--dim)}
+.form i.v{border-color:var(--y);color:var(--y)}.form i.d{border-color:#e5484d;color:#e5484d}
+.empty{background:var(--card);border-radius:var(--r);padding:40px;text-align:center;color:var(--mut)}
+
+/* rodapé */
+.site{margin-top:24px;border-top:1px solid var(--line);padding:48px 0 56px}
+.site-in{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:40px;align-items:end}
+.logos{display:flex;align-items:center;gap:28px;margin-bottom:28px}
+.logos .a{height:22px}.logos .b{height:46px}
+.mote{font-size:clamp(26px,3.6vw,44px);line-height:1.05;letter-spacing:-.025em;margin:0;max-width:20ch}
+.info{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0}
+.info div{background:var(--card);border-radius:var(--rs);padding:14px 16px}
+.info dt{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.info dd{margin:4px 0 0;font-size:16px;font-weight:500}
+.info a{text-decoration:none;border-bottom:1px solid var(--y)}
+.foot{grid-column:1/-1;font-size:12px;color:var(--dim);margin:0;max-width:80ch}
+
+@media(max-width:820px){.stats{grid-template-columns:repeat(3,1fr)}.site-in{grid-template-columns:1fr}}
+@media(max-width:520px){.tm .nm{white-space:normal}.tm .nm small{display:block;margin:2px 0 0}.mc-f{flex-wrap:wrap}.meta{white-space:normal}.stats{grid-template-columns:repeat(2,1fr)}.stat:last-child{grid-column:1/-1}.hero{margin:28px 0 20px}.ctrl{position:static}.tabs{width:100%}}
+</style>
+</head>
+<body>
+<header class="top wrap">
+ <div class="bar1"><img src="../assets/fsportin-logo-white.svg" alt="FSportIN Padel"><span class="ed">Winter Edition · 28/11 – 08/12</span></div>
+ <div class="hero">
+  <h1><span>Re-Active Türne Fest · All In</span>Türne Fest</h1>
+  <div class="stats" id="stats"></div>
+ </div>
+</header>
+<main class="wrap">
+ <div class="ctrl">
+  <nav class="tabs" role="tablist" id="tabs">
+   <button role="tab" data-v="hoje">Hoje</button>
+   <button role="tab" data-v="calendario">Calendário</button>
+   <button role="tab" data-v="categorias">Grupos</button>
+   <button role="tab" data-v="duplas">Duplas</button>
+  </nav>
+  <label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Procurar jogador" aria-label="Procurar jogador"></label>
+  <select id="cat" aria-label="Categoria"><option value="">Todas as categorias</option></select>
+ </div>
+ <div id="view"></div>
+</main>
+<footer class="site wrap">
+ <div class="site-in">
+  <div>
+   <div class="logos"><img class="a" src="../assets/fsportin-logo-white.svg" alt="FSportIN Padel"><img class="b" src="../assets/turne-logo-white.png" alt="Türne"></div>
+   <p class="mote">It's our Türne, our union is our victory</p>
+  </div>
+  <dl class="info">
+   <div><dt>Quando</dt><dd>28/11 – 08/12/2026</dd></div>
+   <div><dt>Onde</dt><dd><a href="https://maps.app.goo.gl/LUm9yExQahoXvbnJ8">D'Ouro Padel</a></dd></div>
+  </dl>
+  <p class="foot" id="foot"></p>
+ </div>
+</footer>
+<script id="schedule" type="application/json">[["F3","#1.1.6","Grupo I","Marta Carvalho / Parceira - FSportIN","Sandra Leal / Paula Quevedo - PadelMix","8","03/12","19:00"],["F3","#1.2.12","Grupo I","Sandra Leal / Paula Quevedo - PadelMix","Filipa Costa / Joana Mafalda - Norte Padel","8","03/12","19:45"],["F3","#1.3.29","Grupo I","Filipa Costa / Joana Mafalda - Norte Padel","Marta Carvalho / Parceira - FSportIN","8","03/12","20:30"],["F3","#1.1.8","Grupo J","Joana Aires / Raquel Dias - FSportIN","Joana Matos / Chabeli - Fourlux","5","04/12","21:15"],["F3","#1.2.13","Grupo J","Joana Matos / Chabeli - Fourlux","Ana Paula / Catarina Rocha - A. Pedro Caneira","5","04/12","22:00"],["F3","#1.3.31","Grupo J","Ana Paula / Catarina Rocha - A. Pedro Caneira","Joana Aires / Raquel Dias - FSportIN","5","04/12","22:45"],["F3","#2.3","1/16","2º Grupo C","2º Grupo J","6","05/12","17:20"],["F3","#2.5","1/16","1º Grupo K","2º Grupo I","4","05/12","18:10"],["F3","#3.2","1/8","1º Grupo I","1º Grupo H","4","06/12","17:30"],["F3","#3.7","1/8","1º Grupo G","1º Grupo J","2","06/12","18:05"],["F4","#1.1.3","Grupo G","Micaela Saleski / Camila Bearzzotti - FSportIN","Susana Cal / Chantal - TÜRNE","9","30/11","21:15"],["F4","#1.2.21","Grupo G","Susana Cal / Chantal - TÜRNE","Bárbara Parada / Catarina Costa - Just Club Gaia","9","30/11","22:00"],["F4","#1.3.28","Grupo G","Bárbara Parada / Catarina Costa - Just Club Gaia","Micaela Saleski / Camila Bearzzotti - FSportIN","9","30/11","22:45"],["F4","#1.1.11","Grupo M","Rita Pereira/Rita Pinheiro-Academia Pedro Caneira","Nádia Ferreira / Daniela Baptista - Boavista Padel","4","04/12","20:30"],["F4","#1.2.20","Grupo M","Nádia Ferreira / Daniela Baptista - Boavista Padel","Raquel Russo / Isabel Pereira - FSportIN","4","04/12","21:15"],["F4","#1.3.27","Grupo M","Raquel Russo / Isabel Pereira - FSportIN","Rita Pereira/Rita Pinheiro-Academia Pedro Caneira","4","04/12","22:00"],["F4","#2.4","1/16","2º Grupo J","1º Grupo M","5","05/12","16:30"],["F4","#2.5","1/16","2º Grupo B","2º Grupo G","6","05/12","16:30"],["F4","#2.8","1/16","1º Grupo G","2º Grupo M","9","05/12","16:30"],["F5","#1.1.10","Grupo D","Katerina Skripnik/Anna Davydova-Invicta Padel Team","Filipa Carneiro / Isabel Mesquita - FSportIN","9","29/11","11:15"],["F5","#1.2.28","Grupo D","Filipa Carneiro / Isabel Mesquita - FSportIN","Beatriz / Cristina - Norte Padel","9","29/11","12:00"],["F5","#1.3.37","Grupo D","Beatriz / Cristina - Norte Padel","Katerina Skripnik/Anna Davydova-Invicta Padel Team","9","29/11","12:45"],["F5","#1.1.6","Grupo F","Bruna Campos / Teresa Ribeiro - Matriz Padel","Márcia Ferreira / Flávia Costa - Hype Padel Club","10","01/12","09:00"],["F5","#1.2.25","Grupo F","Márcia Ferreira / Flávia Costa - Hype Padel Club","Catarina Teixeira / Monica Melo - FSportIN","10","01/12","09:45"],["F5","#1.3.41","Grupo F","Catarina Teixeira / Monica Melo - FSportIN","Bruna Campos / Teresa Ribeiro - Matriz Padel","10","01/12","10:30"],["F5","#2.6","1/16","1º Grupo M","2º Grupo F","2","05/12","13:10"],["F5","#2.9","1/16","2º Grupo M","1º Grupo F","5","05/12","13:10"],["F5","#2.12","1/16","2º Grupo A","2º Grupo D","10","05/12","12:20"],["F5","#3.4","1/8","Vencedor do jogo 2.6","1º Grupo D","4","06/12","13:10"],["F6","#1.1.12","Grupo C","Paloma Oliveira / Maria Vieira - FSportIN","Vanessa Gomes / Nádia Salier - Hype Padel Club","3","29/11","09:00"],["F6","#1.2.27","Grupo C","Vanessa Gomes / Nádia Salier - Hype Padel Club","Mariana Sá / Celia Martins - Tiebreak/Mercainox","3","29/11","09:45"],["F6","#1.3.35","Grupo C","Mariana Sá / Celia Martins - Tiebreak/Mercainox","Paloma Oliveira / Maria Vieira - FSportIN","3","29/11","10:30"],["F6","#1.1.10","Grupo D","Luísa Malheiro / Sílvia Monteiro - Padel&Friends","Ana Silva / Alexandra Ferreira - Boavista Padel","1","30/11","19:00"],["F6","#1.2.28","Grupo D","Ana Silva / Alexandra Ferreira - Boavista Padel","Hillary Yanez / Midiã Bispo - FSportIN","1","30/11","19:45"],["F6","#1.3.37","Grupo D","Hillary Yanez / Midiã Bispo - FSportIN","Luísa Malheiro / Sílvia Monteiro - Padel&Friends","1","30/11","20:30"],["F6","#2.1","1/16","2º Grupo C","2º Grupo B","9","05/12","13:10"],["F6","#2.12","1/16","2º Grupo A","2º Grupo D","9","05/12","14:00"],["F6","#3.4","1/8","Vencedor do jogo 2.6","1º Grupo D","5","06/12","13:10"],["F6","#3.5","1/8","1º Grupo C","Vencedor do jogo 2.7","8","06/12","09:00"],["F7","#1.1.18","Grupo A","Carolina Quintas / Ana Moreira - Padel&Friends","Birdem Kalayci / Ceren Hayali - FSportIN","6","29/11","09:00"],["F7","#1.1.1","Grupo A","Elisabete Pereira/Carina Barroso-Major Padel Club","F7 / F7","4","29/11","09:00"],["F7","#1.1.17","Grupo A","Laura Pinto / Inês Feijó - D'Ouro Padel","Rute Pereira / Claúdia Cruz . M9 Padel Center","5","29/11","09:00"],["F7","#1.2.20","Grupo A","F7 / F7","Carolina Quintas / Ana Moreira - Padel&Friends","4","29/11","09:25"],["F7","#1.2.30","Grupo A","Rute Pereira / Claúdia Cruz . M9 Padel Center","Birdem Kalayci / Ceren Hayali - FSportIN","6","29/11","09:25"],["F7","#1.2.29","Grupo A","Laura Pinto / Inês Feijó - D'Ouro Padel","Elisabete Pereira/Carina Barroso-Major Padel Club","5","29/11","09:25"],["F7","#1.3.38","Grupo A","Carolina Quintas / Ana Moreira - Padel&Friends","Rute Pereira / Claúdia Cruz . M9 Padel Center","5","29/11","09:50"],["F7","#1.3.46","Grupo A","F7 / F7","Laura Pinto / Inês Feijó - D'Ouro Padel","6","29/11","09:50"],["F7","#1.3.37","Grupo A","Birdem Kalayci / Ceren Hayali - FSportIN","Elisabete Pereira/Carina Barroso-Major Padel Club","4","29/11","09:50"],["F7","#1.4.67","Grupo A","Laura Pinto / Inês Feijó - D'Ouro Padel","Carolina Quintas / Ana Moreira - Padel&Friends","5","29/11","10:15"],["F7","#1.4.72","Grupo A","Elisabete Pereira/Carina Barroso-Major Padel Club","Rute Pereira / Claúdia Cruz . M9 Padel Center","6","29/11","10:15"],["F7","#1.4.55","Grupo A","Birdem Kalayci / Ceren Hayali - FSportIN","F7 / F7","4","29/11","10:15"],["F7","#1.5.85","Grupo A","Carolina Quintas / Ana Moreira - Padel&Friends","Elisabete Pereira/Carina Barroso-Major Padel Club","4","29/11","10:40"],["F7","#1.5.89","Grupo A","Laura Pinto / Inês Feijó - D'Ouro Padel","Birdem Kalayci / Ceren Hayali - FSportIN","5","29/11","10:40"],["F7","#1.5.90","Grupo A","Rute Pereira / Claúdia Cruz . M9 Padel Center","F7 / F7","6","29/11","10:40"],["F7","#1.1.7","Grupo E","Ana Mendes / Ana Carvalho - Aveiro Padel/C.Lago","Tatiana Ribeiro / Carla Barbosa - Grupo Estrelícia","6","03/12","19:00"],["F7","#1.1.6","Grupo E","Barbara Cardoso/Catarina Carvalho - Padel Academy","Susana Sousa / Sabrina Carvalho - Maia Padel","5","03/12","19:00"],["F7","#1.1.5","Grupo E","Susana Pereira / Ana Nogueira - Mar Padel","Mari Alves / Sónia Alves - FSportIN","4","03/12","19:00"],["F7","#1.2.31","Grupo E","Susana Sousa / Sabrina Carvalho - Maia Padel","Ana Mendes / Ana Carvalho - Aveiro Padel/C.Lago","4","03/12","19:25"],["F7","#1.2.32","Grupo E","Mari Alves / Sónia Alves - FSportIN","Tatiana Ribeiro / Carla Barbosa - Grupo Estrelícia","5","03/12","19:25"],["F7","#1.2.33","Grupo E","Susana Pereira / Ana Nogueira - Mar Padel","Barbara Cardoso/Catarina Carvalho - Padel Academy","6","03/12","19:25"],["F7","#1.3.45","Grupo E","Ana Mendes / Ana Carvalho - Aveiro Padel/C.Lago","Mari Alves / Sónia Alves - FSportIN","4","03/12","19:50"],["F7","#1.3.47","Grupo E","Susana Sousa / Sabrina Carvalho - Maia Padel","Susana Pereira / Ana Nogueira - Mar Padel","5","03/12","19:50"],["F7","#1.3.51","Grupo E","Tatiana Ribeiro / Carla Barbosa - Grupo Estrelícia","Barbara Cardoso/Catarina Carvalho - Padel Academy","6","03/12","19:50"],["F7","#1.4.56","Grupo E","Susana Pereira / Ana Nogueira - Mar Padel","Ana Mendes / Ana Carvalho - Aveiro Padel/C.Lago","4","03/12","20:15"],["F7","#1.4.57","Grupo E","Barbara Cardoso/Catarina Carvalho - Padel Academy","Mari Alves / Sónia Alves - FSportIN","5","03/12","20:15"],["F7","#1.4.58","Grupo E","Tatiana Ribeiro / Carla Barbosa - Grupo Estrelícia","Susana Sousa / Sabrina Carvalho - Maia Padel","6","03/12","20:15"],["F7","#1.5.78","Grupo E","Ana Mendes / Ana Carvalho - Aveiro Padel/C.Lago","Barbara Cardoso/Catarina Carvalho - Padel Academy","6","03/12","20:40"],["F7","#1.5.77","Grupo E","Susana Pereira / Ana Nogueira - Mar Padel","Tatiana Ribeiro / Carla Barbosa - Grupo Estrelícia","5","03/12","20:40"],["F7","#1.5.76","Grupo E","Mari Alves / Sónia Alves - FSportIN","Susana Sousa / Sabrina Carvalho - Maia Padel","4","03/12","20:40"],["F7","#2.1.18","2.ª fase","1º Grupo A","1º Grupo F","6","08/12","09:00"],["F7","#2.2.20","2.ª fase","1º Grupo E","1º Grupo A","4","08/12","09:20"],["F7","#2.3.38","2.ª fase","1º Grupo A","1º Grupo D","5","08/12","09:40"],["F7","#2.4.67","2.ª fase","1º Grupo C","1º Grupo A","5","08/12","10:00"],["F7","#2.5.85","2.ª fase","1º Grupo A","1º Grupo B","4","08/12","10:20"],["F7","#2.1.1","2.ª fase","1º Grupo B","1º Grupo E","4","08/12","09:00"],["F7","#2.3.46","2.ª fase","1º Grupo E","1º Grupo C","6","08/12","09:40"],["F7","#2.4.55","2.ª fase","1º Grupo F","1º Grupo E","4","08/12","10:00"],["F7","#2.5.90","2.ª fase","1º Grupo D","1º Grupo E","6","08/12","10:20"],["F7","#2.1.7","2.ª fase","5º Grupo A","5º Grupo F","11","07/12","19:30"],["F7","#2.1.6","2.ª fase","5º Grupo B","5º Grupo E","10","07/12","19:30"],["F7","#2.2.31","2.ª fase","5º Grupo E","5º Grupo A","9","07/12","19:50"],["F7","#2.3.45","2.ª fase","5º Grupo A","5º Grupo D","9","07/12","20:10"],["F7","#2.3.47","2.ª fase","5º Grupo E","5º Grupo C","10","07/12","20:10"],["F7","#2.4.56","2.ª fase","5º Grupo C","5º Grupo A","9","07/12","20:30"],["F7","#2.4.58","2.ª fase","5º Grupo F","5º Grupo E","11","07/12","20:30"],["F7","#2.5.78","2.ª fase","5º Grupo A","5º Grupo B","11","07/12","20:50"],["F7","#2.5.76","2.ª fase","5º Grupo D","5º Grupo E","9","07/12","20:50"],["KIDS 2","#1.1.6","Grupo D","Nassir Salas / Aaron - FSportIN","Mikhail Serpionov / Augustin Jibert - Invicta","2","29/11","17:15"],["KIDS 2","#1.2.14","Grupo D","Mikhail Serpionov / Augustin Jibert - Invicta","Alvaro Rodrigues / Manuel Oliveira - Alley Courts","2","29/11","17:45"],["KIDS 2","#1.3.17","Grupo D","Alvaro Rodrigues / Manuel Oliveira - Alley Courts","Nassir Salas / Aaron - FSportIN","2","29/11","18:15"],["KIDS 2","#2.4","1/8","2º Grupo E","1º Grupo D","6","05/12","12:10"],["KIDS 2","#2.6","1/8","2º Grupo D","1º Grupo E","11","05/12","10:40"],["M2","#1.1.4","Grupo F","Luís Mendes / Nuno Fernandes - Fourlux","Joaquim Dias / Antonio Cunha - Padel Academy","8","30/11","21:15"],["M2","#1.2.20","Grupo F","Joaquim Dias / Antonio Cunha - Padel Academy","Gonçalo Santos / Gonçalo Araújo - FSportIN","8","30/11","22:00"],["M2","#1.3.26","Grupo F","Gonçalo Santos / Gonçalo Araújo - FSportIN","Luís Mendes / Nuno Fernandes - Fourlux","8","30/11","22:45"],["M2","#1.1.8","Grupo K","Ivo Rodrigues / Parceiro - TÜRNE","Juan Amarante / Ignacio Gallo - FSportIN","7","03/12","21:15"],["M2","#1.2.16","Grupo K","Juan Amarante / Ignacio Gallo - FSportIN","Tiago Pereira / Duarte Mota - Padel&Friends","7","03/12","22:00"],["M2","#1.3.28","Grupo K","Tiago Pereira / Duarte Mota - Padel&Friends","Ivo Rodrigues / Parceiro - TÜRNE","7","03/12","22:45"],["M2","#2.1","1/16","2º Grupo F","2º Grupo C","7","05/12","18:10"],["M2","#2.3","1/16","2º Grupo J","1º Grupo K","7","05/12","19:00"],["M2","#2.7","1/16","2º Grupo K","1º Grupo J","7","05/12","20:40"],["M2","#3.6","1/8","Vencedor do jogo 2.6","1º Grupo F","7","06/12","18:10"],["M3","#1.1.2","Grupo H","Paulo Martins / Tiago Amorim - Boavista Padel","Richard Nascimento / Fredd Bezerra - Be Padel","11","30/11","21:15"],["M3","#1.2.21","Grupo H","Richard Nascimento / Fredd Bezerra - Be Padel","Mario Sastre / Pedro Monteiro - FSportIN","11","30/11","22:00"],["M3","#1.3.42","Grupo H","Mario Sastre / Pedro Monteiro - FSportIN","Paulo Martins / Tiago Amorim - Boavista Padel","11","30/11","22:45"],["M3","#1.1.13","Grupo N","João Alves / Fabio Boas - Just Padel","Alexandre Martins / António Cabral - FSportIN","6","03/12","21:15"],["M3","#1.2.20","Grupo N","Alexandre Martins / António Cabral - FSportIN","Gonçalo Nabais / Hugo Pinheiro - Just Club Gaia","6","03/12","22:00"],["M3","#1.3.30","Grupo N","Gonçalo Nabais / Hugo Pinheiro - Just Club Gaia","João Alves / Fabio Boas - Just Padel","6","03/12","22:45"],["M3","#2.3","1/16","2º Grupo K","1º Grupo H","4","05/12","17:20"],["M3","#2.4","1/16","1º Grupo E","2º Grupo N","11","05/12","16:20"],["M3","#2.7","1/16","2º Grupo E","1º Grupo N","4","05/12","19:00"],["M3","#2.8","1/16","1º Grupo K","2º Grupo H","5","05/12","19:00"],["M4","#1.1.10","Grupo D","João Brandão / Gui Brito - ReActive Team","Nicolas Simonelli / Mariano Massazza - FSportIN","1","29/11","09:00"],["M4","#1.2.28","Grupo D","Nicolas Simonelli / Mariano Massazza - FSportIN","Paolo Qiu / Hu ChenYu - Matriz Padel","1","29/11","09:45"],["M4","#1.3.37","Grupo D","Paolo Qiu / Hu ChenYu - Matriz Padel","João Brandão / Gui Brito - ReActive Team","1","29/11","10:30"],["M4","#1.1.9","Grupo L","Ricardo Machado / Jorge Santos - PadelMix","Nuno Cardoso / Ricardo Pereira - Black Padel","8","02/12","19:00"],["M4","#1.2.15","Grupo L","Nuno Cardoso / Ricardo Pereira - Black Padel","Marcos Cicarelli / Juan Romero - FSportIN","8","02/12","19:45"],["M4","#1.3.34","Grupo L","Marcos Cicarelli / Juan Romero - FSportIN","Ricardo Machado / Jorge Santos - PadelMix","8","02/12","20:30"],["M4","#2.5","1/16","2º Grupo G","1º Grupo L","2","05/12","10:40"],["M4","#2.10","1/16","1º Grupo G","2º Grupo L","3","05/12","11:30"],["M4","#2.12","1/16","2º Grupo A","2º Grupo D","5","05/12","11:30"],["M4","#3.4","1/8","Vencedor do jogo 2.6","1º Grupo D","1","06/12","13:05"],["M5","#1.1.12","Grupo C","Ruud Hendriks / Luciano Cruz - FSPortIN","Ivan Pires / Pedro Guedes - Off Padel","11","29/11","09:00"],["M5","#1.2.27","Grupo C","Ivan Pires / Pedro Guedes - Off Padel","Guilherme Carvalho / Bruno Bessa - 88 Padel","11","29/11","09:45"],["M5","#1.3.35","Grupo C","Guilherme Carvalho / Bruno Bessa - 88 Padel","Ruud Hendriks / Luciano Cruz - FSPortIN","11","29/11","10:30"],["M5","#1.1.5","Grupo J","João Figueiredo / Ricardo Cadavez - Papo Seco","Hugo Brito / Bruno Freitas - Black Padel","7","01/12","13:30"],["M5","#1.2.17","Grupo J","Hugo Brito / Bruno Freitas - Black Padel","Bruno Lemos / Udhayakumar Pandiyaraj - FSPortIN","7","01/12","14:15"],["M5","#1.3.38","Grupo J","Bruno Lemos / Udhayakumar Pandiyaraj - FSPortIN","João Figueiredo / Ricardo Cadavez - Papo Seco","7","01/12","15:00"],["M5","#2.1","1/16","2º Grupo C","2º Grupo B","4","05/12","12:20"],["M5","#2.2","1/16","1º Grupo I","2º Grupo J","5","05/12","12:20"],["M5","#2.11","1/16","2º Grupo I","1º Grupo J","1","05/12","12:20"],["M5","#3.5","1/8","1º Grupo C","Vencedor do jogo 2.7","5","06/12","09:50"],["M6","#1.1.7","Grupo K","Nuno Ferreira / Paulo Pereira - D'Ouro Padel","André Ramos / Pedro Cunha - 88 Padel","9","01/12","13:30"],["M6","#1.2.16","Grupo K","André Ramos / Pedro Cunha - 88 Padel","Jonathan / Justin - FSportIN","9","01/12","14:15"],["M6","#1.3.29","Grupo K","Jonathan / Justin - FSportIN","Nuno Ferreira / Paulo Pereira - D'Ouro Padel","9","01/12","15:00"],["M6","#1.1.13","Grupo N","Sergio Alves / Hugo Brandão - Padel Academy","Armando Alves / João Pedro - Maia Padel","1","03/12","21:15"],["M6","#1.2.20","Grupo N","Armando Alves / João Pedro - Maia Padel","Manuel Sabarros / Philips Huang - FSportIN","1","03/12","22:00"],["M6","#1.3.30","Grupo N","Manuel Sabarros / Philips Huang - FSportIN","Sergio Alves / Hugo Brandão - Padel Academy","1","03/12","22:45"],["M6","#2.3","1/16","2º Grupo K","1º Grupo H","11","05/12","09:00"],["M6","#2.4","1/16","1º Grupo E","2º Grupo N","3","05/12","09:00"],["M6","#2.7","1/16","2º Grupo E","1º Grupo N","2","05/12","09:00"],["M6","#2.8","1/16","1º Grupo K","2º Grupo H","5","05/12","09:00"],["M7","#1.1.7","Grupo C","M7 / M7","Sérgio / David Rio - Alley Courts","11","30/11","19:00"],["M7","#1.1.6","Grupo C","Ricardo Lopes / Adriano Ferreira - The Lob","M7 / M7","10","30/11","19:00"],["M7","#1.1.5","Grupo C","Ricardo Moreira / Ricardo Kol - FSportIN","M7 / M7","9","30/11","19:00"],["M7","#1.2.21","Grupo C","M7 / M7","M7 / M7","9","30/11","19:25"],["M7","#1.2.22","Grupo C","M7 / M7","Sérgio / David Rio - Alley Courts","10","30/11","19:25"],["M7","#1.2.23","Grupo C","Ricardo Moreira / Ricardo Kol - FSportIN","Ricardo Lopes / Adriano Ferreira - The Lob","11","30/11","19:25"],["M7","#1.3.27","Grupo C","M7 / M7","M7 / M7","9","30/11","19:50"],["M7","#1.3.28","Grupo C","M7 / M7","Ricardo Moreira / Ricardo Kol - FSportIN","10","30/11","19:50"],["M7","#1.3.36","Grupo C","Sérgio / David Rio - Alley Courts","Ricardo Lopes / Adriano Ferreira - The Lob","11","30/11","19:50"],["M7","#1.4.43","Grupo C","Ricardo Moreira / Ricardo Kol - FSportIN","M7 / M7","11","30/11","20:15"],["M7","#1.4.42","Grupo C","Ricardo Lopes / Adriano Ferreira - The Lob","M7 / M7","10","30/11","20:15"],["M7","#1.4.37","Grupo C","Sérgio / David Rio - Alley Courts","M7 / M7","9","30/11","20:15"],["M7","#1.5.60","Grupo C","M7 / M7","Ricardo Lopes / Adriano Ferreira - The Lob","11","30/11","20:40"],["M7","#1.5.59","Grupo C","Ricardo Moreira / Ricardo Kol - FSportIN","Sérgio / David Rio - Alley Courts","10","30/11","20:40"],["M7","#1.5.58","Grupo C","M7 / M7","M7 / M7","9","30/11","20:40"],["M7","#1.1.4","Grupo D","David Tamayo / Florent Emely - FSPortIN","Reinaldo Lopes / Paulo Silva - Padel One","11","04/12","19:00"],["M7","#1.1.3","Grupo D","M7 / M7","Micael Moura / Carlos Carvalho - A. Pedro Caneira","10","04/12","19:00"],["M7","#1.1.2","Grupo D","João Mesquita / Pedro Barbosa - Grupo Estrelícia","Joâo Valente / Francisco Gomes - Padel Home","9","04/12","19:00"],["M7","#1.2.14","Grupo D","Micael Moura / Carlos Carvalho - A. Pedro Caneira","David Tamayo / Florent Emely - FSPortIN","9","04/12","19:25"],["M7","#1.2.15","Grupo D","Joâo Valente / Francisco Gomes - Padel Home","Reinaldo Lopes / Paulo Silva - Padel One","10","04/12","19:25"],["M7","#1.2.16","Grupo D","João Mesquita / Pedro Barbosa - Grupo Estrelícia","M7 / M7","11","04/12","19:25"],["M7","#1.3.25","Grupo D","David Tamayo / Florent Emely - FSPortIN","Joâo Valente / Francisco Gomes - Padel Home","9","04/12","19:50"],["M7","#1.3.34","Grupo D","Micael Moura / Carlos Carvalho - A. Pedro Caneira","João Mesquita / Pedro Barbosa - Grupo Estrelícia","10","04/12","19:50"],["M7","#1.3.35","Grupo D","Reinaldo Lopes / Paulo Silva - Padel One","M7 / M7","11","04/12","19:50"],["M7","#1.4.39","Grupo D","João Mesquita / Pedro Barbosa - Grupo Estrelícia","David Tamayo / Florent Emely - FSPortIN","9","04/12","20:15"],["M7","#1.4.40","Grupo D","M7 / M7","Joâo Valente / Francisco Gomes - Padel Home","10","04/12","20:15"],["M7","#1.4.41","Grupo D","Reinaldo Lopes / Paulo Silva - Padel One","Micael Moura / Carlos Carvalho - A. Pedro Caneira","11","04/12","20:15"],["M7","#1.5.51","Grupo D","David Tamayo / Florent Emely - FSPortIN","M7 / M7","11","04/12","20:40"],["M7","#1.5.50","Grupo D","João Mesquita / Pedro Barbosa - Grupo Estrelícia","Reinaldo Lopes / Paulo Silva - Padel One","10","04/12","20:40"],["M7","#1.5.49","Grupo D","Joâo Valente / Francisco Gomes - Padel Home","Micael Moura / Carlos Carvalho - A. Pedro Caneira","9","04/12","20:40"],["M7","#2.1.9","2.ª fase","3º Grupo A","3º Grupo D","2","07/12","21:30"],["M7","#2.1.8","2.ª fase","3º Grupo B","3º Grupo C","1","07/12","21:30"],["M7","#2.2.23","2.ª fase","3º Grupo C","3º Grupo A","2","07/12","22:05"],["M7","#2.2.22","2.ª fase","3º Grupo B","3º Grupo D","1","07/12","22:05"],["M7","#2.3.33","2.ª fase","3º Grupo C","3º Grupo D","1","07/12","22:40"],["M7","#2.1.7","2.ª fase","4º Grupo A","4º Grupo D","4","07/12","21:30"],["M7","#2.1.6","2.ª fase","4º Grupo B","4º Grupo C","3","07/12","21:30"],["M7","#2.2.19","2.ª fase","4º Grupo C","4º Grupo A","4","07/12","22:05"],["M7","#2.2.18","2.ª fase","4º Grupo B","4º Grupo D","3","07/12","22:05"],["M7","#2.3.31","2.ª fase","4º Grupo C","4º Grupo D","4","07/12","22:40"],["MX3","#1.1.4","Grupo C","Vane / Parceiro - Quinta S. Gonçalo","Rita Pereira / Dinis Gonçalves - M9 Padel Center","7","29/11","09:00"],["MX3","#1.2.19","Grupo C","Rita Pereira / Dinis Gonçalves - M9 Padel Center","Schadia Castillo / Franklin Salas - FSportIN","7","29/11","09:45"],["MX3","#1.3.25","Grupo C","Schadia Castillo / Franklin Salas - FSportIN","Vane / Parceiro - Quinta S. Gonçalo","7","29/11","10:30"],["MX3","#3.4","1/8","2º Grupo C","1º Grupo D","6","06/12","18:10"],["MX3","#3.5","1/8","1º Grupo C","2º Grupo E","11","06/12","17:20"],["MX4","#1.1.10","Grupo D","Pedro Oliveira / Flora Silva - Black Padel","Márcia Monteiro / Telmo Santos - FSportIN","8","29/11","13:30"],["MX4","#1.2.28","Grupo D","Márcia Monteiro / Telmo Santos - FSportIN","Conceição Alves/Fernando Figueiras-Alley Courts","8","29/11","14:15"],["MX4","#1.3.37","Grupo D","Conceição Alves/Fernando Figueiras-Alley Courts","Pedro Oliveira / Flora Silva - Black Padel","8","29/11","15:00"],["MX4","#1.1.4","Grupo G","Carlos Pinto / Karina Bracali - Just Club Gaia","Gonçalo Ramalho / Joana Mesquita - FSportIN","10","29/11","20:15"],["MX4","#1.2.23","Grupo G","Gonçalo Ramalho / Joana Mesquita - FSportIN","Pedro Pereira / Claudia Pereira - ProRacket","10","29/11","21:00"],["MX4","#1.3.36","Grupo G","Pedro Pereira / Claudia Pereira - ProRacket","Carlos Pinto / Karina Bracali - Just Club Gaia","10","29/11","21:45"],["MX4","#2.5","1/16","2º Grupo G","1º Grupo L","3","05/12","14:50"],["MX4","#2.10","1/16","1º Grupo G","2º Grupo L","8","05/12","14:50"],["MX4","#2.12","1/16","2º Grupo A","2º Grupo D","10","05/12","14:50"],["MX4","#3.4","1/8","Vencedor do jogo 2.6","1º Grupo D","8","06/12","14:00"],["MX5","#1.1.6","Grupo F","Luís Pereira / Catarina Verdial - Padel Hub","Lúcia Neves / Marco Moura - ReActive Team","9","29/11","18:00"],["MX5","#1.2.25","Grupo F","Lúcia Neves / Marco Moura - ReActive Team","Bernardo Ferro / Catarina Lencastre - FSportIN","9","29/11","18:45"],["MX5","#1.3.41","Grupo F","Bernardo Ferro / Catarina Lencastre - FSportIN","Luís Pereira / Catarina Verdial - Padel Hub","9","29/11","19:30"],["MX5","#1.1.5","Grupo J","Svetlana / Stefan - Invicta Padel Team","Emerson Godinho / Sônia Ribeiro - FSportIN","5","02/12","19:00"],["MX5","#1.2.17","Grupo J","Emerson Godinho / Sônia Ribeiro - FSportIN","Sofia Leite / Miguel Santos - Padel One","5","02/12","19:45"],["MX5","#1.3.38","Grupo J","Sofia Leite / Miguel Santos - Padel One","Svetlana / Stefan - Invicta Padel Team","5","02/12","20:30"],["MX5","#2.2","1/16","1º Grupo I","2º Grupo J","1","05/12","15:40"],["MX5","#2.6","1/16","1º Grupo M","2º Grupo F","5","05/12","15:40"],["MX5","#2.9","1/16","2º Grupo M","1º Grupo F","8","05/12","15:40"],["MX5","#2.11","1/16","2º Grupo I","1º Grupo J","10","05/12","15:40"],["MX6","#1.1.6","Grupo F","Eva Salgueirinho / Manuel Quelhas - Maia Padel","Anastasiia S./Artem Polyakov-Invicta Padel Team","2","01/12","15:45"],["MX6","#1.2.25","Grupo F","Anastasiia S./Artem Polyakov-Invicta Padel Team","Raúl / Sara - FSportIN","2","01/12","16:30"],["MX6","#1.3.41","Grupo F","Raúl / Sara - FSportIN","Eva Salgueirinho / Manuel Quelhas - Maia Padel","2","01/12","17:15"],["MX6","#1.1.9","Grupo L","Filipa Lima / Luís Cavadas - FSportIN","Marharyta Solod / Ihor Shevchenko - Matriz Padel","9","03/12","19:00"],["MX6","#1.2.15","Grupo L","Marharyta Solod / Ihor Shevchenko - Matriz Padel","MX6 / MX6","9","03/12","19:45"],["MX6","#1.3.34","Grupo L","MX6 / MX6","Filipa Lima / Luís Cavadas - FSportIN","9","03/12","20:30"],["MX6","#2.5","1/16","2º Grupo G","1º Grupo L","2","05/12","18:10"],["MX6","#2.6","1/16","1º Grupo M","2º Grupo F","1","05/12","19:50"],["MX6","#2.9","1/16","2º Grupo M","1º Grupo F","1","05/12","19:00"],["MX6","#2.10","1/16","1º Grupo G","2º Grupo L","9","05/12","19:50"],["Vet.+45 - M","#1.1.5","Grupo J","Manuel Carvalho / Mário Vieira - ReActive Team","Manuel Gaspar / Alvaro Pinto - Padel Academy","2","30/11","21:15"],["Vet.+45 - M","#1.2.17","Grupo J","Manuel Gaspar / Alvaro Pinto - Padel Academy","Pedro Moreira / Miguel Brito - FSportIN","2","30/11","22:00"],["Vet.+45 - M","#1.3.38","Grupo J","Pedro Moreira / Miguel Brito - FSportIN","Manuel Carvalho / Mário Vieira - ReActive Team","2","30/11","22:45"],["Vet.+45 - M","#1.1.9","Grupo L","RC Ricardo / RC Boss - FSportIN","Miguel Couceiro / Bruno Costa - Be Padel","2","02/12","19:00"],["Vet.+45 - M","#1.2.15","Grupo L","Miguel Couceiro / Bruno Costa - Be Padel","Helder Clara / Helder Couto - PadelMix","2","02/12","19:45"],["Vet.+45 - M","#1.3.34","Grupo L","Helder Clara / Helder Couto - PadelMix","RC Ricardo / RC Boss - FSportIN","2","02/12","20:30"],["Vet.+45 - M","#2.3","1/16","2º Grupo L","1º Grupo H","1","05/12","09:50"],["Vet.+45 - M","#2.4","1/16","2º Grupo J","1º Grupo M","5","05/12","17:20"],["Vet.+45 - M","#2.6","1/16","2º Grupo E","1º Grupo L","2","05/12","09:50"],["Vet.+45 - M","#2.9","1/16","2º Grupo I","1º Grupo J","10","05/12","09:00"]]</script>
+<script>
+{
+const S=JSON.parse(document.getElementById('schedule').textContent);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const isUs=t=>/fsport/i.test(t||'');
+const isPh=t=>/^(.+) \/ \1$/.test(String(t).trim());
+/* separa nomes e clube: "A / B - Clube" */
+const split=t=>{if(isPh(t))return{n:'Dupla por definir',c:''};const s=String(t).replace(/\s*-\s*FSport?IN$/i,'');const m=s.match(/^(.*?)\s*[-.]\s*([^/]+)$/);return isUs(t)?{n:s.trim(),c:''}:(m&&m[1].includes('/')?{n:m[1].trim(),c:m[2].trim()}:{n:s.trim(),c:''})};
+const nm=t=>split(t).n;
+const DAYS=['28/11','29/11','30/11','01/12','02/12','03/12','04/12','05/12','06/12','07/12','08/12'];
+const WD=['dom','seg','ter','qua','qui','sex','sáb'];
+const CATS=['M2','M3','F3','MX3','M4','F4','MX4','M5','F5','MX5','M6','F6','MX6','M7','F7','KIDS 1','KIDS 2','Vet.+45 - M'];
+const catRank=c=>{const i=CATS.indexOf(c);return i<0?99:i};
+const catLabel=c=>c.replace(/^MX/,'Mx').replace(/^KIDS/,'Kids').replace(/ - M$/,' M');
+const dobj=d=>{const[dd,mm]=d.split('/').map(Number);return new Date(2026,mm-1,dd)};
+const dlabel=d=>{const o=dobj(d);return WD[o.getDay()]+' '+d};
+const sortKey=m=>dobj(m.d).getTime()+(+m.t.slice(0,2))*60+(+m.t.slice(3));
+let R={results:{},extra:[],updated:null};let M=[];
+function build(){const by=new Map();
+ for(const r of S){const[c,n,ph,a,b,court,d,t]=r;by.set(c+'|'+n,{c,n,ph,a,b,court,d,t})}
+ for(const r of (R.extra||[])){if(!Array.isArray(r)||r.length<8)continue;const[c,n,ph,a,b,court,d,t]=r.map(String);by.set(c+'|'+n,{c,n,ph,a,b,court,d,t})}
+ M=[...by.values()].map(m=>{const k=m.c+'|'+m.n;return{...m,k,res:R.results?.[k]||null,us:isUs(m.a)||isUs(m.b)}});
+ M.sort((x,y)=>sortKey(x)-sortKey(y))}
+function sets(sc){const p=String(sc||'').match(/\d+\s*[-–]\s*\d+/g)||[];return p.map(s=>s.split(/[-–]/).map(x=>+x.trim()))}
+function winner(m){if(!m.res)return 0;if(m.res.w==1||m.res.w==2)return +m.res.w;let a=0,b=0;sets(m.res.sc).forEach(([x,y])=>x>y?a++:y>x&&b++);return /fim/i.test(m.res.st||'')||a+b>=2?(a>b?1:b>a?2:0):0}
+const usSide=m=>isUs(m.a)?1:2;
+function status(m){const w=winner(m);if(/jog|live|curso/i.test(m.res?.st||'')&&!w)return['live','A jogar'];
+ if(w&&m.us)return w===usSide(m)?['win','Vitória']:['loss','Derrota'];if(w)return['done','Terminado'];return['','Por jogar']}
+function scoreCells(m,side){return sets(m.res?.sc).map(([x,y])=>{const me=side===1?x:y,op=side===1?y:x;return`<span class="${me>op?'win':''}">${me}</span>`}).join('')}
+function teamRow(m,t,side,w){const us=isUs(t),p=split(t);
+ return`<div class="tm${us?' us':''}${w===side?' w':''}"><span class="ico">${us?'<img src="../assets/lobo-white.svg" alt="">':'<i></i>'}</span><span class="nm">${esc(p.n)}${p.c?`<small>${esc(p.c)}</small>`:''}</span><span class="sc">${scoreCells(m,side)}</span></div>`}
+/* cartão de jogo: hora + categoria no topo, nossa dupla primeiro, meta e estado no rodapé */
+function card(m,showCat=true){const w=winner(m);const order=(!isUs(m.a)&&isUs(m.b))?[[m.b,2],[m.a,1]]:[[m.a,1],[m.b,2]];const[sc,sl]=status(m);
+ return`<article class="mc"><div class="mc-h"><div class="when"><span class="t">${esc(m.t)}</span><span class="d">${esc(dlabel(m.d))}</span></div>${showCat?`<span class="cat">${esc(catLabel(m.c))}</span>`:''}</div>
+ <div class="teams">${order.map(([t,s])=>teamRow(m,t,s,w)).join('')}</div>
+ <div class="mc-f"><span class="meta">${esc(m.ph)} · Campo ${esc(m.court)} · Jogo ${esc(m.n.replace('#',''))}</span><span class="st ${sc}">${sl}</span></div></article>`}
+const st={v:'hoje',q:'',cat:'',day:null};
+try{const s=JSON.parse(localStorage.getItem('fsp')||'{}');Object.assign(st,{q:s.q||'',cat:s.cat||''})}catch(e){}
+function save(){try{localStorage.setItem('fsp',JSON.stringify({q:st.q,cat:st.cat}))}catch(e){}}
+function filt(l){const q=st.q.trim().toLowerCase();return l.filter(m=>(!st.cat||m.c===st.cat)&&(!q||(m.a+' '+m.b).toLowerCase().includes(q)))}
+const ours=()=>filt(M.filter(m=>m.us));
+function todayStr(){const n=new Date();return String(n.getDate()).padStart(2,'0')+'/'+String(n.getMonth()+1).padStart(2,'0')}
+const today0=()=>new Date(new Date().toDateString());
+function vHoje(){const L=ours();const td=todayStr();let day=DAYS.includes(td)?td:null;
+ if(!day){const nx=L.find(m=>dobj(m.d)>=today0());day=nx?nx.d:DAYS[0]}
+ const list=L.filter(m=>m.d===day);const lead=day===td?'Hoje':'Próximo dia de jogos';
+ return`<section class="sec"><h2>${lead}<small>${esc(dlabel(day))} · ${list.length} jogos</small></h2>${list.length?`<div class="grid">${list.map(m=>card(m)).join('')}</div>`:`<div class="empty">Sem jogos da FSportIN neste dia${st.q||st.cat?' com este filtro':''}.</div>`}</section>`}
+function vCal(){const L=ours();if(!st.day)st.day=DAYS.includes(todayStr())?todayStr():'all';
+ const chips=['all',...DAYS].map(d=>{const n=d==='all'?L.length:L.filter(m=>m.d===d).length;return n||d==='all'?`<button class="chip" data-day="${d}" aria-pressed="${st.day===d}">${d==='all'?'Todos':esc(dlabel(d))}<small>${n}</small></button>`:''}).join('');
+ const body=(st.day==='all'?DAYS:[st.day]).map(d=>{const l=L.filter(m=>m.d===d);return l.length?`<section class="sec"><h2>${esc(dlabel(d))}<small>${l.length} jogos</small></h2><div class="grid">${l.map(m=>card(m)).join('')}</div></section>`:''}).join('');
+ return`<div class="chips">${chips}</div>${body||'<div class="empty">Sem jogos com este filtro.</div>'}`}
+function standings(c,g){const gm=M.filter(m=>m.c===c&&m.ph===g&&/^#1\./.test(m.n));const T=new Map();
+ const add=t=>{if(!T.has(t))T.set(t,{t,j:0,v:0,d:0,sp:0,sc:0,gp:0,gc:0})};
+ for(const m of gm){add(m.a);add(m.b);const w=winner(m);if(!w)continue;const A=T.get(m.a),B=T.get(m.b);A.j++;B.j++;if(w===1){A.v++;B.d++}else{B.v++;A.d++}
+  for(const[x,y]of sets(m.res.sc)){A.gp+=x;A.gc+=y;B.gp+=y;B.gc+=x;if(x>y){A.sp++;B.sc++}else if(y>x){B.sp++;A.sc++}}}
+ const arr=[...T.values()].sort((x,y)=>y.v-x.v||(y.sp-y.sc)-(x.sp-x.sc)||(y.gp-y.gc)-(x.gp-x.gc));
+ return{arr,done:gm.length&&gm.every(m=>winner(m)),games:gm}}
+function groupsOfUs(){const s=new Map();for(const m of M)if(m.us&&/^Grupo/.test(m.ph)&&/^#1\./.test(m.n)){const k=m.c+'|'+m.ph;if(!s.has(k))s.set(k,{c:m.c,g:m.ph})}
+ return[...s.values()].sort((a,b)=>catRank(a.c)-catRank(b.c)||a.g.localeCompare(b.g,'pt'))}
+const sg=n=>(n>0?'+':'')+n;
+function table(s){return`<table><thead><tr><th>#</th><th>Dupla</th><th>J</th><th>V</th><th>Sets</th><th>Jogos</th></tr></thead><tbody>${s.arr.map((r,i)=>`<tr class="${isUs(r.t)?'us':''}"><td>${i+1}</td><td>${esc(nm(r.t))}</td><td>${r.j}</td><td class="pts">${r.v}</td><td>${sg(r.sp-r.sc)}</td><td>${sg(r.gp-r.gc)}</td></tr>`).join('')}</tbody></table>`}
+function vCats(){let G=groupsOfUs().filter(x=>!st.cat||x.c===st.cat);const q=st.q.trim().toLowerCase();
+ if(q)G=G.filter(x=>M.some(m=>m.c===x.c&&m.ph===x.g&&m.us&&(m.a+' '+m.b).toLowerCase().includes(q)));
+ if(!G.length)return'<div class="empty">Sem grupos com este filtro.</div>';
+ return`<section class="sec"><div class="grid wide">${G.map(x=>{const s=standings(x.c,x.g);return`<div class="card"><div class="card-h"><span class="cat">${esc(catLabel(x.c))}</span><h3>${esc(x.g)}</h3><span class="tag">${s.done?'Fechado':'Provisório'}</span></div>${table(s)}<div class="lbl">Jogos da FSportIN</div><div class="mini">${s.games.filter(m=>m.us).map(m=>card(m,false)).join('')}</div></div>`}).join('')}</div></section>`}
+function pairs(){const P=new Map();for(const m of M)for(const t of[m.a,m.b])if(isUs(t)&&/^#1\./.test(m.n)&&/^Grupo/.test(m.ph)){const k=m.c+'|'+t;if(!P.has(k))P.set(k,{c:m.c,t,g:m.ph})}
+ return[...P.values()].sort((a,b)=>catRank(a.c)-catRank(b.c)||nm(a.t).localeCompare(nm(b.t),'pt'))}
+function vPairs(){const q=st.q.trim().toLowerCase();const P=pairs().filter(p=>(!st.cat||p.c===st.cat)&&(!q||p.t.toLowerCase().includes(q)));
+ if(!P.length)return'<div class="empty">Nenhuma dupla com este filtro.</div>';
+ return`<section class="sec"><div class="grid wide">${P.map(p=>{const s=standings(p.c,p.g);const pos=s.arr.findIndex(r=>r.t===p.t)+1;const me=s.arr[pos-1];
+  const gl=p.g.replace('Grupo ','');const later=M.filter(m=>m.c===p.c&&!/^#1\./.test(m.n));
+  const named=later.filter(m=>m.a===p.t||m.b===p.t);const re=new RegExp('(\\d)º Grupo '+gl+'$');
+  const slots=later.filter(m=>re.test(m.a)||re.test(m.b)).filter(m=>!named.some(n=>n.k===m.k));
+  const gms=M.filter(m=>(m.a===p.t||m.b===p.t)).filter(m=>/^#1\./.test(m.n));
+  const form=gms.map(m=>{const w=winner(m);const s2=m.a===p.t?1:2;return w?(w===s2?'<i class="v">V</i>':'<i class="d">D</i>'):'<i>·</i>'}).join('');
+  const lines=[`<li><span><b>Fase de grupos</b> · ${esc(p.g)}</span><span>${me&&me.j?pos+'.º · '+me.v+'V '+me.d+'D':'por jogar'}</span></li>`];
+  named.forEach(m=>{const w=winner(m);const sd=m.a===p.t?1:2;lines.push(`<li><span><b>${esc(m.ph)}</b> · vs ${esc(nm(sd===1?m.b:m.a))}</span><span>${w?(w===sd?'Ganhou':'Perdeu'):esc(dlabel(m.d)+' '+m.t+' · Campo '+m.court)}</span></li>`)});
+  if(!named.length&&slots.length){const by={};slots.forEach(m=>{const k=(re.test(m.a)?m.a:m.b).match(/^(\d)/)[1];(by[k]??=[]).push(m)});
+   Object.keys(by).sort().forEach(k=>{const m=by[k][0];lines.push(`<li><span>Se ficar <b>${k}.º</b> · ${esc(m.ph)}</span><span>${esc(dlabel(m.d)+' '+m.t+' · Campo '+m.court)}</span></li>`)})}
+  if(!named.length&&!slots.length)lines.push('<li><span>Eliminatórias</span><span>quando a organização sortear</span></li>');
+  return`<div class="card"><div class="card-h"><span class="cat">${esc(catLabel(p.c))}</span><h3>${esc(nm(p.t))}</h3><span class="tag form">${form}</span></div><div class="mini">${gms.map(m=>card(m,false)).join('')}</div><div class="lbl">Percurso</div><ul class="path">${lines.join('')}</ul></div>`}).join('')}</div></section>`}
+function stats(){const L=M.filter(m=>m.us);let v=0,d=0;for(const m of L){const w=winner(m);if(!w)continue;w===usSide(m)?v++:d++}
+ const pr=pairs();const nx=L.find(m=>!winner(m)&&dobj(m.d)>=today0());
+ document.getElementById('stats').innerHTML=[[pr.length,'Duplas'],[new Set(pr.map(p=>p.c)).size,'Categorias'],[L.length,'Jogos'],[v+'–'+d,'Vitórias–derrotas'],[nx?nx.d+' '+nx.t:'—','Próximo jogo']].map(([b,s])=>`<div class="stat"><b>${esc(b)}</b><span>${esc(s)}</span></div>`).join('')}
+function render(){stats();document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===st.v));
+ document.getElementById('view').innerHTML=st.v==='hoje'?vHoje():st.v==='calendario'?vCal():st.v==='categorias'?vCats():vPairs();
+ document.getElementById('foot').innerHTML=(R.updated?'Resultados actualizados a '+esc(new Date(R.updated).toLocaleString('pt-PT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}))+'. ':'Ainda sem resultados: o torneio começa a 28/11. ')+'Dados do <a href="https://padelteams.pt/info/matches?k=Y2lkPTc3MDUmdGlkPTA=">padelteams.pt</a>, lidos de hora a hora. Classificação calculada aqui (vitórias, diferença de sets, diferença de jogos): confirmar sempre no site da organização.'}
+const cs=document.getElementById('cat');
+[...new Set(S.filter(r=>isUs(r[3])||isUs(r[4])).map(r=>r[0]))].sort((a,b)=>catRank(a)-catRank(b)).forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=catLabel(c);cs.appendChild(o)});
+const qi=document.getElementById('q');qi.value=st.q;cs.value=st.cat;
+qi.addEventListener('input',()=>{st.q=qi.value;save();render()});
+cs.addEventListener('change',()=>{st.cat=cs.value;save();render()});
+const VIEWS=['hoje','calendario','categorias','duplas'];
+document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;st.v=b.dataset.v;location.hash=st.v;render()});
+document.getElementById('view').addEventListener('click',e=>{const b=e.target.closest('[data-day]');if(!b)return;st.day=b.dataset.day;render()});
+const fromHash=()=>{const h=location.hash.slice(1);if(VIEWS.includes(h))st.v=h};
+window.addEventListener('hashchange',()=>{fromHash();render()});fromHash();
+build();render();
+fetch(new URL('data.json',document.baseURI).href.replace('/preview/data.json','/data.json'),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{if(j&&typeof j==='object'){R={results:j.results||{},extra:Array.isArray(j.extra)?j.extra:[],updated:j.updated||null};build();render()}}).catch(()=>{});
+}
+</script>
+</body>
+</html>
