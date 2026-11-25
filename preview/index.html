@@ -55,8 +55,9 @@ main{padding-bottom:72px}
 .sec{margin-top:28px}
 .sec h2{display:flex;align-items:baseline;gap:12px;font-size:22px;letter-spacing:-.01em;margin:0 0 14px}
 .sec h2 small{font:400 13px degular,Figtree,sans-serif;color:var(--mut)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:var(--gap)}
-.grid.wide{grid-template-columns:repeat(auto-fill,minmax(min(100%,460px),1fr))}
+.grid{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--gap);align-items:start}
+@media(min-width:600px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1024px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
 /* cartão de jogo */
 .mc{background:var(--card);border-radius:var(--r);padding:18px 20px 16px;display:flex;flex-direction:column;gap:14px}
@@ -70,8 +71,8 @@ main{padding-bottom:72px}
 .tm .ico{width:28px;height:28px;border-radius:50%;background:var(--card2);display:grid;place-items:center}
 .tm .ico img{width:18px;height:auto}
 .tm .ico i{width:6px;height:6px;border-radius:50%;background:var(--dim)}
-.tm .nm{font-size:15px;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tm .nm small{color:var(--dim);font-size:12px;margin-left:6px}
+.tm .nm{font-size:15px;color:var(--soft);line-height:1.25}
+.tm .nm small{display:block;color:var(--dim);font-size:12px;margin-top:2px}
 .tm.us .nm{color:var(--ink);font-weight:500}
 .tm.us .ico{background:var(--yd)}
 .tm.w .nm::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--y);margin-left:8px;vertical-align:middle}
@@ -91,7 +92,7 @@ main{padding-bottom:72px}
 /* cartões de grupo e de dupla */
 .card{background:var(--card);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:16px}
 .card-h{display:flex;align-items:center;gap:10px}
-.card-h h3{font-size:18px;margin:0;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-h h3{font-size:18px;margin:0;letter-spacing:-.01em;line-height:1.2}
 .card-h .tag{margin-left:auto;font-size:12px;color:var(--mut)}
 table{width:100%;border-collapse:collapse;font-size:14px}
 th{font-size:11px;font-weight:400;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);text-align:right;padding:0 6px 8px}
@@ -130,8 +131,6 @@ td.pts{color:var(--ink);font-weight:500}
 
 @media(min-width:1024px){
  body{font-size:16px}
- .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
- .grid.wide{grid-template-columns:repeat(2,minmax(0,1fr))}
  .bar1 img{height:24px}.bar1 .ed{font-size:14px}
  .hero h1 span{font-size:14px}
  .stats{grid-template-columns:repeat(4,minmax(0,1fr)) minmax(0,1.5fr)}
@@ -170,7 +169,6 @@ td.pts{color:var(--ink);font-weight:500}
 <main class="wrap">
  <div class="ctrl">
   <nav class="tabs" role="tablist" id="tabs">
-   <button role="tab" data-v="hoje">Hoje</button>
    <button role="tab" data-v="calendario">Calendário</button>
    <button role="tab" data-v="categorias">Grupos</button>
    <button role="tab" data-v="duplas">Duplas</button>
@@ -230,21 +228,19 @@ function card(m,showCat=true){const w=winner(m);const order=(!isUs(m.a)&&isUs(m.
  return`<article class="mc"><div class="mc-h"><div class="when"><span class="t">${esc(m.t)}</span><span class="d">${esc(dlabel(m.d))}</span></div>${showCat?`<span class="cat">${esc(catLabel(m.c))}</span>`:''}</div>
  <div class="teams">${order.map(([t,s])=>teamRow(m,t,s,w)).join('')}</div>
  <div class="mc-f"><span class="meta">${esc(m.ph)} · Campo ${esc(m.court)} · Jogo ${esc(m.n.replace('#',''))}</span><span class="st ${sc}">${sl}</span></div></article>`}
-const st={v:'hoje',q:'',cat:'',day:null};
+const st={v:'calendario',q:'',cat:'',day:null};
 try{const s=JSON.parse(localStorage.getItem('fsp')||'{}');Object.assign(st,{q:s.q||'',cat:s.cat||''})}catch(e){}
 function save(){try{localStorage.setItem('fsp',JSON.stringify({q:st.q,cat:st.cat}))}catch(e){}}
 function filt(l){const q=st.q.trim().toLowerCase();return l.filter(m=>(!st.cat||m.c===st.cat)&&(!q||(m.a+' '+m.b).toLowerCase().includes(q)))}
 const ours=()=>filt(M.filter(m=>m.us));
 function todayStr(){const n=new Date();return String(n.getDate()).padStart(2,'0')+'/'+String(n.getMonth()+1).padStart(2,'0')}
 const today0=()=>new Date(new Date().toDateString());
-function vHoje(){const L=ours();const td=todayStr();let day=DAYS.includes(td)?td:null;
- if(!day){const nx=L.find(m=>dobj(m.d)>=today0());day=nx?nx.d:DAYS[0]}
- const list=L.filter(m=>m.d===day);const lead=day===td?'Hoje':'Próximo dia de jogos';
- return`<section class="sec"><h2>${lead}<small>${esc(dlabel(day))} · ${list.length} jogos</small></h2>${list.length?`<div class="grid">${list.map(m=>card(m)).join('')}</div>`:`<div class="empty">Sem jogos da FSportIN neste dia${st.q||st.cat?' com este filtro':''}.</div>`}</section>`}
-function vCal(){const L=ours();if(!st.day)st.day=DAYS.includes(todayStr())?todayStr():'all';
- const chips=['all',...DAYS].map(d=>{const n=d==='all'?L.length:L.filter(m=>m.d===d).length;return n||d==='all'?`<button class="chip" data-day="${d}" aria-pressed="${st.day===d}">${d==='all'?'Todos':esc(dlabel(d))}<small>${n}</small></button>`:''}).join('');
- const body=(st.day==='all'?DAYS:[st.day]).map(d=>{const l=L.filter(m=>m.d===d);return l.length?`<section class="sec"><h2>${esc(dlabel(d))}<small>${l.length} jogos</small></h2><div class="grid">${l.map(m=>card(m)).join('')}</div></section>`:''}).join('');
- return`<div class="chips">${chips}</div>${body||'<div class="empty">Sem jogos com este filtro.</div>'}`}
+function defaultDay(L){const td=todayStr();if(DAYS.includes(td)&&L.some(m=>m.d===td))return td;const nx=L.find(m=>dobj(m.d)>=today0());return nx?nx.d:(L.length?L[L.length-1].d:'all')}
+function vCal(){const L=ours();if(!st.day||(st.day!=='all'&&!L.some(m=>m.d===st.day)))st.day=defaultDay(L);
+ const td=todayStr();
+ const chips=[...DAYS,'all'].map(d=>{const n=d==='all'?L.length:L.filter(m=>m.d===d).length;if(!n&&d!=='all')return'';const lab=d==='all'?'Ver todos':(d===td?'Hoje':dlabel(d));return`<button class="chip" data-day="${d}" aria-pressed="${st.day===d}">${esc(lab)}<small>${n}</small></button>`}).join('');
+ const body=(st.day==='all'?DAYS:[st.day]).map(d=>{const l=L.filter(m=>m.d===d);return l.length?`<section class="sec"><h2>${d===td?'Hoje':esc(dlabel(d))}<small>${d===td?esc(dlabel(d))+' · ':''}${l.length} jogos</small></h2><div class="grid">${l.map(m=>card(m)).join('')}</div></section>`:''}).join('');
+ return`<div class="chips">${chips}</div>${body||'<div class="empty">Sem jogos da FSportIN com este filtro.</div>'}`}
 function standings(c,g){const gm=M.filter(m=>m.c===c&&m.ph===g&&/^#1\./.test(m.n));const T=new Map();
  const add=t=>{if(!T.has(t))T.set(t,{t,j:0,v:0,d:0,sp:0,sc:0,gp:0,gc:0})};
  for(const m of gm){add(m.a);add(m.b);const w=winner(m);if(!w)continue;const A=T.get(m.a),B=T.get(m.b);A.j++;B.j++;if(w===1){A.v++;B.d++}else{B.v++;A.d++}
@@ -258,12 +254,12 @@ function table(s){return`<table><thead><tr><th>#</th><th>Dupla</th><th>J</th><th
 function vCats(){let G=groupsOfUs().filter(x=>!st.cat||x.c===st.cat);const q=st.q.trim().toLowerCase();
  if(q)G=G.filter(x=>M.some(m=>m.c===x.c&&m.ph===x.g&&m.us&&(m.a+' '+m.b).toLowerCase().includes(q)));
  if(!G.length)return'<div class="empty">Sem grupos com este filtro.</div>';
- return`<section class="sec"><div class="grid wide">${G.map(x=>{const s=standings(x.c,x.g);return`<div class="card"><div class="card-h"><span class="cat">${esc(catLabel(x.c))}</span><h3>${esc(x.g)}</h3><span class="tag">${s.done?'Fechado':'Provisório'}</span></div>${table(s)}<div class="lbl">Jogos da FSportIN</div><div class="mini">${s.games.filter(m=>m.us).map(m=>card(m,false)).join('')}</div></div>`}).join('')}</div></section>`}
+ return`<section class="sec"><div class="grid">${G.map(x=>{const s=standings(x.c,x.g);return`<div class="card"><div class="card-h"><span class="cat">${esc(catLabel(x.c))}</span><h3>${esc(x.g)}</h3><span class="tag">${s.done?'Fechado':'Provisório'}</span></div>${table(s)}<div class="lbl">Jogos da FSportIN</div><div class="mini">${s.games.filter(m=>m.us).map(m=>card(m,false)).join('')}</div></div>`}).join('')}</div></section>`}
 function pairs(){const P=new Map();for(const m of M)for(const t of[m.a,m.b])if(isUs(t)&&/^#1\./.test(m.n)&&/^Grupo/.test(m.ph)){const k=m.c+'|'+t;if(!P.has(k))P.set(k,{c:m.c,t,g:m.ph})}
  return[...P.values()].sort((a,b)=>catRank(a.c)-catRank(b.c)||nm(a.t).localeCompare(nm(b.t),'pt'))}
 function vPairs(){const q=st.q.trim().toLowerCase();const P=pairs().filter(p=>(!st.cat||p.c===st.cat)&&(!q||p.t.toLowerCase().includes(q)));
  if(!P.length)return'<div class="empty">Nenhuma dupla com este filtro.</div>';
- return`<section class="sec"><div class="grid wide">${P.map(p=>{const s=standings(p.c,p.g);const pos=s.arr.findIndex(r=>r.t===p.t)+1;const me=s.arr[pos-1];
+ return`<section class="sec"><div class="grid">${P.map(p=>{const s=standings(p.c,p.g);const pos=s.arr.findIndex(r=>r.t===p.t)+1;const me=s.arr[pos-1];
   const gl=p.g.replace('Grupo ','');const later=M.filter(m=>m.c===p.c&&!/^#1\./.test(m.n));
   const named=later.filter(m=>m.a===p.t||m.b===p.t);const re=new RegExp('(\\d)º Grupo '+gl+'$');
   const slots=later.filter(m=>re.test(m.a)||re.test(m.b)).filter(m=>!named.some(n=>n.k===m.k));
@@ -279,17 +275,17 @@ function stats(){const L=M.filter(m=>m.us);let v=0,d=0;for(const m of L){const w
  const pr=pairs();const nx=L.find(m=>!winner(m)&&dobj(m.d)>=today0());
  document.getElementById('stats').innerHTML=[[pr.length,'Duplas'],[new Set(pr.map(p=>p.c)).size,'Categorias'],[L.length,'Jogos'],[v+'–'+d,'Vitórias–derrotas'],[nx?nx.d+' '+nx.t:'—','Próximo jogo']].map(([b,s])=>`<div class="stat"><b>${esc(b)}</b><span>${esc(s)}</span></div>`).join('')}
 function render(){stats();document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===st.v));
- document.getElementById('view').innerHTML=st.v==='hoje'?vHoje():st.v==='calendario'?vCal():st.v==='categorias'?vCats():vPairs();
+ document.getElementById('view').innerHTML=st.v==='calendario'?vCal():st.v==='categorias'?vCats():vPairs();
  document.getElementById('foot').innerHTML=(R.updated?'Resultados actualizados a '+esc(new Date(R.updated).toLocaleString('pt-PT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}))+'. ':'Ainda sem resultados: o torneio começa a 28/11. ')+'Dados do <a href="https://padelteams.pt/info/matches?k=Y2lkPTc3MDUmdGlkPTA=">padelteams.pt</a>, lidos de hora a hora. Classificação calculada aqui (vitórias, diferença de sets, diferença de jogos): confirmar sempre no site da organização.'}
 const cs=document.getElementById('cat');
 [...new Set(S.filter(r=>isUs(r[3])||isUs(r[4])).map(r=>r[0]))].sort((a,b)=>catRank(a)-catRank(b)).forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=catLabel(c);cs.appendChild(o)});
 const qi=document.getElementById('q');qi.value=st.q;cs.value=st.cat;
 qi.addEventListener('input',()=>{st.q=qi.value;save();render()});
 cs.addEventListener('change',()=>{st.cat=cs.value;save();render()});
-const VIEWS=['hoje','calendario','categorias','duplas'];
+const VIEWS=['calendario','categorias','duplas'];
 document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;st.v=b.dataset.v;location.hash=st.v;render()});
 document.getElementById('view').addEventListener('click',e=>{const b=e.target.closest('[data-day]');if(!b)return;st.day=b.dataset.day;render()});
-const fromHash=()=>{const h=location.hash.slice(1);if(VIEWS.includes(h))st.v=h};
+const fromHash=()=>{const h=location.hash.slice(1);if(h==='hoje')st.v='calendario';else if(VIEWS.includes(h))st.v=h};
 window.addEventListener('hashchange',()=>{fromHash();render()});fromHash();
 build();render();
 fetch(new URL('data.json',document.baseURI).href.replace('/preview/data.json','/data.json'),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{if(j&&typeof j==='object'){R={results:j.results||{},extra:Array.isArray(j.extra)?j.extra:[],updated:j.updated||null};build();render()}}).catch(()=>{});
