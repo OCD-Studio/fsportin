@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+<title>Non-stops · FSportIN (protótipo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://use.typekit.net/dgw5mps.css">
+<style>
+/* Mesma linguagem do site do torneio: cartões escuros, tipografia leve, amarelo só para destaque e estados. */
+:root{color-scheme:dark;--bg:#0b0b0c;--card:#161618;--card2:#1e1e21;--line:#26262a;--ink:#f4f4f5;--soft:#c4c4c8;--mut:#8a8a90;--dim:#5e5e64;
+--y:#ffd21f;--yd:rgba(255,210,31,.12);--red:#e5484d;--r:20px;--rs:14px;--pad:clamp(16px,3vw,40px);--gap:clamp(12px,1.4vw,20px)}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:400 15px/1.45 degular,Figtree,system-ui,sans-serif;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;overflow-x:clip;padding-bottom:env(safe-area-inset-bottom)}
+b,strong,h1,h2,h3,h4{font-weight:500}
+a{color:inherit}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--y);outline-offset:2px;border-radius:8px}
+.wrap{padding-inline:var(--pad);max-width:1180px;margin:0 auto}
+.top{padding-top:24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.top img{height:20px;display:block}
+.lab{font-size:12px;color:#000;background:var(--y);border-radius:999px;padding:4px 10px;white-space:nowrap}
+.top .right{display:flex;gap:10px;align-items:center}
+h1{font-size:clamp(36px,5.5vw,64px);line-height:.95;letter-spacing:-.03em;margin:36px 0 10px}
+h1 small{display:block;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--y);margin-bottom:14px;line-height:1}
+.lead{color:var(--soft);max-width:60ch;margin:0 0 24px}
+h2{font-size:22px;letter-spacing:-.01em;margin:0 0 14px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+h2 small{font-size:13px;color:var(--mut)}
+h3{font-size:18px;margin:0;letter-spacing:-.01em}
+.sec{margin-top:32px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--gap)}
+@media(min-width:640px){.grid.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.g3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1024px){.grid.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid.g4{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(min-width:640px) and (max-width:1023px){.grid.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.card{background:var(--card);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:14px}
+.card.link{text-decoration:none;transition:background .15s}.card.link:hover{background:var(--card2)}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.between{justify-content:space-between}
+.mut{color:var(--mut)}.dim{color:var(--dim)}.soft{color:var(--soft)}
+.sm{font-size:13px}.xs{font-size:12px}
+.pill{font-size:12px;font-weight:500;border:1px solid var(--line);border-radius:999px;padding:4px 10px;white-space:nowrap;color:var(--ink)}
+.pill.y{border-color:transparent;background:var(--yd);color:var(--y)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:0 18px;min-height:44px;background:var(--card2);cursor:pointer;font-weight:500;text-decoration:none;white-space:nowrap}
+.btn:hover{background:#2a2a2e}
+.btn.pri{background:var(--y);color:#000}.btn.pri:hover{background:#ffe066}
+.btn.ghost{background:none;box-shadow:inset 0 0 0 1px var(--line)}
+.btn.sm{min-height:34px;padding:0 14px;font-size:13px}
+.btn:disabled{opacity:.4;cursor:default}
+.empty{background:var(--card);border-radius:var(--r);padding:36px;text-align:center;color:var(--mut)}
+.eyebrow{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+/* formulário */
+.steps{display:flex;gap:6px;overflow-x:auto;background:var(--card);padding:5px;border-radius:999px;margin-bottom:20px;position:sticky;top:8px;z-index:4}
+.steps button{flex:none;border:0;background:none;color:var(--mut);padding:9px 16px;border-radius:999px;cursor:pointer;min-height:38px;font-weight:500;font-size:14px}
+.steps button[aria-current=true]{background:var(--ink);color:#000}
+.steps button .n{opacity:.6;margin-right:6px}
+.fmt{background:var(--card);border-radius:var(--r);padding:20px;border:0;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:10px;box-shadow:inset 0 0 0 1px transparent}
+.fmt:hover{background:var(--card2)}
+.fmt[aria-pressed=true]{box-shadow:inset 0 0 0 1.5px var(--y);background:var(--card2)}
+.fmt .ic{width:40px;height:40px;border-radius:12px;background:var(--card2);display:grid;place-items:center;color:var(--y)}
+.fmt[aria-pressed=true] .ic{background:var(--yd)}
+.fmt p{margin:0;color:var(--soft);font-size:14px}
+.fmt .tags{display:flex;gap:6px;flex-wrap:wrap}
+.field{display:flex;flex-direction:column;gap:6px}
+.field>span{font-size:12px;color:var(--mut)}
+.field input,.field select{background:var(--card2);border:0;border-radius:12px;min-height:46px;padding:0 14px;outline:none;width:100%}
+.field input:focus,.field select:focus{box-shadow:inset 0 0 0 1px var(--y)}
+.field .hint{font-size:12px;color:var(--dim)}
+.fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.fields.wide{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.seg{display:inline-flex;gap:4px;background:var(--card2);padding:4px;border-radius:999px;flex-wrap:wrap}
+.seg button{border:0;background:none;color:var(--mut);border-radius:999px;padding:7px 14px;cursor:pointer;min-height:34px;font-size:13px;font-weight:500}
+.seg button[aria-pressed=true]{background:var(--ink);color:#000}
+.opt{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 0;border-top:1px solid var(--line)}
+.opt:first-child{border-top:0;padding-top:0}
+.opt .txt b{display:block;font-size:15px}.opt .txt span{font-size:13px;color:var(--mut)}
+.sw{position:relative;width:46px;height:28px;flex:none;border-radius:999px;background:var(--card2);border:0;cursor:pointer}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--dim);transition:.15s}
+.sw[aria-checked=true]{background:var(--y)}.sw[aria-checked=true]::after{left:21px;background:#000}
+.sched{list-style:none;margin:0;padding:0;font-size:13px}
+.sched li{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line);color:var(--soft)}
+.sched li:first-child{border-top:0}
+.warn{font-size:13px;color:var(--y);background:var(--yd);border-radius:12px;padding:10px 14px}
+.err{font-size:13px;color:#fff;background:rgba(229,72,77,.18);border-radius:12px;padding:10px 14px}
+/* jogadores */
+.plist{display:flex;flex-direction:column;gap:8px}
+.pl{display:grid;grid-template-columns:36px minmax(0,1fr) auto auto;align-items:center;gap:10px;background:var(--card2);border-radius:var(--rs);padding:8px 10px}
+.av{width:36px;height:36px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:13px;font-weight:500;color:var(--soft)}
+.av.g{background:none;box-shadow:inset 0 0 0 1px dashed var(--line);border:1px dashed var(--dim)}
+.pl .nm{line-height:1.2}.pl .nm small{display:block;font-size:12px;color:var(--dim)}
+.side{display:inline-flex;gap:2px;background:var(--card);padding:3px;border-radius:999px}
+.side button{border:0;background:none;color:var(--mut);border-radius:999px;min-width:30px;height:28px;cursor:pointer;font-size:12px;font-weight:500;padding:0 8px}
+.side button[aria-pressed=true]{background:var(--ink);color:#000}
+.x{border:0;background:none;color:var(--dim);cursor:pointer;width:32px;height:32px;border-radius:50%;font-size:18px}
+.x:hover{color:var(--ink);background:var(--card)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:0;background:var(--card2);color:var(--soft);border-radius:999px;padding:8px 12px;cursor:pointer;font-size:13px;min-height:36px}
+.chip small{color:var(--dim);margin-left:6px}
+.chip[aria-pressed=true]{background:var(--ink);color:#000}.chip[aria-pressed=true] small{color:#555}
+.addg{display:flex;gap:8px}.addg input{flex:1}
+.teams{display:flex;flex-direction:column;gap:8px}
+.tmr{display:grid;grid-template-columns:28px minmax(0,1fr) minmax(0,1fr) 32px;gap:8px;align-items:center}
+.tmr .k{color:var(--dim);font-size:13px;text-align:center}
+.tmr select{background:var(--card2);border:0;border-radius:12px;min-height:42px;padding:0 10px;width:100%}
+.counts{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mut)}
+.counts b{color:var(--ink)}
+.bar-actions{display:flex;justify-content:space-between;gap:10px;margin-top:24px;position:sticky;bottom:0;padding:14px 0;background:linear-gradient(transparent,var(--bg) 30%)}
+/* evento */
+.hero{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px 40px;margin:36px 0 22px}
+.hero h1{margin:0}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(96px,1fr));gap:10px;flex:1 1 440px;max-width:640px}
+.kpi{background:var(--card);border-radius:var(--rs);padding:14px 16px}
+.kpi b{display:block;font-size:clamp(18px,1.6vw,24px);line-height:1.1;letter-spacing:-.02em}
+.kpi span{font-size:12px;color:var(--mut)}
+@media(max-width:560px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.ctrl{position:sticky;top:0;z-index:5;background:linear-gradient(var(--bg) 82%,transparent);padding:12px 0 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.tabs{display:flex;gap:6px;background:var(--card);padding:5px;border-radius:999px;overflow-x:auto}
+.tabs button{flex:none;border:0;background:none;color:var(--mut);padding:9px 16px;border-radius:999px;cursor:pointer;min-height:38px;font-weight:500;font-size:14px}
+.tabs button[aria-selected=true]{background:var(--ink);color:#000}
+.org{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mut)}
+.round{background:var(--card);border-radius:var(--r);overflow:hidden}
+.round.done{opacity:.92}
+.rh{display:flex;align-items:baseline;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.rh h3{font-size:20px}
+.rh .t{color:var(--mut);font-size:14px}
+.rh .tag{margin-left:auto}
+.courts{display:grid;grid-template-columns:minmax(0,1fr)}
+@media(min-width:720px){.courts.c2{grid-template-columns:repeat(2,minmax(0,1fr))}.courts.c3{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.ct{padding:16px 20px;display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line)}
+@media(min-width:720px){.courts.c2 .ct,.courts.c3 .ct{border-top:0;border-left:1px solid var(--line)}.courts.c2 .ct:first-child,.courts.c3 .ct:first-child{border-left:0}}
+.courts .ct:first-child{border-top:0}
+.ct-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.st{font-size:12px;white-space:nowrap;color:var(--mut);display:inline-flex;align-items:center;gap:6px}
+.st::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--dim)}
+.st.saved{color:var(--ink)}.st.saved::before{background:var(--soft)}
+.st.dirty{color:var(--y)}.st.dirty::before{background:var(--y)}
+.tm{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;background:var(--card2);border-radius:12px;padding:8px 8px 8px 14px}
+.tm.w{box-shadow:inset 3px 0 0 var(--y)}
+.tm .nms{display:flex;flex-direction:column;line-height:1.25}
+.tm .nms span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm .nms small{color:var(--dim);font-size:11px;margin-left:5px;letter-spacing:.04em}
+.tm.w .nms span{color:var(--ink)}.tm .nms span{color:var(--soft)}
+.vs{font-size:11px;letter-spacing:.2em;color:var(--dim);text-align:center;margin:-4px 0}
+.stp{display:flex;align-items:center;gap:2px;flex:none}
+.stp button{width:36px;height:36px;border-radius:10px;border:0;background:var(--card);cursor:pointer;font-size:18px;line-height:1}
+.stp button:hover:not(:disabled){background:#2a2a2e}
+.stp button:disabled{opacity:.3;cursor:default}
+.stp output{min-width:34px;text-align:center;font-size:24px;letter-spacing:-.02em}
+.score{font-size:24px;min-width:34px;text-align:center;color:var(--soft)}.tm.w .score{color:var(--ink)}
+.acts{display:flex;gap:8px;justify-content:flex-end}
+.locked{font-size:13px;color:var(--dim)}
+.sit{font-size:13px;color:var(--mut);padding:12px 20px;border-top:1px solid var(--line)}
+.sit b{color:var(--soft);font-weight:400}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-size:11px;font-weight:400;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);text-align:right;padding:0 8px 8px;white-space:nowrap}
+td{padding:11px 8px;border-top:1px solid var(--line);text-align:right;color:var(--soft);white-space:nowrap}
+th:nth-child(2),td:nth-child(2){text-align:left}
+td:first-child{color:var(--dim);width:24px}
+tr.lead1 td:first-child{color:var(--y)}
+td.nm{color:var(--ink);font-weight:500}
+td.pts{color:var(--ink);font-weight:500}
+.tscroll{overflow-x:auto}
+.sidebadge{font-size:11px;color:var(--mut);border:1px solid var(--line);border-radius:6px;padding:1px 6px;margin-left:6px}
+.hl{background:var(--card);border-radius:var(--r);padding:18px 20px;display:flex;flex-direction:column;gap:6px}
+.hl .k{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.hl b{font-size:clamp(24px,2.6vw,34px);line-height:1.05;letter-spacing:-.02em}
+.hl span.d{font-size:13px;color:var(--mut)}
+.rules{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--gap)}
+@media(min-width:720px){.rules{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.rule{background:var(--card);border-radius:var(--r);padding:18px 20px}
+.rule h4{margin:0 0 6px;font-size:15px;color:var(--y)}
+.rule p{margin:0;color:var(--soft);font-size:14px}
+.ladder{display:flex;flex-direction:column;gap:8px}
+.lad{display:grid;grid-template-columns:110px minmax(0,1fr);gap:10px;align-items:center;background:var(--card2);border-radius:12px;padding:10px 14px}
+.lad .c{font-size:12px;color:var(--mut);white-space:nowrap}
+footer{margin-top:56px;border-top:1px solid var(--line);padding:24px 0 40px;color:var(--dim);font-size:13px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#000;border-radius:999px;padding:10px 18px;font-size:14px;z-index:20;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+</style>
+</head>
+<body>
+<header class="wrap top">
+ <a href="#/"><img src="../../assets/fsportin-logo-white.svg" alt="FSportIN Padel"></a>
+ <div class="right"><span class="lab">Protótipo · non-stops</span></div>
+</header>
+<main class="wrap" id="app"></main>
+<footer class="wrap">Protótipo da OCD Studio para a FSportIN. Os dados ficam só neste browser até ligarmos a base de dados (perfis e histórico).</footer>
+<script>
+{
+/* ================= dados de exemplo ================= */
+/* Membros = futuros perfis oficiais. Lados de exemplo, editáveis por cada jogador no perfil. */
+const MEMBERS=[["Bernardo Ferro","E"],["Ruud Hendriks","D"],["Luciano Cruz","E"],["Bruno Lemos","D"],["Udhayakumar Pandiyaraj","E"],["Gonçalo Santos","D"],["Gonçalo Araújo","E"],["Juan Amarante","D"],["Ignacio Gallo","E"],["Mario Sastre","D"],["Pedro Monteiro","A"],["Alexandre Martins","D"],["António Cabral","E"],["Nicolas Simonelli","D"],["Mariano Massazza","E"],["Marcos Cicarelli","A"],["Juan Romero","D"],["Jonathan","E"],["Justin","D"],["Manuel Sabarros","E"],["Philips Huang","A"],["Schadia Castillo","D"],["Franklin Salas","E"]].map(([n,s],i)=>({id:'m'+i,n,side:s}));
+const FORMATS={
+ classico:{name:'Clássico',sub:'Duplas fixas',desc:'Duplas fixas que rodam adversários, todos contra todos. O formato habitual das segundas-feiras.',tags:['Duplas fixas','Liga'],unit:'team',
+  icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M12 4v16M3 12h18"/></svg>'},
+ sobe:{name:'Sobe e desce',sub:'Rei da pista',desc:'Jogos por tempo. Quem ganha sobe um campo, quem perde desce. No fim, quem está no campo 1 ganha.',tags:['Duplas fixas','Por campos'],unit:'team',
+  icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 20V5M3 9l4-4 4 4M17 4v15M13 15l4 4 4-4"/></svg>'},
+ mexicano:{name:'Mexicano',sub:'Rotação por classificação',desc:'Parceiros mudam em cada ronda conforme a classificação (1.º+4.º contra 2.º+3.º). Jogos cada vez mais equilibrados.',tags:['Individual','Ronda a ronda'],unit:'player',
+  icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h11l-3-3M20 17H9l3 3"/><circle cx="19" cy="7" r="1.5"/><circle cx="5" cy="17" r="1.5"/></svg>'},
+ americano:{name:'Americano',sub:'Todos com todos',desc:'Calendário fixo definido à partida: cada um joga com parceiros e adversários diferentes. Pontua cada jogador.',tags:['Individual','Calendário fixo'],unit:'player',
+  icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="7" r="2.5"/><circle cx="7" cy="17" r="2.5"/><circle cx="17" cy="17" r="2.5"/><path d="M9.5 7h5M7 9.5v5M17 9.5v5M9.5 17h5M9 9l6 6"/></svg>'}};
+const SIDE={D:'Direita',E:'Esquerda',A:'Ambos'};
+
+/* ================= armazenamento (local até ao Supabase) ================= */
+const KEY='fsp-nonstops-v1';
+let DB={events:[]};
+try{DB=JSON.parse(localStorage.getItem(KEY))||DB}catch(e){}
+const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){}};
+const uid=()=>Math.random().toString(36).slice(2,9);
+const ORG=()=>{try{return localStorage.getItem('fsp-ns-org')!=='0'}catch(e){return true}};
+const setOrg=v=>{try{localStorage.setItem('fsp-ns-org',v?'1':'0')}catch(e){}};
+
+/* ================= utilitários ================= */
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=s=>document.querySelector(s);
+const toMin=t=>{const[h,m]=String(t||'0:0').split(':').map(Number);return h*60+(m||0)};
+const fmtMin=x=>{x=Math.round(x);const h=Math.floor(x/60)%24,m=x%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')};
+const fmtDur=x=>Number.isInteger(x)?x+"'":x.toFixed(1).replace('.',',')+"'";
+const WD=['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+const fmtDate=d=>{if(!d)return'';const o=new Date(d+'T12:00');return WD[o.getDay()]+', '+o.getDate()+' '+['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'][o.getMonth()]};
+const initials=n=>n.split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+let toastT;const toast=m=>{let t=$('.toast');if(!t){t=document.createElement('div');t.className='toast';document.body.appendChild(t)}t.textContent=m;clearTimeout(toastT);toastT=setTimeout(()=>t.remove(),2200)};
+const shuffle=(a,r=Math.random)=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+
+/* horário: aquecimento + n rondas + trocas, a duração da ronda é calculada */
+function schedule(ev){const s=toMin(ev.start),e=toMin(ev.end)<=s?toMin(ev.end)+1440:toMin(ev.end);const n=Math.max(1,+ev.nRounds||1);const w=+ev.warm||0,c=+ev.change||0;
+ const dur=(e-s-w-c*(n-1))/n;const slots=[];let t=s+w;for(let i=0;i<n;i++){slots.push([t,t+dur]);t+=dur+c}
+ return{warm:[s,s+w],dur,slots,ok:dur>=5}}
+const slotLabel=([a,b])=>fmtMin(a)+'–'+fmtMin(b);
+
+/* ================= motor dos formatos ================= */
+const P=(ev,id)=>ev.players.find(p=>p.id===id)||{n:'?',side:'A'};
+const tkey=a=>[...a].sort().join('+');
+const teamName=(ev,a)=>a.map(id=>P(ev,id).n).join(' / ');
+function allMatches(ev,upto=Infinity){const o=[];ev.rounds.forEach((r,i)=>{if(i<upto)r.matches.forEach(m=>{if(m.saved)o.push({...m,r:i})})});return o}
+function roundDone(r){return r.matches.length>0&&r.matches.every(m=>m.saved)}
+/* classificação individual (americano/mexicano): jogos ganhos → diferença → vitórias → confronto directo */
+function playerTable(ev,upto){const T=new Map(ev.players.map(p=>[p.id,{id:p.id,j:0,v:0,e:0,d:0,g:0,p:0}]));const ms=allMatches(ev,upto);
+ for(const m of ms)for(const[tm,f,a]of[[m.a,m.sa,m.sb],[m.b,m.sb,m.sa]])for(const id of tm){const s=T.get(id);if(!s)continue;s.j++;s.g+=f;s.p+=a;f>a?s.v++:f<a?s.d++:s.e++}
+ const h2h=(x,y)=>{let gx=0,gy=0;for(const m of ms){if(m.a.includes(x)&&m.b.includes(y)){gx+=m.sa;gy+=m.sb}else if(m.b.includes(x)&&m.a.includes(y)){gx+=m.sb;gy+=m.sa}}return gy-gx};
+ return[...T.values()].sort((x,y)=>(y.g-x.g)||((y.g-y.p)-(x.g-x.p))||(y.v-x.v)||h2h(x.id,y.id)||P(ev,x.id).n.localeCompare(P(ev,y.id).n,'pt'))}
+/* classificação de duplas (clássico/sobe e desce) */
+function teamTable(ev,upto){const pw=+ev.opts.ptsWin||3,pd=+ev.opts.ptsDraw||0;const T=new Map(ev.teams.map(t=>[tkey(t.p),{k:tkey(t.p),p:t.p,j:0,v:0,e:0,d:0,g:0,c:0,pts:0}]));
+ for(const m of allMatches(ev,upto))for(const[tm,f,a]of[[m.a,m.sa,m.sb],[m.b,m.sb,m.sa]]){const s=T.get(tkey(tm));if(!s)continue;s.j++;s.g+=f;s.c+=a;if(f>a){s.v++;s.pts+=pw}else if(f<a)s.d++;else{s.e++;s.pts+=pd}}
+ const by=ev.opts.rankBy==='jogos'?(x,y)=>(y.g-x.g)||((y.g-y.c)-(x.g-x.c))||(y.v-x.v):(x,y)=>(y.pts-x.pts)||((y.g-y.c)-(x.g-x.c))||(y.g-x.g);
+ return[...T.values()].sort(by)}
+/* posição no sobe e desce depois da última ronda guardada */
+function ladder(ev){let order=ev.teams.map(t=>t.p);let last=-1;
+ ev.rounds.forEach((r,i)=>{if(!roundDone(r))return;last=i;const C=r.matches.length;const byC=[...r.matches].sort((a,b)=>a.court-b.court);const res=byC.map(m=>m.sa>=m.sb?[m.a,m.b]:[m.b,m.a]);
+  const next=[];for(let c=0;c<C;c++){next[c]=next[c]||[]}
+  res.forEach(([w,l],c)=>{const up=Math.max(0,c-1),dn=Math.min(C-1,c+1);next[up].push({t:w,pr:0});next[dn].push({t:l,pr:1})});
+  order=next.flatMap(l=>l.sort((a,b)=>a.pr-b.pr).map(x=>x.t))});
+ return{order,last}}
+/* americano: calendário fixo, mínimo de parceiros e adversários repetidos; com lados fixos, sempre D+E */
+function pairOK(ev,a,b){if(!ev.opts.sides)return true;const x=P(ev,a).side,y=P(ev,b).side;return x==='A'||y==='A'||x!==y}
+function buildRound(ev,ids,hist,C,rnd){let best=null,bc=1e9;
+ for(let t=0;t<400;t++){const s=shuffle(ids,rnd);const pairs=[];let ok=true;const pool=[...s];
+  while(pool.length){const a=pool.shift();let j=pool.findIndex(b=>pairOK(ev,a,b)&&!(hist.part[a]?.[b]));if(j<0)j=pool.findIndex(b=>pairOK(ev,a,b));if(j<0){ok=false;break}pairs.push([a,pool.splice(j,1)[0]])}
+  if(!ok)continue;const ps=shuffle(pairs,rnd);const ms=[];for(let c=0;c<ps.length;c+=2)ms.push([ps[c],ps[c+1]]);
+  let cost=0;for(const[A,B]of ms){cost+=10*((hist.part[A[0]]?.[A[1]])||0)+10*((hist.part[B[0]]?.[B[1]])||0);for(const x of A)for(const y of B)cost+=3*((hist.opp[x]?.[y])||0)}
+  if(cost<bc){bc=cost;best=ms;if(!cost)break}}
+ return best||[]}
+function addHist(hist,ms){const inc=(o,a,b)=>{(o[a]??={})[b]=((o[a][b])||0)+1;(o[b]??={})[a]=((o[b][a])||0)+1};for(const[A,B]of ms){inc(hist.part,A[0],A[1]);inc(hist.part,B[0],B[1]);for(const x of A)for(const y of B)inc(hist.opp,x,y)}}
+function pickPlaying(ev,played,C,rankOrder){const n=Math.min(C*4,Math.floor(ev.players.length/4)*4);const ids=ev.players.map(p=>p.id);
+ const order=[...ids].sort((a,b)=>(played[a]||0)-(played[b]||0)||(rankOrder?rankOrder.indexOf(b)-rankOrder.indexOf(a):Math.random()-.5));return order.slice(0,n)}
+function genAmericano(ev){const C=ev.courts.length,N=ev.nRounds-(ev.opts.finalPerf?1:0);const hist={part:{},opp:{}},played={};let seed=7;const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280};
+ const R=[];for(let r=0;r<N;r++){const ids=pickPlaying(ev,played,C);const ms=buildRound(ev,ids,hist,C,rnd);addHist(hist,ms);ids.forEach(i=>played[i]=(played[i]||0)+1);R.push(mkRound(ev,ms))}
+ if(ev.opts.finalPerf)R.push({matches:[],pending:'final'});return R}
+function mkRound(ev,ms){return{matches:ms.map(([a,b],c)=>({id:uid(),court:c,a,b,sa:0,sb:0,saved:false}))}}
+/* mexicano: ronda 1 aleatória, seguintes pela classificação (1+4 vs 2+3 em cada campo) */
+function mexGroup(ev,g){const opts=[[[g[0],g[3]],[g[1],g[2]]],[[g[0],g[2]],[g[1],g[3]]],[[g[0],g[1]],[g[2],g[3]]]];return opts.find(([A,B])=>pairOK(ev,...A)&&pairOK(ev,...B))||opts[0]}
+function nextMexicano(ev,i){const C=ev.courts.length;const tab=playerTable(ev,i);const rank=tab.map(s=>s.id);const played={};tab.forEach(s=>played[s.id]=s.j);
+ const ids=pickPlaying(ev,played,C,rank);const ord=rank.filter(id=>ids.includes(id));const G=ord.length/4;
+ /* com lados fixos, cada grupo de 4 leva no máximo 2 direitas e 2 esquerdas, mantendo a ordem da classificação */
+ let groups;if(ev.opts.sides){groups=Array.from({length:G},()=>[]);const cnt=g=>({D:g.filter(x=>P(ev,x).side==='D').length,E:g.filter(x=>P(ev,x).side==='E').length});
+  for(const id of ord){const sd=P(ev,id).side;let g=groups.find(g=>g.length<4&&(sd==='A'||cnt(g)[sd]<2));if(!g)g=groups.find(g=>g.length<4);g.push(id)}}
+ else{groups=[];for(let c=0;c<ord.length;c+=4)groups.push(ord.slice(c,c+4))}
+ return mkRound(ev,groups.map(g=>mexGroup(ev,g)))}
+function finalPerf(ev,i){const C=ev.courts.length;const tab=playerTable(ev,i);
+ if(ev.opts.sides){const D=tab.filter(s=>P(ev,s.id).side!=='E').map(s=>s.id),E=tab.filter(s=>P(ev,s.id).side==='E').map(s=>s.id);const ms=[];
+  if(D.length>=E.length){/* D1+E2 vs E1+D2 por campo */const Dd=D.filter(x=>!E.includes(x));for(let c=0;c<C&&2*c+1<Math.min(Dd.length,E.length);c++)ms.push([[Dd[2*c],E[2*c+1]],[Dd[2*c+1],E[2*c]]])}
+  if(ms.length)return mkRound(ev,ms)}
+ const r=tab.map(s=>s.id);const ms=[];for(let c=0;c<C&&4*c+3<r.length;c++){const g=r.slice(4*c,4*c+4);ms.push([[g[0],g[3]],[g[1],g[2]]])}return mkRound(ev,ms)}
+/* clássico: todos contra todos pelo método do círculo, partido em rondas com o nº de campos */
+function genClassico(ev){const C=ev.courts.length;const T=ev.teams.map(t=>t.p);const n=T.length+(T.length%2);const list=[...T];if(list.length<n)list.push(null);
+ const pairsByRR=[];let arr=[...list];for(let r=0;r<n-1;r++){const ps=[];for(let i=0;i<n/2;i++){const a=arr[i],b=arr[n-1-i];if(a&&b)ps.push([a,b])}pairsByRR.push(ps);arr=[arr[0],arr[n-1],...arr.slice(1,n-1)]}
+ const queue=pairsByRR.flat();const N=ev.nRounds-(ev.opts.finalMatch?1:0);const R=[];let q=[...queue];
+ const played={},last={};
+ for(let r=0;r<N;r++){if(q.length<C)q=[...q,...queue.filter(x=>!q.includes(x))];const used=new Set(),ms=[];
+  /* prioriza quem jogou menos e quem descansou na ronda anterior; mantém a ordem do todos-contra-todos como desempate */
+  const cand=q.map((x,i)=>({x,i,w:(played[tkey(x[0])]||0)+(played[tkey(x[1])]||0)+(last[tkey(x[0])]===r-1?.5:0)+(last[tkey(x[1])]===r-1?.5:0)})).sort((u,v)=>u.w-v.w||u.i-v.i);
+  for(const{x}of cand){if(ms.length>=C)break;const[a,b]=x;if(used.has(tkey(a))||used.has(tkey(b)))continue;ms.push([a,b]);used.add(tkey(a));used.add(tkey(b))}
+  for(const m of ms){q.splice(q.indexOf(q.find(x=>x[0]===m[0]&&x[1]===m[1])),1);for(const t of m){played[tkey(t)]=(played[tkey(t)]||0)+1;last[tkey(t)]=r}}
+  R.push(mkRound(ev,ms))}
+ if(ev.opts.finalMatch)R.push({matches:[],pending:'final'});return R}
+function finalClassico(ev,i){const t=teamTable(ev,i);const ms=[];if(t[1])ms.push([t[0].p,t[1].p]);if(t[3]&&ev.courts.length>1)ms.push([t[2].p,t[3].p]);return mkRound(ev,ms)}
+/* sobe e desce: ordem inicial = ordem das duplas (cabeças de série) */
+function genSobe(ev){const C=ev.courts.length;const T=ev.teams.map(t=>t.p).slice(0,2*C);const ms=[];for(let c=0;c<C;c++)ms.push([T[2*c],T[2*c+1]]);const R=[mkRound(ev,ms)];for(let r=1;r<ev.nRounds;r++)R.push({matches:[],pending:'next'});return R}
+function nextSobe(ev){const{order}=ladder(ev);const C=ev.courts.length;const ms=[];for(let c=0;c<C;c++)ms.push([order[2*c],order[2*c+1]]);return mkRound(ev,ms)}
+function generate(ev){ev.rounds=ev.format==='americano'?genAmericano(ev):ev.format==='classico'?genClassico(ev):ev.format==='sobe'?genSobe(ev):[mkRound(ev,buildRound(ev,pickPlaying(ev,{},ev.courts.length),{part:{},opp:{}},ev.courts.length,Math.random)),...Array.from({length:ev.nRounds-1},()=>({matches:[],pending:'next'}))]}
+/* quando uma ronda fica completa, gera a seguinte (formatos ronda a ronda) */
+function advance(ev){for(let i=0;i<ev.rounds.length;i++){const r=ev.rounds[i];if(r.pending&&i>0&&roundDone(ev.rounds[i-1])){
+  const isLast=i===ev.rounds.length-1;let nr;
+  if(r.pending==='final')nr=ev.format==='classico'?finalClassico(ev,i):finalPerf(ev,i);
+  else if(ev.format==='mexicano')nr=(isLast&&ev.opts.finalPerf)?finalPerf(ev,i):nextMexicano(ev,i);
+  else if(ev.format==='sobe')nr=nextSobe(ev);
+  if(nr){ev.rounds[i]=nr;return true}}}return false}
+const sitting=(ev,r)=>{const ids=new Set(r.matches.flatMap(m=>[...m.a,...m.b]));return FORMATS[ev.format].unit==='team'?ev.teams.filter(t=>!t.p.some(id=>ids.has(id))).map(t=>teamName(ev,t.p)):ev.players.filter(p=>!ids.has(p.id)).map(p=>p.n)};
+
+/* validação antes de gerar */
+function validate(ev){const e=[],w=[];const C=ev.courts.length;const f=FORMATS[ev.format];const sc=schedule(ev);
+ if(!ev.name.trim())e.push('Dá um nome ao non-stop.');if(!C)e.push('Indica pelo menos um campo.');if(!sc.ok)e.push('Rondas demasiado curtas para o horário. Reduz o número de rondas ou alarga o horário.');
+ if(f.unit==='player'){if(ev.players.length<4)e.push('São precisos pelo menos 4 jogadores.');else if(ev.players.length>C*4)w.push(`${ev.players.length-C*4} jogador(es) descansa(m) em cada ronda (rotação automática).`);else if(ev.players.length%4)w.push(`Com ${ev.players.length} jogadores, ${ev.players.length%4} descansa(m) em cada ronda.`);
+  if(ev.opts.sides){const D=ev.players.filter(p=>p.side==='D').length,E=ev.players.filter(p=>p.side==='E').length,A=ev.players.length-D-E;if(Math.abs(D-E)>A)e.push(`Lados desequilibrados: ${D} direitas, ${E} esquerdas e ${A} ambos. Ajusta lados ou junta jogadores "ambos".`)}}
+ else{const bad=ev.teams.filter(t=>!t.p[0]||!t.p[1]||t.p[0]===t.p[1]);if(bad.length)e.push('Há duplas incompletas ou repetidas.');const used=ev.teams.flatMap(t=>t.p).filter(Boolean);if(new Set(used).size!==used.length)e.push('Há jogadores em mais de uma dupla.');
+  if(ev.teams.length<2)e.push('São precisas pelo menos 2 duplas.');
+  if(ev.format==='sobe'&&ev.teams.length!==2*C)e.push(`No sobe e desce são precisas exactamente ${2*C} duplas para ${C} campos (2 por campo).`);
+  if(ev.format==='classico'&&ev.teams.length>2*C)w.push('Há mais duplas do que campos: em cada ronda algumas descansam.');}
+ return{e,w}}
+
+/* ================= vistas ================= */
+let draft=null,step=0,tab='jogos',drafts={};
+function newDraft(){return{id:uid(),name:'Non-stop de segunda',date:nextMonday(),venue:"Padel Athletic Club",format:'classico',start:'21:00',end:'23:00',warm:10,change:2.5,nRounds:5,courts:['Campo 1','Campo 2'],
+ opts:{sides:true,finalPerf:true,scoring:'jogos',points:21,ptsWin:3,ptsDraw:1,rankBy:'pontos',finalMatch:false,noDraw:true},players:[],teams:[],rounds:[]}}
+function nextMonday(){const d=new Date();d.setDate(d.getDate()+((8-d.getDay())%7||7));return d.toISOString().slice(0,10)}
+
+function vHome(){const L=[...DB.events].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+ return`<h1><small>FSportIN · Non-stops</small>Non-stops</h1><p class="lead">Cria um non-stop, escolhe o formato e partilha a página. Os resultados são registados ao vivo pelos organizadores.</p>
+ <div class="row" style="margin-bottom:22px"><a class="btn pri" href="#/novo">+ Criar non-stop</a>${L.length?'':'<button class="btn ghost" data-act="seed">Ver exemplos preenchidos</button>'}</div>
+ ${L.length?`<div class="grid g3">${L.map(evCard).join('')}</div>${DB.events.some(e=>e.demo)?'':'<div style="margin-top:16px"><button class="btn ghost sm" data-act="seed">Juntar exemplos preenchidos</button></div>'}`:'<div class="empty">Ainda não há non-stops. Cria o primeiro ou vê os exemplos.</div>'}`}
+function evCard(ev){const f=FORMATS[ev.format];const done=ev.rounds.filter(roundDone).length;const n=f.unit==='team'?ev.teams.length+' duplas':ev.players.length+' jogadores';
+ return`<a class="card link" href="#/n/${ev.id}"><div class="row between"><span class="pill">${f.name}</span><span class="st ${done===ev.rounds.length&&done?'saved':''}">${done===ev.rounds.length&&done?'Terminado':done?'Ronda '+(done+1)+' de '+ev.rounds.length:'Por começar'}</span></div>
+ <div><h3>${esc(ev.name)}</h3><div class="sm mut" style="margin-top:4px">${esc(fmtDate(ev.date))} · ${esc(ev.start)}–${esc(ev.end)} · ${esc(ev.venue)}</div></div><div class="counts"><span><b>${n.split(' ')[0]}</b> ${n.split(' ')[1]}</span><span><b>${ev.courts.length}</b> campos</span><span><b>${ev.rounds.length}</b> rondas</span></div></a>`}
+
+/* ---------- criar ---------- */
+const STEPS=['Formato','Detalhes','Opções','Jogadores','Rever'];
+function vNew(){const d=draft;const steps=`<nav class="steps">${STEPS.map((s,i)=>`<button data-step="${i}" aria-current="${i===step}"><span class="n">${i+1}</span>${s}</button>`).join('')}</nav>`;
+ const body=[sFormat,sDetails,sOptions,sPlayers,sReview][step](d);
+ return`<h1><small>Novo non-stop</small>${esc(d.name||'Sem nome')}</h1>${steps}${body}
+ <div class="bar-actions"><button class="btn ghost" data-act="${step?'prev':'cancel'}">${step?'← Anterior':'Cancelar'}</button>${step<4?`<button class="btn pri" data-act="next">Seguinte →</button>`:`<button class="btn pri" data-act="create">Criar e gerar rondas</button>`}</div>`}
+function sFormat(d){return`<div class="grid g4">${Object.entries(FORMATS).map(([k,f])=>`<button class="fmt" data-fmt="${k}" aria-pressed="${d.format===k}"><span class="ic">${f.icon}</span><div><h3>${f.name}</h3><div class="xs mut">${f.sub}</div></div><p>${f.desc}</p><div class="tags">${f.tags.map(t=>`<span class="pill">${t}</span>`).join('')}</div></button>`).join('')}</div>`}
+function sDetails(d){const sc=schedule(d);
+ return`<div class="grid g2"><div class="card"><h3>O quê e onde</h3><div class="fields wide">
+  <label class="field"><span>Nome</span><input data-f="name" value="${esc(d.name)}"></label>
+  <label class="field"><span>Data</span><input type="date" data-f="date" value="${esc(d.date)}"></label>
+  <label class="field"><span>Local</span><input data-f="venue" value="${esc(d.venue)}"></label></div>
+  <div class="field"><span>Campos</span><div class="plist">${d.courts.map((c,i)=>`<div class="row"><input style="flex:1;background:var(--card2);border:0;border-radius:12px;min-height:42px;padding:0 14px" data-court="${i}" value="${esc(c)}">${d.courts.length>1?`<button class="x" data-delcourt="${i}" aria-label="Remover campo">×</button>`:''}</div>`).join('')}</div>
+  <div><button class="btn sm ghost" data-act="addcourt">+ Campo</button></div></div></div>
+ <div class="card"><h3>Horário</h3><div class="fields">
+  <label class="field"><span>Início</span><input type="time" data-f="start" value="${esc(d.start)}"></label>
+  <label class="field"><span>Fim</span><input type="time" data-f="end" value="${esc(d.end)}"></label>
+  <label class="field"><span>Rondas</span><input type="number" min="1" max="20" data-f="nRounds" value="${d.nRounds}"></label>
+  <label class="field"><span>Aquecimento (min)</span><input type="number" min="0" step="1" data-f="warm" value="${d.warm}"></label>
+  <label class="field"><span>Troca entre rondas (min)</span><input type="number" min="0" step="0.5" data-f="change" value="${d.change}"></label></div>
+  <div class="${sc.ok?'warn':'err'}">${sc.ok?`Cada ronda dura <b>${fmtDur(Math.floor(sc.dur*2)/2)}</b>, calculado a partir do horário.`:'Rondas demasiado curtas: reduz o número de rondas ou alarga o horário.'}</div>
+  <ul class="sched"><li><span>Aquecimento</span><span>${slotLabel(sc.warm)}</span></li>${sc.slots.map((s,i)=>`<li><span>Ronda ${i+1}</span><span>${slotLabel(s)}</span></li>`).join('')}</ul></div></div>`}
+function sw(k,v){return`<button class="sw" role="switch" data-opt="${k}" aria-checked="${!!v}"></button>`}
+function sOptions(d){const o=d.opts,f=d.format;const rows=[];
+ if(f==='americano'||f==='mexicano'){rows.push(`<div class="opt"><div class="txt"><b>Lados fixos (Direita × Esquerda)</b><span>Cada dupla junta uma direita e uma esquerda. Quem joga nos dois lados ("ambos") completa onde faltar.</span></div>${sw('sides',o.sides)}</div>`);
+  rows.push(`<div class="opt"><div class="txt"><b>Última ronda por performance</b><span>${o.sides?'Final: D1 + E2 contra E1 + D2 no campo 1; seguintes nos outros campos.':'Final: 1.º + 4.º contra 2.º + 3.º no campo 1; seguintes nos outros campos.'}</span></div>${sw('finalPerf',o.finalPerf)}</div>`);
+  rows.push(`<div class="opt"><div class="txt"><b>Marcador</b><span>${o.scoring==='jogos'?'Jogos ganhos até acabar o tempo. Cada jogador soma os jogos da sua dupla.':'Cada encontro joga-se até um total de pontos; cada jogador soma os pontos da sua dupla.'}</span></div><div class="seg"><button data-scoring="jogos" aria-pressed="${o.scoring==='jogos'}">Jogos por tempo</button><button data-scoring="pontos" aria-pressed="${o.scoring==='pontos'}">Pontos</button></div></div>`);
+  if(o.scoring==='pontos')rows.push(`<div class="opt"><div class="txt"><b>Pontos por encontro</b><span>Soma dos pontos das duas duplas.</span></div><div class="seg">${[16,21,24,32].map(n=>`<button data-points="${n}" aria-pressed="${+o.points===n}">${n}</button>`).join('')}</div></div>`)}
+ if(f==='classico'){rows.push(`<div class="opt"><div class="txt"><b>Classificação</b><span>${o.rankBy==='pontos'?`Pontos por resultado (vitória ${o.ptsWin}, empate ${o.ptsDraw}), depois diferença de jogos.`:'Jogos ganhos, depois diferença de jogos.'}</span></div><div class="seg"><button data-rank="pontos" aria-pressed="${o.rankBy==='pontos'}">Pontos</button><button data-rank="jogos" aria-pressed="${o.rankBy==='jogos'}">Jogos ganhos</button></div></div>`);
+  if(o.rankBy==='pontos')rows.push(`<div class="opt"><div class="txt"><b>Pontos por vitória / empate</b><span>Derrota vale 0.</span></div><div class="row"><div class="seg">${[3,2,1].map(n=>`<button data-ptswin="${n}" aria-pressed="${+o.ptsWin===n}">V ${n}</button>`).join('')}</div><div class="seg">${[1,0].map(n=>`<button data-ptsdraw="${n}" aria-pressed="${+o.ptsDraw===n}">E ${n}</button>`).join('')}</div></div></div>`);
+  rows.push(`<div class="opt"><div class="txt"><b>Final na última ronda</b><span>1.º contra 2.º no campo 1${d.courts.length>1?' e 3.º contra 4.º no campo 2':''}, pela classificação.</span></div>${sw('finalMatch',o.finalMatch)}</div>`)}
+ if(f==='sobe'){rows.push(`<div class="opt"><div class="txt"><b>Sem empates</b><span>Se o tempo acabar empatado, joga-se um ponto de ouro. Quem ganha sobe, quem perde desce. No campo 1 o vencedor fica; no último campo o vencido fica.</span></div>${sw('noDraw',true)}</div>`);
+  rows.push(`<div class="opt"><div class="txt"><b>Ordem inicial</b><span>A ordem das duplas no passo Jogadores define os campos da ronda 1 (duplas 1–2 no campo 1, 3–4 no campo 2…).</span></div></div>`)}
+ return`<div class="card" style="max-width:820px">${rows.join('')}</div>`}
+function sPlayers(d){const team=FORMATS[d.format].unit==='team';const inEv=new Set(d.players.map(p=>p.mid).filter(Boolean));
+ const D=d.players.filter(p=>p.side==='D').length,E=d.players.filter(p=>p.side==='E').length,A=d.players.length-D-E;
+ const plist=d.players.map(p=>`<div class="pl"><span class="av${p.guest?' g':''}">${esc(initials(p.n))}</span><span class="nm">${esc(p.n)}<small>${p.guest?'Guest · só neste evento':'Perfil oficial'}</small></span><span class="side">${['D','E','A'].map(s=>`<button data-pside="${p.id}" data-s="${s}" aria-pressed="${p.side===s}" title="${SIDE[s]}">${s}</button>`).join('')}</span><button class="x" data-delp="${p.id}" aria-label="Remover">×</button></div>`).join('');
+ const teams=team?`<div class="card"><div class="row between"><h3>Duplas</h3><span class="sm mut">${d.teams.length} duplas</span></div>
+  ${d.teams.length?`<div class="teams">${d.teams.map((t,i)=>`<div class="tmr"><span class="k">${i+1}</span>${[0,1].map(j=>`<select data-team="${i}" data-j="${j}"><option value="">—</option>${d.players.map(p=>`<option value="${p.id}" ${t.p[j]===p.id?'selected':''}>${esc(p.n)} (${p.side})</option>`).join('')}</select>`).join('')}<button class="x" data-delteam="${i}" aria-label="Remover dupla">×</button></div>`).join('')}</div>`:'<div class="sm mut">Adiciona jogadores e forma as duplas aqui.</div>'}
+  <div class="row"><button class="btn sm ghost" data-act="addteam">+ Dupla</button><button class="btn sm ghost" data-act="autoteams" ${d.players.length<2?'disabled':''}>Formar duplas automaticamente</button></div>
+  ${d.format==='sobe'?`<div class="sm mut">Precisas de ${2*d.courts.length} duplas para ${d.courts.length} campos.</div>`:''}</div>`:'';
+ return`<div class="grid g2"><div class="card"><div class="row between"><h3>Jogadores</h3><div class="counts"><span><b>${d.players.length}</b> total</span><span><b>${D}</b> D</span><span><b>${E}</b> E</span><span><b>${A}</b> ambos</span></div></div>
+  ${d.players.length?`<div class="plist">${plist}</div>`:'<div class="sm mut">Escolhe membros da equipa ou adiciona guests.</div>'}
+  <div class="field"><span>Adicionar guest (sem perfil)</span><div class="addg"><input id="guest" placeholder="Nome do convidado" style="background:var(--card2);border:0;border-radius:12px;min-height:44px;padding:0 14px"><button class="btn" data-act="addguest">Adicionar</button></div><span class="hint">O guest fica só neste evento. Mais tarde pode criar perfil e recuperar estes jogos.</span></div></div>
+ <div class="card"><div class="row between"><h3>Membros FSportIN</h3><button class="btn sm ghost" data-act="allm">Todos</button></div><div class="chips">${MEMBERS.map(m=>`<button class="chip" data-mem="${m.id}" aria-pressed="${inEv.has(m.id)}">${esc(m.n)}<small>${m.side}</small></button>`).join('')}</div><span class="xs dim">Lado preferido vem do perfil (D direita, E esquerda, A ambos) e pode ser ajustado só para este evento.</span></div>
+ ${teams}</div>`}
+function sReview(d){const {e,w}=validate(d);const sc=schedule(d);const f=FORMATS[d.format];
+ return`<div class="grid g2"><div class="card"><h3>${esc(d.name)}</h3><ul class="sched">
+  <li><span>Formato</span><span>${f.name}</span></li><li><span>Quando</span><span>${esc(fmtDate(d.date))} · ${esc(d.start)}–${esc(d.end)}</span></li><li><span>Local</span><span>${esc(d.venue)}</span></li>
+  <li><span>Campos</span><span>${d.courts.length}</span></li><li><span>Rondas</span><span>${d.nRounds} × ${fmtDur(Math.floor(sc.dur*2)/2)}</span></li>
+  <li><span>${f.unit==='team'?'Duplas':'Jogadores'}</span><span>${f.unit==='team'?d.teams.length:d.players.length}</span></li>
+  <li><span>Guests</span><span>${d.players.filter(p=>p.guest).length}</span></li></ul></div>
+ <div class="card"><h3>Antes de criar</h3>${e.length?e.map(x=>`<div class="err">${esc(x)}</div>`).join(''):'<div class="warn">Tudo pronto. As rondas são geradas ao criar e a página fica pronta a partilhar.</div>'}${w.map(x=>`<div class="sm mut">• ${esc(x)}</div>`).join('')}
+  <div class="rules" style="grid-template-columns:1fr">${rulesFor(d).slice(0,3).map(([h,p])=>`<div><div class="eyebrow">${esc(h)}</div><div class="sm soft">${esc(p)}</div></div>`).join('')}</div></div></div>`}
+
+/* ---------- regras geradas a partir da configuração ---------- */
+function rulesFor(ev){const sc=schedule(ev);const o=ev.opts;const R=[];const dur=fmtDur(Math.floor(sc.dur*2)/2);
+ const fx={classico:`Duplas fixas que rodam adversários, todos contra todos${ev.teams.length>2*ev.courts.length?'; em cada ronda há duplas a descansar, por rotação':''}.`,
+  sobe:`Começa-se pela ordem das duplas. Em cada ronda quem ganha sobe um campo e quem perde desce. No campo 1 o vencedor fica; no último campo o vencido fica.`,
+  mexicano:`A ronda 1 é sorteada. Daí em diante, em cada campo joga 1.º + 4.º contra 2.º + 3.º do grupo, pela classificação do momento${o.sides?', mantendo sempre uma direita e uma esquerda por dupla':''}.`,
+  americano:`Calendário fixo: os parceiros e adversários são distribuídos para repetir o mínimo possível${o.sides?'. Cada dupla tem sempre uma direita e uma esquerda':''}.`};
+ R.push(['Formato',FORMATS[ev.format].name+'. '+fx[ev.format]]);
+ if((ev.format==='americano'||ev.format==='mexicano')&&o.finalPerf)R.push(['Última ronda','Duplas por performance: '+(o.sides?'D1 + E2 contra E1 + D2 no campo 1, a seguir D3 + E4 contra E3 + D4.':'1.º + 4.º contra 2.º + 3.º no campo 1, e assim por diante.')+' Conta para a classificação como as outras.']);
+ if(ev.format==='classico'&&o.finalMatch)R.push(['Final','Na última ronda joga 1.º contra 2.º'+(ev.courts.length>1?' e 3.º contra 4.º':'')+', pela classificação até aí.']);
+ R.push(['Tempo',`${ev.warm}' de aquecimento, rondas de ${dur} e ${String(ev.change).replace('.',',')}' de troca. Das ${ev.start} às ${ev.end}.`]);
+ R.push(['Fim do tempo',ev.format==='sobe'?'Termina-se o jogo em curso. Se estiver empatado, joga-se um ponto de ouro: não há empates.':'Quando o tempo acaba, termina-se o jogo em curso e esse jogo conta. Ponto de ouro no 40-40.']);
+ if(ev.format==='americano'||ev.format==='mexicano')R.push(['Pontuação',o.scoring==='pontos'?`Cada encontro joga-se até ${o.points} pontos no total. Cada jogador soma os pontos da sua dupla.`:'Cada jogador soma os jogos ganhos pela sua dupla. Num 6-4, os vencedores levam 6 cada e os outros 4. Empates são válidos.']);
+ if(ev.format==='classico')R.push(['Pontuação',o.rankBy==='pontos'?`Vitória ${o.ptsWin}, empate ${o.ptsDraw}, derrota 0.`:'Conta o total de jogos ganhos por cada dupla.']);
+ R.push(['Desempates',ev.format==='sobe'?'Posição final no quadro (campo e resultado da última ronda).':FORMATS[ev.format].unit==='team'?(o.rankBy==='pontos'?'1. Pontos · 2. Diferença de jogos · 3. Jogos ganhos.':'1. Jogos ganhos · 2. Diferença de jogos · 3. Vitórias.'):'1. Jogos ganhos · 2. Diferença de jogos · 3. Vitórias · 4. Confronto directo.']);
+ R.push(['Resultados','Só os organizadores registam resultados. Toda a gente pode acompanhar esta página ao vivo.']);return R}
+
+/* ---------- página do evento ---------- */
+function vEvent(ev){const f=FORMATS[ev.format];const sc=schedule(ev);const done=ev.rounds.filter(roundDone).length;const org=ORG();
+ const unitN=f.unit==='team'?ev.teams.length:ev.players.length;
+ const head=`<div class="hero"><h1><small>${esc(f.name)} · ${esc(fmtDate(ev.date))}</small>${esc(ev.name)}</h1><div class="kpis">
+  <div class="kpi"><b>${esc(ev.start)}–${esc(ev.end)}</b><span>${esc(ev.venue)}</span></div><div class="kpi"><b>${unitN}</b><span>${f.unit==='team'?'duplas':'jogadores'}</span></div>
+  <div class="kpi"><b>${ev.courts.length}</b><span>campos</span></div><div class="kpi"><b>${done}/${ev.rounds.length}</b><span>rondas · ${fmtDur(Math.floor(sc.dur*2)/2)}</span></div></div></div>`;
+ const tabs=[['jogos','Jogos'],['class','Classificação'],['stats','Estatísticas'],['regras','Regras'],['jog',f.unit==='team'?'Duplas':'Jogadores']];
+ const ctrl=`<div class="ctrl"><nav class="tabs">${tabs.map(([k,l])=>`<button data-tab="${k}" aria-selected="${tab===k}">${l}</button>`).join('')}</nav>
+  <label class="org"><span>Modo organizador</span>${`<button class="sw" role="switch" data-act="org" aria-checked="${org}"></button>`}</label></div>`;
+ const body=tab==='jogos'?vRounds(ev,sc,org):tab==='class'?vTable(ev):tab==='stats'?vStatsEv(ev):tab==='regras'?`<div class="rules">${rulesFor(ev).map(([h,p])=>`<div class="rule"><h4>${esc(h)}</h4><p>${esc(p)}</p></div>`).join('')}</div>`:vPlayersEv(ev);
+ return`${head}${ctrl}${body}<div class="row" style="margin-top:28px"><a class="btn ghost sm" href="#/">← Todos os non-stops</a><button class="btn ghost sm" data-act="share">Copiar link</button>${org?`<button class="btn ghost sm" data-act="reset">Limpar resultados</button><button class="btn ghost sm" data-act="del">Apagar non-stop</button>`:''}</div>`}
+function names(ev,a,winner){return`<span class="nms">${a.map(id=>{const p=P(ev,id);return`<span>${esc(p.n)}${ev.opts.sides&&FORMATS[ev.format].unit==='player'?`<small>${p.side}</small>`:''}${p.guest?'<small>guest</small>':''}</span>`}).join('')}</span>`}
+function maxScore(ev){return ev.opts.scoring==='pontos'&&FORMATS[ev.format].unit==='player'?+ev.opts.points:30}
+function vRounds(ev,sc,org){const C=ev.courts.length;
+ return`<div class="row mut sm" style="margin:-4px 0 14px"><span class="eyebrow" style="color:var(--mut)">${slotLabel(sc.warm)}</span> Aquecimento</div><div class="grid">${ev.rounds.map((r,i)=>{const isFinal=r.pending==='final'||(i===ev.rounds.length-1&&((ev.opts.finalPerf&&FORMATS[ev.format].unit==='player')||(ev.format==='classico'&&ev.opts.finalMatch)));
+  const tag=r.pending?`<span class="pill">${r.pending==='final'?'Gerada quando a ronda anterior acabar':'Gerada ronda a ronda'}</span>`:roundDone(r)?'<span class="st saved">Concluída</span>':'';
+  const courts=r.pending?`<div class="ct"><span class="locked">${ev.format==='sobe'?'Os campos desta ronda dependem dos resultados da anterior.':ev.format==='mexicano'?'As duplas desta ronda saem da classificação depois da ronda anterior.':'Duplas definidas pela classificação quando a ronda anterior estiver guardada.'}</span></div>`:r.matches.map(m=>court(ev,i,m,org)).join('');
+  const sit=r.pending?[]:sitting(ev,r);
+  return`<article class="round${roundDone(r)?' done':''}"><div class="rh"><h3>${isFinal?'Ronda '+(i+1)+' · Final':'Ronda '+(i+1)}</h3><span class="t">${slotLabel(sc.slots[i]||sc.slots[sc.slots.length-1])}</span><span class="tag">${tag}</span></div>
+   <div class="courts c${Math.min(3,C)}">${courts}</div>${sit.length?`<div class="sit">Descansa${sit.length>1?'m':''}: <b>${sit.map(esc).join(', ')}</b></div>`:''}</article>`}).join('')}</div>`}
+function court(ev,ri,m,org){const k=m.id;const dr=drafts[k];const cur=dr??{sa:m.sa,sb:m.sb};const dirty=!!dr&&(!m.saved||dr.sa!==m.sa||dr.sb!==m.sb);
+ const st=dirty?['dirty','Por guardar']:m.saved?['saved','Guardado']:['','Por jogar'];const win=m.saved&&!dirty?(m.sa>m.sb?1:m.sb>m.sa?2:0):0;const mx=maxScore(ev);
+ const side=(a,key,val,w)=>`<div class="tm${win===w?' w':''}">${names(ev,a)}${org?`<div class="stp"><button data-sc="${k}" data-r="${ri}" data-k="${key}" data-d="-1" ${val<=0?'disabled':''} aria-label="Menos um">−</button><output>${val}</output><button data-sc="${k}" data-r="${ri}" data-k="${key}" data-d="1" ${val>=mx?'disabled':''} aria-label="Mais um">+</button></div>`:`<span class="score">${m.saved?val:'–'}</span>`}</div>`;
+ const tie=dirty&&ev.format==='sobe'&&cur.sa===cur.sb;
+ return`<div class="ct"><div class="ct-h"><span class="eyebrow" style="color:var(--ink)">${esc(ev.courts[m.court]||'Campo '+(m.court+1))}</span><span class="st ${st[0]}">${st[1]}</span></div>
+  ${side(m.a,'sa',cur.sa,1)}<div class="vs">VS</div>${side(m.b,'sb',cur.sb,2)}
+  ${org?`<div class="acts">${tie?'<span class="xs" style="color:var(--y);margin-right:auto;align-self:center">Sem empates: decide no ponto de ouro</span>':''}${m.saved?`<button class="btn sm ghost" data-clear="${k}" data-r="${ri}">Limpar</button>`:''}${dirty?`<button class="btn sm ghost" data-cancel="${k}">Cancelar</button>`:''}<button class="btn sm ${dirty?'pri':''}" data-save="${k}" data-r="${ri}" ${(!dirty&&m.saved)||tie?'disabled':''}>${m.saved?'Actualizar':'Guardar'}</button></div>`:''}</div>`}
+function vTable(ev){const f=FORMATS[ev.format];
+ if(ev.format==='sobe'){const{order,last}=ladder(ev);const tt=teamTable(ev);const C=ev.courts.length;
+  return`<div class="grid g2"><div class="card"><div class="row between"><h3>Quadro actual</h3><span class="sm mut">${last<0?'Antes da ronda 1':'Depois da ronda '+(last+1)}</span></div><div class="ladder">${order.map((t,i)=>`<div class="lad"><span class="c">${i+1}.º · ${esc(ev.courts[Math.floor(i/2)]||'')}</span><span>${esc(teamName(ev,t))}</span></div>`).join('')}</div></div>
+   <div class="card"><h3>Resultados por dupla</h3><div class="tscroll"><table><thead><tr><th>#</th><th>Dupla</th><th>J</th><th>V</th><th>D</th><th>JG</th><th>JP</th></tr></thead><tbody>${tt.map((s,i)=>`<tr><td>${i+1}</td><td class="nm">${esc(teamName(ev,s.p))}</td><td>${s.j}</td><td>${s.v}</td><td>${s.d}</td><td>${s.g}</td><td>${s.c}</td></tr>`).join('')}</tbody></table></div></div></div>`}
+ if(f.unit==='team'){const t=teamTable(ev);const pts=ev.opts.rankBy==='pontos';
+  return`<div class="card"><div class="tscroll"><table><thead><tr><th>#</th><th>Dupla</th>${pts?'<th>Pts</th>':''}<th>J</th><th>V</th><th>E</th><th>D</th><th>JG</th><th>JP</th><th>Dif</th></tr></thead><tbody>${t.map((s,i)=>`<tr class="${i<3&&s.j?'lead1':''}"><td>${i+1}</td><td class="nm">${esc(teamName(ev,s.p))}</td>${pts?`<td class="pts">${s.pts}</td>`:''}<td>${s.j}</td><td>${s.v}</td><td>${s.e}</td><td>${s.d}</td><td class="${pts?'':'pts'}">${s.g}</td><td>${s.c}</td><td>${(s.g-s.c>0?'+':'')+(s.g-s.c)}</td></tr>`).join('')}</tbody></table></div><div class="xs dim">J jogos · V/E/D vitórias, empates, derrotas · JG/JP jogos ganhos/perdidos</div></div>`}
+ const t=playerTable(ev);const lab=ev.opts.scoring==='pontos'?['PG','PP']:['JG','JP'];
+ const sides=ev.opts.sides?`<div class="grid g2" style="margin-top:var(--gap)">${['D','E'].map(s=>{const l=t.filter(x=>s==='D'?P(ev,x.id).side!=='E':P(ev,x.id).side==='E');return`<div class="card"><div class="eyebrow">${s==='D'?'Direitas':'Esquerdas'}${ev.opts.finalPerf?' · ordem para a última ronda':''}</div><ol class="sched" style="list-style:none">${l.map((x,i)=>`<li><span>${s}${i+1} · ${esc(P(ev,x.id).n)}</span><span>${x.g}</span></li>`).join('')}</ol></div>`}).join('')}</div>`:'';
+ return`<div class="card"><div class="tscroll"><table><thead><tr><th>#</th><th>Jogador</th><th>J</th><th>V</th><th>E</th><th>D</th><th>${lab[0]}</th><th>${lab[1]}</th><th>Dif</th></tr></thead><tbody>${t.map((s,i)=>`<tr class="${i<3&&s.j?'lead1':''}"><td>${i+1}</td><td class="nm">${esc(P(ev,s.id).n)}${ev.opts.sides?`<span class="sidebadge">${P(ev,s.id).side}</span>`:''}</td><td>${s.j}</td><td>${s.v}</td><td>${s.e}</td><td>${s.d}</td><td class="pts">${s.g}</td><td>${s.p}</td><td>${(s.g-s.p>0?'+':'')+(s.g-s.p)}</td></tr>`).join('')}</tbody></table></div><div class="xs dim">${lab[0]}/${lab[1]} ${ev.opts.scoring==='pontos'?'pontos ganhos/perdidos':'jogos ganhos/perdidos'} · ordenado por ${ev.opts.scoring==='pontos'?'pontos':'jogos'} ganhos, diferença, vitórias e confronto directo</div></div>${sides}`}
+function vStatsEv(ev){const ms=allMatches(ev);if(!ms.length)return'<div class="empty">As estatísticas aparecem quando houver resultados guardados.</div>';
+ const pairs=new Map();for(const m of ms)for(const[tm,d,g]of[[m.a,m.sa-m.sb,m.sa],[m.b,m.sb-m.sa,m.sb]]){const k=tkey(tm);if(!pairs.has(k))pairs.set(k,{tm,d:0,g:0,j:0,v:0});const p=pairs.get(k);p.d+=d;p.g+=g;p.j++;if(d>0)p.v++}
+ const bp=[...pairs.values()].sort((a,b)=>(b.d-a.d)||(b.g-a.g))[0];const big=[...ms].sort((a,b)=>Math.abs(b.sa-b.sb)-Math.abs(a.sa-a.sb))[0];const bw=big.sa>=big.sb?[big.a,big.sa,big.sb,big.b]:[big.b,big.sb,big.sa,big.a];
+ const total=ms.reduce((n,m)=>n+m.sa+m.sb,0);const close=ms.filter(m=>Math.abs(m.sa-m.sb)<=1).length;const u=ev.opts.scoring==='pontos'&&FORMATS[ev.format].unit==='player'?'pontos':'jogos';
+ const hl=(k,v,d)=>`<div class="hl"><span class="k">${k}</span><b>${v}</b><span class="d">${d}</span></div>`;const tiles=[hl(FORMATS[ev.format].unit==='team'?'Dupla em melhor forma':'Melhor dupla',esc(teamName(ev,bp.tm)),`${bp.d>0?'+':''}${bp.d} de diferença em ${bp.j} encontro${bp.j>1?'s':''}`),hl('Maior vitória',`${bw[1]}-${bw[2]}`,esc(teamName(ev,bw[0]))+' contra '+esc(teamName(ev,bw[3]))+' · R'+(big.r+1)),hl('Encontros renhidos',String(close),`terminados com 1 ${u==='pontos'?'ponto':'jogo'} ou menos de diferença`),hl(u==='pontos'?'Pontos disputados':'Jogos disputados',String(total),`${ms.length} encontros concluídos`)];
+ if(FORMATS[ev.format].unit==='player'){const t=playerTable(ev);const mv=[...t].sort((a,b)=>(b.v-a.v)||(b.g-a.g))[0];tiles.splice(2,0,hl('Mais vitórias',esc(P(ev,mv.id).n),`${mv.v} vitória${mv.v===1?'':'s'} em ${mv.j} encontros`));
+  if(ev.opts.sides){const best=s=>t.find(x=>s==='E'?P(ev,x.id).side==='E':P(ev,x.id).side!=='E');const d=best('D'),e=best('E');if(d)tiles.push(hl('Melhor direita',esc(P(ev,d.id).n),`${d.g} ${u} ganhos`));if(e)tiles.push(hl('Melhor esquerda',esc(P(ev,e.id).n),`${e.g} ${u} ganhos`))}}
+ return`<div class="grid g3">${tiles.join('')}</div>`}
+function vPlayersEv(ev){const f=FORMATS[ev.format];
+ if(f.unit==='team')return`<div class="grid g3">${ev.teams.map((t,i)=>`<div class="card"><div class="row between"><span class="eyebrow">Dupla ${i+1}</span></div><div class="plist">${t.p.map(id=>{const p=P(ev,id);return`<div class="pl" style="grid-template-columns:36px 1fr auto"><span class="av${p.guest?' g':''}">${esc(initials(p.n))}</span><span class="nm">${esc(p.n)}<small>${p.guest?'Guest':'Perfil oficial'}</small></span><span class="pill">${SIDE[p.side]}</span></div>`}).join('')}</div></div>`).join('')}</div>`;
+ const g=['D','E','A'].map(s=>[s,ev.players.filter(p=>p.side===s)]).filter(([,l])=>l.length);
+ return`<div class="grid g3">${g.map(([s,l])=>`<div class="card"><span class="eyebrow">${SIDE[s]} · ${l.length}</span><div class="plist">${l.map(p=>`<div class="pl" style="grid-template-columns:36px 1fr"><span class="av${p.guest?' g':''}">${esc(initials(p.n))}</span><span class="nm">${esc(p.n)}<small>${p.guest?'Guest · só neste evento':'Perfil oficial'}</small></span></div>`).join('')}</div></div>`).join('')}</div>`}
+
+/* ================= exemplos preenchidos ================= */
+function seed(){const mk=(o)=>{const ev={...newDraft(),...o,id:uid(),demo:true};return ev};
+ const mem=(n,side,guest)=>{const m=MEMBERS.find(x=>x.n===n);return{id:uid(),mid:m?.id,n,side:side||m?.side||'A',guest:!!guest}};
+ /* 1. Clássico M5, 6 duplas, 2 campos, ronda 1-3 com resultados */
+ const c=mk({name:'Non-stop M5 · segunda',format:'classico',date:'2026-11-30',nRounds:5,courts:['Campo 3','Campo 4']});
+ c.players=[mem('Bernardo Ferro'),mem('Ruud Hendriks'),mem('Luciano Cruz'),mem('Bruno Lemos'),mem('Udhayakumar Pandiyaraj'),mem('Gonçalo Santos'),mem('Gonçalo Araújo'),mem('Juan Amarante'),mem('Ignacio Gallo'),mem('Mario Sastre'),mem('Rui Teixeira','D',true),mem('Pedro Monteiro')];
+ c.teams=[];for(let i=0;i<12;i+=2)c.teams.push({p:[c.players[i].id,c.players[i+1].id]});generate(c);
+ const sc1=[[6,4],[3,6],[7,5],[5,5],[6,2],[4,6]];let k=0;c.rounds.slice(0,3).forEach(r=>r.matches.forEach(m=>{const s=sc1[k++%sc1.length];m.sa=s[0];m.sb=s[1];m.saved=true}));
+ /* 2. Americano D×E (o formato do protótipo antigo), 8 jogadores, terminado */
+ const a=mk({name:'Americano Direitas × Esquerdas',format:'americano',date:'2026-10-22',nRounds:5,courts:['Campo 1','Campo 2']});
+ a.players=[mem('Juan Amarante','D'),mem('Mariano Massazza','D'),mem('Ricardinho','D',true),mem('Mario Sastre','D'),mem('Bernardo Ferro','E'),mem('Gonçalo Araújo','E'),mem('Gonçalo Santos','E'),mem('Saraiva','E',true)];generate(a);
+ const sc2=[[6,3],[4,5],[5,5],[7,2],[3,6],[6,4],[5,4],[2,6]];k=0;for(let i=0;i<a.rounds.length;i++){advance(a);a.rounds[i].matches.forEach(m=>{const s=sc2[k++%sc2.length];m.sa=s[0];m.sb=s[1];m.saved=true})}
+ /* 3. Mexicano 12 jogadores com guests, a meio */
+ const x=mk({name:'Mexicano aberto',format:'mexicano',date:'2026-12-07',nRounds:6,courts:['Campo 1','Campo 2','Campo 3'],opts:{...newDraft().opts,finalPerf:false,scoring:'pontos',points:21}});
+ x.players=[...['Bernardo Ferro','Ruud Hendriks','Luciano Cruz','Bruno Lemos','Juan Romero','Jonathan','Justin','Schadia Castillo','Franklin Salas','Philips Huang'].map(n=>mem(n)),mem('Ana Guest','D',true),mem('Tomás Guest','E',true)];generate(x);
+ const sc3=[[13,8],[11,10],[6,15],[12,9],[14,7],[10,11],[9,12]];k=0;for(let i=0;i<2;i++){advance(x);x.rounds[i].matches.forEach(m=>{const s=sc3[k++%sc3.length];m.sa=s[0];m.sb=s[1];m.saved=true})}advance(x);
+ /* 4. Sobe e desce, 6 duplas em 3 campos, por começar */
+ const s=mk({name:'Sobe e desce de Natal',format:'sobe',date:'2026-12-21',nRounds:6,courts:['Campo 1','Campo 2','Campo 3'],start:'20:00',end:'22:00'});
+ s.players=['Bernardo Ferro','Ruud Hendriks','Luciano Cruz','Bruno Lemos','Gonçalo Santos','Gonçalo Araújo','Juan Amarante','Ignacio Gallo','Mario Sastre','Pedro Monteiro','Nicolas Simonelli','Mariano Massazza'].map(n=>mem(n));
+ s.teams=[];for(let i=0;i<12;i+=2)s.teams.push({p:[s.players[i].id,s.players[i+1].id]});generate(s);
+ const sc4=[[6,4],[3,5],[5,2]];s.rounds[0].matches.forEach((m,i)=>{m.sa=sc4[i][0];m.sb=sc4[i][1];m.saved=true});advance(s);
+ DB.events.push(c,a,x,s);persist()}
+
+/* ================= router e eventos ================= */
+function route(){const h=location.hash.replace(/^#\/?/,'');const app=$('#app');
+ if(h==='novo'){if(!draft){draft=newDraft();step=0}app.innerHTML=vNew();return}
+ const m=h.match(/^n\/(\w+)/);if(m){const ev=DB.events.find(e=>e.id===m[1]);app.innerHTML=ev?vEvent(ev):'<div class="empty" style="margin-top:40px">Este non-stop não existe neste browser.</div>';return}
+ app.innerHTML=vHome()}
+const cur=()=>DB.events.find(e=>e.id===(location.hash.match(/n\/(\w+)/)||[])[1]);
+window.addEventListener('hashchange',()=>{window.scrollTo(0,0);route()});
+document.addEventListener('input',e=>{const t=e.target;if(!draft)return;
+ if(t.dataset.f){const k=t.dataset.f;draft[k]=t.type==='number'?(t.value===''?'':+t.value):t.value;if(['start','end','nRounds','warm','change'].includes(k)){const sc=schedule(draft);const box=document.querySelector('.sched');if(box){$('#app').innerHTML=vNew();const el=document.querySelector(`[data-f="${k}"]`);if(el){el.focus();try{el.setSelectionRange?.(el.value.length,el.value.length)}catch(_){}}}}}
+ if(t.dataset.court!=null)draft.courts[+t.dataset.court]=t.value});
+document.addEventListener('change',e=>{const t=e.target;if(t.dataset.team!=null&&draft){draft.teams[+t.dataset.team].p[+t.dataset.j]=t.value;route()}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='guest'){e.preventDefault();document.querySelector('[data-act=addguest]').click()}});
+document.addEventListener('click',e=>{const b=e.target.closest('button,[data-act]');if(!b)return;const d=b.dataset;const ev=cur();
+ if(d.act==='seed'){seed();route();toast('Exemplos adicionados');return}
+ if(d.step!=null){step=+d.step;route();return}
+ if(d.act==='next'){step=Math.min(4,step+1);route();window.scrollTo(0,0);return}
+ if(d.act==='prev'){step=Math.max(0,step-1);route();return}
+ if(d.act==='cancel'){draft=null;location.hash='#/';return}
+ if(d.fmt){draft.format=d.fmt;draft.teams=[];if(d.fmt==='sobe'&&draft.nRounds<4)draft.nRounds=6;route();return}
+ if(d.act==='addcourt'){draft.courts.push('Campo '+(draft.courts.length+1));route();return}
+ if(d.delcourt!=null){draft.courts.splice(+d.delcourt,1);route();return}
+ if(d.opt){draft.opts[d.opt]=!draft.opts[d.opt];route();return}
+ if(d.scoring){draft.opts.scoring=d.scoring;route();return}if(d.points){draft.opts.points=+d.points;route();return}
+ if(d.rank){draft.opts.rankBy=d.rank;route();return}if(d.ptswin){draft.opts.ptsWin=+d.ptswin;route();return}if(d.ptsdraw){draft.opts.ptsDraw=+d.ptsdraw;route();return}
+ if(d.mem){const m=MEMBERS.find(x=>x.id===d.mem);const i=draft.players.findIndex(p=>p.mid===m.id);if(i>=0){const id=draft.players[i].id;draft.players.splice(i,1);draft.teams.forEach(t=>t.p=t.p.map(x=>x===id?'':x))}else draft.players.push({id:uid(),mid:m.id,n:m.n,side:m.side,guest:false});route();return}
+ if(d.act==='allm'){MEMBERS.forEach(m=>{if(!draft.players.some(p=>p.mid===m.id))draft.players.push({id:uid(),mid:m.id,n:m.n,side:m.side,guest:false})});route();return}
+ if(d.act==='addguest'){const i=$('#guest');const n=i.value.trim();if(!n){i.focus();return}draft.players.push({id:uid(),n,side:'A',guest:true});route();setTimeout(()=>$('#guest')?.focus(),0);return}
+ if(d.pside){const p=draft.players.find(x=>x.id===d.pside);p.side=d.s;route();return}
+ if(d.delp){draft.players=draft.players.filter(p=>p.id!==d.delp);draft.teams.forEach(t=>t.p=t.p.map(x=>x===d.delp?'':x));route();return}
+ if(d.act==='addteam'){draft.teams.push({p:['','']});route();return}
+ if(d.delteam!=null){draft.teams.splice(+d.delteam,1);route();return}
+ if(d.act==='autoteams'){/* junta uma direita com uma esquerda sempre que possível */const free=draft.players.filter(p=>!draft.teams.some(t=>t.p.includes(p.id)));draft.teams=draft.teams.filter(t=>t.p[0]&&t.p[1]);
+  const Ds=free.filter(p=>p.side==='D'),Es=free.filter(p=>p.side==='E'),As=free.filter(p=>p.side==='A');while(Ds.length||Es.length||As.length){const a=Ds.shift()||As.shift()||Es.shift();const b=(P(draft,a.id).side==='D'?(Es.shift()||As.shift()||Ds.shift()):(Ds.shift()||As.shift()||Es.shift()));if(!b)break;draft.teams.push({p:[a.id,b.id]})}route();return}
+ if(d.act==='create'){const{e:er}=validate(draft);if(er.length){toast(er[0]);return}const ev=draft;generate(ev);DB.events.push(ev);persist();draft=null;step=0;tab='jogos';location.hash='#/n/'+ev.id;toast('Non-stop criado');return}
+ /* evento */
+ if(d.tab){tab=d.tab;route();return}
+ if(d.act==='org'){setOrg(!ORG());route();return}
+ if(d.act==='share'){navigator.clipboard?.writeText(location.href).then(()=>toast('Link copiado'),()=>toast(location.href));return}
+ if(d.act==='del'&&ev){if(confirm('Apagar este non-stop? Não dá para desfazer.')){DB.events=DB.events.filter(x=>x!==ev);persist();location.hash='#/'}return}
+ if(d.act==='reset'&&ev){if(confirm('Limpar todos os resultados e voltar a gerar as rondas?')){generate(ev);persist();drafts={};route()}return}
+ if(d.sc&&ev){const m=ev.rounds[+d.r].matches.find(x=>x.id===d.sc);const c=drafts[m.id]??{sa:m.sa,sb:m.sb};const mx=maxScore(ev);c[d.k]=Math.max(0,Math.min(mx,(c[d.k]||0)+ +d.d));
+  if(ev.opts.scoring==='pontos'&&FORMATS[ev.format].unit==='player'){const o=d.k==='sa'?'sb':'sa';c[o]=mx-c[d.k]}drafts[m.id]={sa:c.sa,sb:c.sb};route();return}
+ if(d.cancel){delete drafts[d.cancel];route();return}
+ if(d.save&&ev){const m=ev.rounds[+d.r].matches.find(x=>x.id===d.save);const c=drafts[m.id]??{sa:m.sa,sb:m.sb};m.sa=c.sa;m.sb=c.sb;m.saved=true;delete drafts[m.id];const gen=advance(ev);persist();route();toast(gen?'Guardado · ronda seguinte gerada':'Resultado guardado');return}
+ if(d.clear&&ev){const m=ev.rounds[+d.r].matches.find(x=>x.id===d.clear);m.saved=false;m.sa=0;m.sb=0;delete drafts[m.id];persist();route();return}
+});
+route();
+}
+</script>
+</body>
+</html>
