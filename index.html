@@ -173,7 +173,7 @@ td.pts{color:var(--ink);font-weight:500}
 .fs-cols .lbl,.fs-row .lbl{margin:0}
 .t3{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:5px;font-size:14px;line-height:1.3}
 .t3 li{display:flex;align-items:baseline;gap:8px}.t3 .n{color:var(--dim);font-size:12px;width:10px;flex:none}.t3 .p{flex:1;min-width:0}
-.t3 .v{margin-left:auto;color:var(--mut);font-size:12px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.t3 .v{display:block;color:var(--mut);font-size:12px;margin-top:1px;font-variant-numeric:tabular-nums}
 .t3 li:first-child .n{color:var(--y)}.t3.far{gap:4px}
 .more summary{cursor:pointer;font-size:13px;color:var(--y);margin-top:6px;list-style:none}.more summary::-webkit-details-marker{display:none}
 .more summary::after{content:' ↓'}.more[open] summary::after{content:' ↑'}.more .t3{margin-top:6px}
@@ -181,6 +181,11 @@ tr.gap td{text-align:center;color:var(--dim);padding-block:2px}tr.dimr td{color:
 .fs-bar{display:flex;height:8px;border-radius:8px;overflow:hidden;gap:2px;margin:4px 0 18px}.fs-bar i{display:block;background:var(--line)}
 .fs-bar .l6{background:var(--y)}.fs-bar .l5{background:var(--y);opacity:.75}.fs-bar .l4{background:var(--y);opacity:.55}.fs-bar .l3{background:var(--y);opacity:.4}.fs-bar .l2{background:var(--y);opacity:.28}.fs-bar .l1{background:var(--y);opacity:.18}
 .fs-stg{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(240px,100%),1fr));gap:18px 32px}
+.fs-hi{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:var(--gap);margin-bottom:26px}
+.fs-hc{background:var(--card2);border-radius:var(--rs);padding:18px 20px}.fs-hc.ch{background:var(--yd)}
+.fs-hc .fs-h{display:flex;align-items:baseline;gap:8px;margin-bottom:10px}.fs-hc .lbl{margin:0;color:var(--soft)}.fs-hc.ch .lbl,.fs-hc.ch .fs-h b{color:var(--y)}
+.fs-hc .fs-h b{margin-left:auto;font-size:28px;line-height:1;letter-spacing:-.02em}
+.fs-hc ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;font-size:16px}.fs-hc .fs-star{color:var(--y);margin-right:6px}
 .fs-row .fs-h{display:flex;align-items:baseline;gap:8px;border-bottom:1px solid var(--line);padding-bottom:6px}.fs-row .fs-h b{margin-left:auto;font-size:14px;color:var(--soft)}
 .fs-row ul{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:5px;font-size:14px}
 .cpos b{font-weight:500;color:var(--ink)}.cpos small{color:var(--dim);font-size:12px}
@@ -476,7 +481,7 @@ function vStats(){const all=M.filter(m=>!st.cat||m.c===st.cat);const ps=pairStat
  const big=top3(us.filter(s=>s.best),s=>s.best.dif,(a,b)=>b.best.g-a.best.g);
  const N=T().kNone,ND=T().dNone;const done=V+D;
  /* top 3 da equipa: valor do 1.º em grande, lista com o valor de cada dupla */
- const rank=(l,val)=>{if(!l.length)return ND;const li=s=>`<li><span class="n">${s._r}</span><span class="p">${pairLine(s)}</span><span class="v">${esc(val(s))}</span></li>`;
+ const rank=(l,val)=>{if(!l.length)return ND;const li=s=>`<li><span class="n">${s._r}</span><span class="p">${pairLine(s)}<span class="v">${esc(val(s))}</span></span></li>`;
   return`<ol class="t3">${l.slice(0,3).map(li).join('')}</ol>`+(l.length>3?`<details class="more"><summary>${esc(T().seeTied(l.length-3))}</summary><ol class="t3">${l.slice(3).map(li).join('')}</ol></details>`:'')};
  const farList=l=>{const li=s=>`<li><span class="p">${pairLine(s)}</span></li>`;return`<ol class="t3 far">${l.slice(0,4).map(li).join('')}</ol>`+(l.length>4?`<details class="more"><summary>${esc(T().seeMore(l.length-4))}</summary><ol class="t3 far">${l.slice(4).map(li).join('')}</ol></details>`:'')};
  const tiles=[
@@ -511,7 +516,9 @@ function vStats(){const all=M.filter(m=>!st.cat||m.c===st.cat);const ps=pairStat
     const lvls=[6,5,4,3,2,1,0.5,0];const lbl=s=>s===6?T().champ:s===5?T().finalist:T().stgEnd[s]||stageLabel(s);
     const pl=us.filter(s=>s.j||s.pending);const rows=lvls.map(l=>({l,p:pl.filter(s=>s.stage===l).sort((a,b)=>catRank(a.c)-catRank(b.c))})).filter(r=>r.p.length);
     const bar=`<div class="fs-bar">${rows.map(r=>`<i class="l${String(r.l).replace('.','_')}" style="flex:${r.p.length}" title="${esc(lbl(r.l))}: ${r.p.length}"></i>`).join('')}</div>`;
-    return bar+`<div class="fs-stg">${rows.map(r=>`<div class="fs-row"><div class="fs-h"><span class="lbl">${esc(lbl(r.l))}</span><b>${r.p.length}</b></div><ul>${r.p.map(s=>`<li>${r.l===6?'★ ':''}${pairLine(s)}</li>`).join('')}</ul></div>`).join('')}</div>`})()}</section>`}
+    const hi=rows.filter(r=>r.l>=5),lo=rows.filter(r=>r.l<5);
+    const hiH=hi.length?`<div class="fs-hi">${hi.map(r=>`<div class="fs-hc${r.l===6?' ch':''}"><div class="fs-h"><span class="lbl">${esc(lbl(r.l))}</span><b>${r.p.length}</b></div><ul>${r.p.map(s=>`<li>${r.l===6?'<span class="fs-star">★</span>':''}${pairLine(s)}</li>`).join('')}</ul></div>`).join('')}</div>`:'';
+    return bar+hiH+`<div class="fs-stg">${lo.map(r=>`<div class="fs-row"><div class="fs-h"><span class="lbl">${esc(lbl(r.l))}</span><b>${r.p.length}</b></div><ul>${r.p.map(s=>`<li>${r.l===6?'★ ':''}${pairLine(s)}</li>`).join('')}</ul></div>`).join('')}</div>`})()}</section>`}
  const alive=us.filter(s=>s.pending&&!s.out).length;
  return`${fin}<section class="sec"><h2>${T().stUs}<small>${esc(T().stLiveNote(done))}${!ended&&us.length?' · '+esc(T().pairsIn(alive,us.length)):''}</small></h2><div class="hls">${tiles.join('')}</div></section>
  <section class="sec"><div class="grid two">${teams}${catCard}</div></section>`}
