@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<title>FSportIN · Perfis (lab)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://use.typekit.net/dgw5mps.css">
+<style>
+/* Mesma linguagem do site do torneio: cartões escuros, tipografia leve, amarelo para a equipa e acções. */
+:root{color-scheme:dark;--bg:#0b0b0c;--card:#161618;--card2:#1e1e21;--line:#26262a;--ink:#f4f4f5;--soft:#c4c4c8;--mut:#8a8a90;--dim:#5e5e64;
+--y:#ffd21f;--yd:rgba(255,210,31,.12);--red:#e5484d;--r:20px;--rs:14px;--pad:clamp(16px,3vw,40px);--gap:clamp(12px,1.4vw,20px)}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:400 15px/1.45 degular,Figtree,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+b,strong,h1,h2,h3{font-weight:500}a{color:inherit}
+:focus-visible{outline:2px solid var(--y);outline-offset:2px;border-radius:8px}
+.wrap{padding-inline:var(--pad);max-width:1180px;margin:0 auto}
+.bar1{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:28px}
+.bar1 img{height:20px;display:block}
+.lab{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--y);background:var(--yd);padding:4px 8px;border-radius:999px;margin-left:12px}
+.left{display:flex;align-items:center;text-decoration:none}
+.me{text-decoration:none;display:flex;align-items:center;gap:10px;background:var(--card);border:0;color:var(--ink);font:500 14px degular,Figtree,sans-serif;padding:4px 14px 4px 4px;border-radius:999px;cursor:pointer;min-height:40px}
+.me.plain{padding:8px 16px}
+.hero{margin:44px 0 28px}
+.hero>span:not(.av){display:block;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--y);margin-bottom:12px}
+.hero h1{font-size:clamp(38px,6vw,64px);line-height:.95;letter-spacing:-.03em;margin:0}
+.hero p{color:var(--mut);margin:12px 0 0;max-width:60ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(200px,46%),1fr));gap:var(--gap)}
+.pc{background:var(--card);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;align-items:flex-start;gap:12px;text-decoration:none;transition:background .15s}
+.pc:hover{background:var(--card2)}
+.pc .nm{font-size:17px;line-height:1.2}
+.av{width:56px;height:56px;border-radius:50%;background:var(--card2);display:grid;place-items:center;font-size:20px;color:var(--soft);overflow:hidden;flex:none}
+.av img{width:100%;height:100%;object-fit:cover;display:block}
+.av.s{width:32px;height:32px;font-size:13px}.av.l{width:120px;height:120px;font-size:42px}
+.side{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--mut)}
+.side b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:6px;background:var(--line);color:var(--ink);font-size:12px}
+.side.D b{background:#2a3a52}.side.E b{background:#4a2f3c}.side.A b{background:var(--yd);color:var(--y)}
+.card{background:var(--card);border-radius:var(--r);padding:clamp(20px,3vw,32px);max-width:560px}
+.card h2{font-size:24px;margin:0 0 6px;letter-spacing:-.01em}
+.card p{color:var(--mut);margin:0 0 18px}
+label{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin:18px 0 8px}
+input[type=email],input[type=text],input.code{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--ink);font:400 16px degular,Figtree,sans-serif;padding:13px 14px;border-radius:12px}
+input:focus{outline:none;border-color:var(--y)}
+input.code{letter-spacing:.4em;font-size:22px;text-align:center;max-width:220px}
+.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--y);color:#000;border:0;font:500 15px degular,Figtree,sans-serif;padding:12px 20px;border-radius:999px;cursor:pointer;min-height:44px;margin-top:18px}
+.btn[disabled]{opacity:.5;cursor:default}
+.btn.ghost{background:var(--card2);color:var(--ink)}
+.link{background:none;border:0;color:var(--mut);font:inherit;text-decoration:underline;cursor:pointer;padding:0;margin-top:14px}
+.seg{display:inline-flex;gap:2px;background:var(--bg);padding:3px;border-radius:999px;border:1px solid var(--line)}
+.seg button{background:none;border:0;color:var(--mut);font:500 14px degular,Figtree,sans-serif;padding:8px 16px;border-radius:999px;cursor:pointer;min-height:38px}
+.seg button[aria-pressed=true]{background:var(--ink);color:#000}
+.photo{display:flex;align-items:center;gap:16px}
+.msg{font-size:14px;margin-top:14px;color:var(--soft)}.msg.err{color:var(--red)}.msg.ok{color:var(--y)}
+.prof{display:flex;flex-wrap:wrap;gap:24px 32px;align-items:center}
+.prof .av{color:var(--soft)}.prof h1{font-size:clamp(34px,5vw,56px);line-height:1;letter-spacing:-.03em;margin:0 0 10px}
+.meta{color:var(--mut);font-size:14px}
+.soon{background:var(--card);border-radius:var(--r);padding:24px;margin-top:28px;color:var(--mut)}
+.soon b{display:block;color:var(--ink);margin-bottom:4px}
+.back{display:inline-block;margin-top:36px;color:var(--mut);font-size:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.empty{background:var(--card);border-radius:var(--r);padding:40px;text-align:center;color:var(--mut)}
+footer{color:var(--dim);font-size:12px;padding-block:56px 40px}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <header class="bar1">
+  <a class="left" href="./" aria-label="Perfis FSportIN"><img src="../../assets/fsportin-logo-white.svg" alt="FSportIN"><span class="lab">Lab</span></a>
+  <div id="who"></div>
+ </header>
+ <main id="app" aria-live="polite"></main>
+ <footer>Área de testes da FSportIN · os perfis são públicos dentro da equipa; o email nunca é mostrado.</footer>
+</div>
+<script type="module">
+import{createClient}from'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const sb=createClient('https://yoydapdrgxpcjiijnhzd.supabase.co','sb_publishable_CYj1SqPeHQE-LPX7gO7k3A_W7sC-h9R');
+const app=document.getElementById('app'),who=document.getElementById('who');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const SIDES={D:'Direita',E:'Esquerda',A:'Ambos os lados'};
+const ini=n=>(n||'?').trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();
+const av=(p,cls='')=>`<span class="av ${cls}">${p?.avatar_url?`<img src="${esc(p.avatar_url)}" alt="">`:esc(ini(p?.display_name))}</span>`;
+const side=s=>`<span class="side ${esc(s||'A')}"><b>${esc(s||'A')}</b>${esc(SIDES[s||'A'])}</span>`;
+let session=null,me=null,role=null,pendingEmail=null;
+
+/* rotas simples por query: ?id=<perfil> · ?entrar · ?eu */
+const q=()=>new URLSearchParams(location.search);
+const go=url=>{history.pushState(null,'',url);route()};
+addEventListener('popstate',route);
+document.addEventListener('click',e=>{const a=e.target.closest('a[data-go]');if(a){e.preventDefault();go(a.getAttribute('href'))}});
+
+async function loadMe(){me=null;role=null;if(!session)return;
+ const{data}=await sb.from('profiles').select('*').eq('id',session.user.id).maybeSingle();me=data;
+ const r=await sb.from('team_members').select('role').eq('user_id',session.user.id);role=r.data?.[0]?.role||null}
+function header(){who.innerHTML=session&&me?`<a class="me" href="?eu" data-go>${av(me,'s')}${esc(me.display_name)}</a>`:`<a class="me plain" href="?entrar" data-go>Entrar</a>`}
+
+async function route(){header();const p=q();
+ if(p.has('entrar'))return session?go('?eu'):vLogin();
+ if(p.has('eu'))return session?vEdit():go('?entrar');
+ if(p.get('id'))return vProfile(p.get('id'));
+ return vTeam()}
+
+async function vTeam(){app.innerHTML=`<section class="hero"><span>Equipa</span><h1>Jogadores FSportIN</h1><p>Perfis da equipa. Cada jogador entra com o email do convite e completa o seu perfil.</p></section><div id="list" class="empty">A carregar…</div>`;
+ const{data,error}=await sb.from('profiles').select('id,display_name,side,avatar_url').order('display_name');const el=document.getElementById('list');
+ if(error){el.textContent='Não foi possível carregar os perfis.';return}
+ if(!data.length){el.innerHTML=`Ainda não há perfis. ${session?'':'<a href="?entrar" data-go>Entra com o teu convite</a> para criares o primeiro.'}`;return}
+ el.className='grid';el.innerHTML=data.map(p=>`<a class="pc" href="?id=${esc(p.id)}" data-go>${av(p)}<span class="nm">${esc(p.display_name)}</span>${side(p.side)}</a>`).join('')}
+
+async function vProfile(id){app.innerHTML=`<div class="empty" style="margin-top:44px">A carregar…</div>`;
+ const{data:p}=await sb.from('profiles').select('id,display_name,side,avatar_url,created_at').eq('id',id).maybeSingle();
+ if(!p){app.innerHTML=`<div class="empty" style="margin-top:44px">Perfil não encontrado.</div><a class="back" href="./" data-go>← Jogadores</a>`;return}
+ const mine=session?.user.id===p.id;const since=new Date(p.created_at).toLocaleDateString('pt-PT',{month:'long',year:'numeric'});
+ app.innerHTML=`<section class="hero prof">${av(p,'l')}<div><h1>${esc(p.display_name)}</h1><div class="row">${side(p.side)}<span class="meta">· Na FSportIN desde ${esc(since)}</span></div>
+  ${mine?`<a class="btn ghost" href="?eu" data-go>Editar perfil</a>`:''}</div></section>
+  <div class="soon"><b>Histórico de jogos</b>Os resultados dos non-stops e torneios vão aparecer aqui.</div><a class="back" href="./" data-go>← Jogadores</a>`}
+
+function vLogin(){const step2=!!pendingEmail;
+ app.innerHTML=`<section class="hero"><span>Entrar</span><h1>O teu perfil</h1><p>Sem password: enviamos um link para o teu email. A sessão fica guardada neste dispositivo.</p></section>
+ <div class="card">${!step2?`<h2>Email do convite</h2><p>Só entra quem tem convite da equipa.</p>
+  <form id="f1"><label for="em">Email</label><input id="em" type="email" autocomplete="email" required placeholder="nome@exemplo.pt"><button class="btn" id="b1">Enviar link</button><div id="m" class="msg" role="status"></div></form>`
+ :`<h2>Verifica o teu email</h2><p>Enviámos um link para <b>${esc(pendingEmail)}</b>. Abre-o neste dispositivo. Se o email trouxer um código de 6 dígitos, podes escrevê-lo aqui.</p>
+  <form id="f2"><label for="cd">Código</label><input id="cd" class="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}"><br><button class="btn" id="b2">Entrar</button><div id="m" class="msg" role="status"></div></form>
+  <button class="link" id="again">Usar outro email</button>`}</div>`;
+ const m=document.getElementById('m');
+ if(!step2)document.getElementById('f1').onsubmit=async e=>{e.preventDefault();const b=document.getElementById('b1');const email=document.getElementById('em').value.trim().toLowerCase();b.disabled=true;m.className='msg';m.textContent='A enviar…';
+  const{error}=await sb.auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:location.origin+location.pathname+'?eu'}});b.disabled=false;
+  if(error){m.className='msg err';m.textContent=/convite|database error|saving new user/i.test(error.message)?'Este email não tem convite. Fala com o admin da equipa.':/rate|limit|seconds/i.test(error.message)?'Demasiados pedidos. Espera um pouco e tenta outra vez.':'Não foi possível enviar: '+error.message;return}
+  pendingEmail=email;vLogin()};
+ else{document.getElementById('again').onclick=()=>{pendingEmail=null;vLogin()};
+  document.getElementById('f2').onsubmit=async e=>{e.preventDefault();const token=document.getElementById('cd').value.trim();if(!/^\d{6}$/.test(token)){m.className='msg err';m.textContent='O código tem 6 dígitos.';return}
+   const{error}=await sb.auth.verifyOtp({email:pendingEmail,token,type:'email'});if(error){m.className='msg err';m.textContent='Código inválido ou expirado.';return}pendingEmail=null}}}
+
+function vEdit(){if(!me){app.innerHTML=`<div class="empty" style="margin-top:44px">O teu perfil ainda não existe. Confirma que entraste com o email do convite.</div><button class="link" id="out">Terminar sessão</button>`;document.getElementById('out').onclick=()=>sb.auth.signOut();return}
+ let s=me.side||'A',file=null;
+ app.innerHTML=`<section class="hero"><span>O meu perfil${role?` · ${esc({admin:'Admin',organizer:'Organizador',member:'Membro'}[role]||role)}`:''}</span><h1>${esc(me.display_name)}</h1><p><a href="?id=${esc(me.id)}" data-go>Ver como os outros me vêem</a></p></section>
+ <form class="card" id="fe"><label>Foto</label><div class="photo"><span id="pv">${av(me,'l')}</span><div><label class="btn ghost" for="ph" style="margin:0;text-transform:none;letter-spacing:0;font-size:15px;color:var(--ink)">Escolher foto</label><input id="ph" type="file" accept="image/*" hidden><div class="meta" style="margin-top:8px">JPG, PNG ou WebP. É recortada em quadrado.</div></div></div>
+  <label for="nm">Nome</label><input id="nm" type="text" maxlength="40" required value="${esc(me.display_name||'')}">
+  <label>Lado preferido</label><div class="seg" id="sd">${['D','E','A'].map(k=>`<button type="button" data-s="${k}" aria-pressed="${s===k}">${SIDES[k]}</button>`).join('')}</div>
+  <div class="row"><button class="btn" id="sv">Guardar</button><button class="link" type="button" id="out" style="margin:18px 0 0 8px">Terminar sessão</button></div><div id="m" class="msg" role="status"></div></form>`;
+ const m=document.getElementById('m');
+ document.getElementById('sd').onclick=e=>{const b=e.target.closest('[data-s]');if(!b)return;s=b.dataset.s;document.querySelectorAll('#sd button').forEach(x=>x.setAttribute('aria-pressed',x===b))};
+ document.getElementById('ph').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{file=await square(f,512);document.getElementById('pv').innerHTML=`<span class="av l"><img src="${URL.createObjectURL(file)}" alt=""></span>`}catch{m.className='msg err';m.textContent='Não foi possível ler a imagem.'}};
+ document.getElementById('out').onclick=()=>sb.auth.signOut();
+ document.getElementById('fe').onsubmit=async e=>{e.preventDefault();const b=document.getElementById('sv');b.disabled=true;m.className='msg';m.textContent='A guardar…';
+  const upd={display_name:document.getElementById('nm').value.trim().slice(0,40)||me.display_name,side:s,updated_at:new Date().toISOString()};
+  if(file){const path=`${me.id}/avatar.webp`;const up=await sb.storage.from('avatars').upload(path,file,{upsert:true,contentType:'image/webp',cacheControl:'3600'});
+   if(up.error){b.disabled=false;m.className='msg err';m.textContent='A foto não foi carregada: '+up.error.message;return}
+   upd.avatar_url=sb.storage.from('avatars').getPublicUrl(path).data.publicUrl+'?v='+Date.now()}
+  const{error}=await sb.from('profiles').update(upd).eq('id',me.id);b.disabled=false;
+  if(error){m.className='msg err';m.textContent='Não foi possível guardar: '+error.message;return}
+  Object.assign(me,upd);file=null;header();m.className='msg ok';m.textContent='Guardado.';document.querySelector('.hero h1').textContent=me.display_name}}
+
+/* recorta ao centro em quadrado e reduz para WebP, para fotos leves */
+function square(f,size){return new Promise((ok,ko)=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=c.height=size;const k=Math.min(img.width,img.height);
+ c.getContext('2d').drawImage(img,(img.width-k)/2,(img.height-k)/2,k,k,0,0,size,size);c.toBlob(b=>b?ok(b):ko(),'image/webp',.85)};img.onerror=ko;img.src=URL.createObjectURL(f)})}
+
+/* não chamar o Supabase dentro do callback (pode bloquear): adia para fora com setTimeout */
+sb.auth.onAuthStateChange((ev,s)=>{session=s;if(ev==='INITIAL_SESSION'||ev==='SIGNED_IN'||ev==='SIGNED_OUT')setTimeout(async()=>{await loadMe();
+ if(ev==='SIGNED_IN'&&!q().has('id'))history.replaceState(null,'','?eu');if(ev==='SIGNED_OUT')history.replaceState(null,'','./');route()},0)});
+</script>
+</body>
+</html>
