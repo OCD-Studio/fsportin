@@ -65,6 +65,7 @@ input.code{letter-spacing:.4em;font-size:22px;text-align:center;max-width:220px}
 .back{display:inline-block;margin-top:36px;color:var(--mut);font-size:14px}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .empty{background:var(--card);border-radius:var(--r);padding:40px;text-align:center;color:var(--mut)}
+.demo{background:var(--y);color:#000;font-size:13px;text-align:center;padding:8px var(--pad)}.demo a{color:#000}
 footer{color:var(--dim);font-size:12px;padding-block:56px 40px}
 </style>
 </head>
@@ -87,14 +88,20 @@ const ini=n=>(n||'?').trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpp
 const av=(p,cls='')=>`<span class="av ${cls}">${p?.avatar_url?`<img src="${esc(p.avatar_url)}" alt="">`:esc(ini(p?.display_name))}</span>`;
 const side=s=>`<span class="side ${esc(s||'A')}"><b>${esc(s||'A')}</b>${esc(SIDES[s||'A'])}</span>`;
 let session=null,me=null,role=null,pendingEmail=null;
+/* ?demo: perfis fictícios, nada é lido nem gravado no Supabase */
+const DEMO=new URLSearchParams(location.search).has('demo');
+const ph=(a,b)=>'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="100" height="100" fill="url(#g)"/><circle cx="50" cy="40" r="17" fill="rgba(255,255,255,.55)"/><path d="M18 96c4-20 18-30 32-30s28 10 32 30z" fill="rgba(255,255,255,.55)"/></svg>`);
+const DP=[['Bernardo Ferro','D',ph('#ffd21f','#a8790a'),'2026-11-27'],['Shadia Castillo','E',ph('#e5484d','#5b1a2a'),'2026-11-27'],['Franklin Salas','D',null,'2026-11-28'],['Micaela Saleski','E',ph('#3b82f6','#1e2a52'),'2026-11-28'],['Camila Bearzzotti','D',null,'2026-11-28'],['Marcos Cicarelli','A',ph('#22c55e','#14532d'),'2026-11-29'],['Juan Romero','E',null,'2026-11-29'],['Catarina Lencastre','D',ph('#a855f7','#3b1260'),'2026-11-30'],['Gonçalo Santos','E',null,'2026-11-30'],['Joana Mesquita','A',null,'2026-12-01'],['Ruud Hendriks','D',ph('#f97316','#5a2308'),'2026-12-01'],['Luciano Cruz','E',null,'2026-12-01']]
+ .map(([n,sd,a,d],i)=>({id:'demo-'+(i+1),display_name:n,side:sd,avatar_url:a,created_at:d+'T20:00:00Z'}));
+const withDemo=u=>{if(!DEMO)return u;const x=new URL(u,location.href);return x.pathname+(x.search?x.search+'&demo':'?demo')};
 
 /* rotas simples por query: ?id=<perfil> · ?entrar · ?eu */
 const q=()=>new URLSearchParams(location.search);
-const go=url=>{history.pushState(null,'',url);route()};
+const go=url=>{history.pushState(null,'',withDemo(url));route()};
 addEventListener('popstate',route);
 document.addEventListener('click',e=>{const a=e.target.closest('a[data-go]');if(a){e.preventDefault();go(a.getAttribute('href'))}});
 
-async function loadMe(){me=null;role=null;if(!session)return;
+async function loadMe(){me=null;role=null;if(!session)return;if(DEMO){me=DP[0];role='admin';return}
  const{data}=await sb.from('profiles').select('*').eq('id',session.user.id).maybeSingle();me=data;
  const r=await sb.from('team_members').select('role').eq('user_id',session.user.id);role=r.data?.[0]?.role||null}
 function header(){who.innerHTML=session&&me?`<a class="me" href="?eu" data-go>${av(me,'s')}${esc(me.display_name)}</a>`:`<a class="me plain" href="?entrar" data-go>Entrar</a>`}
@@ -106,13 +113,13 @@ async function route(){header();const p=q();
  return vTeam()}
 
 async function vTeam(){app.innerHTML=`<section class="hero"><span>Equipa</span><h1>Jogadores FSportIN</h1><p>Perfis da equipa. Cada jogador entra com o email do convite e completa o seu perfil.</p></section><div id="list" class="empty">A carregar…</div>`;
- const{data,error}=await sb.from('profiles').select('id,display_name,side,avatar_url').order('display_name');const el=document.getElementById('list');
+ const{data,error}=DEMO?{data:[...DP].sort((a,b)=>a.display_name.localeCompare(b.display_name,'pt'))}:await sb.from('profiles').select('id,display_name,side,avatar_url').order('display_name');const el=document.getElementById('list');
  if(error){el.textContent='Não foi possível carregar os perfis.';return}
  if(!data.length){el.innerHTML=`Ainda não há perfis. ${session?'':'<a href="?entrar" data-go>Entra com o teu convite</a> para criares o primeiro.'}`;return}
  el.className='grid';el.innerHTML=data.map(p=>`<a class="pc" href="?id=${esc(p.id)}" data-go>${av(p)}<span class="nm">${esc(p.display_name)}</span>${side(p.side)}</a>`).join('')}
 
 async function vProfile(id){app.innerHTML=`<div class="empty" style="margin-top:44px">A carregar…</div>`;
- const{data:p}=await sb.from('profiles').select('id,display_name,side,avatar_url,created_at').eq('id',id).maybeSingle();
+ const{data:p}=DEMO?{data:DP.find(x=>x.id===id)}:await sb.from('profiles').select('id,display_name,side,avatar_url,created_at').eq('id',id).maybeSingle();
  if(!p){app.innerHTML=`<div class="empty" style="margin-top:44px">Perfil não encontrado.</div><a class="back" href="./" data-go>← Jogadores</a>`;return}
  const mine=session?.user.id===p.id;const since=new Date(p.created_at).toLocaleDateString('pt-PT',{month:'long',year:'numeric'});
  app.innerHTML=`<section class="hero prof">${av(p,'l')}<div><h1>${esc(p.display_name)}</h1><div class="row">${side(p.side)}<span class="meta">· Na FSportIN desde ${esc(since)}</span></div>
@@ -128,14 +135,14 @@ function vLogin(){const step2=!!pendingEmail;
   <button class="link" id="again">Usar outro email</button>`}</div>`;
  const m=document.getElementById('m');
  if(!step2)document.getElementById('f1').onsubmit=async e=>{e.preventDefault();const b=document.getElementById('b1');const email=document.getElementById('em').value.trim().toLowerCase();b.disabled=true;m.className='msg';m.textContent='A enviar…';
-  const{error}=await sb.auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:location.origin+location.pathname+'?eu'}});b.disabled=false;
+  const{error}=DEMO?{error:null}:await sb.auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:location.origin+location.pathname+'?eu'}});b.disabled=false;
   if(error){m.className='msg err';m.textContent=/convite|database error|saving new user/i.test(error.message)?'Este email não tem convite. Fala com o admin da equipa.':/rate|limit|seconds/i.test(error.message)?'Demasiados pedidos. Espera um pouco e tenta outra vez.':'Não foi possível enviar: '+error.message;return}
   pendingEmail=email;vLogin()};
  else{document.getElementById('again').onclick=()=>{pendingEmail=null;vLogin()};
   document.getElementById('f2').onsubmit=async e=>{e.preventDefault();const token=document.getElementById('cd').value.trim();if(!/^\d{6}$/.test(token)){m.className='msg err';m.textContent='O código tem 6 dígitos.';return}
-   const{error}=await sb.auth.verifyOtp({email:pendingEmail,token,type:'email'});if(error){m.className='msg err';m.textContent='Código inválido ou expirado.';return}pendingEmail=null}}}
+   if(DEMO){pendingEmail=null;session={user:{id:DP[0].id}};await loadMe();return go('?eu')}const{error}=await sb.auth.verifyOtp({email:pendingEmail,token,type:'email'});if(error){m.className='msg err';m.textContent='Código inválido ou expirado.';return}pendingEmail=null}}}
 
-function vEdit(){if(!me){app.innerHTML=`<div class="empty" style="margin-top:44px">O teu perfil ainda não existe. Confirma que entraste com o email do convite.</div><button class="link" id="out">Terminar sessão</button>`;document.getElementById('out').onclick=()=>sb.auth.signOut();return}
+function vEdit(){if(!me){app.innerHTML=`<div class="empty" style="margin-top:44px">O teu perfil ainda não existe. Confirma que entraste com o email do convite.</div><button class="link" id="out">Terminar sessão</button>`;document.getElementById('out').onclick=()=>{if(DEMO){session=null;me=null;go('./');return}sb.auth.signOut()};return}
  let s=me.side||'A',file=null;
  app.innerHTML=`<section class="hero"><span>O meu perfil${role?` · ${esc({admin:'Admin',organizer:'Organizador',member:'Membro'}[role]||role)}`:''}</span><h1>${esc(me.display_name)}</h1><p><a href="?id=${esc(me.id)}" data-go>Ver como os outros me vêem</a></p></section>
  <form class="card" id="fe"><label>Foto</label><div class="photo"><span id="pv">${av(me,'l')}</span><div><label class="btn ghost" for="ph" style="margin:0;text-transform:none;letter-spacing:0;font-size:15px;color:var(--ink)">Escolher foto</label><input id="ph" type="file" accept="image/*" hidden><div class="meta" style="margin-top:8px">JPG, PNG ou WebP. É recortada em quadrado.</div></div></div>
@@ -145,9 +152,10 @@ function vEdit(){if(!me){app.innerHTML=`<div class="empty" style="margin-top:44p
  const m=document.getElementById('m');
  document.getElementById('sd').onclick=e=>{const b=e.target.closest('[data-s]');if(!b)return;s=b.dataset.s;document.querySelectorAll('#sd button').forEach(x=>x.setAttribute('aria-pressed',x===b))};
  document.getElementById('ph').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{file=await square(f,512);document.getElementById('pv').innerHTML=`<span class="av l"><img src="${URL.createObjectURL(file)}" alt=""></span>`}catch{m.className='msg err';m.textContent='Não foi possível ler a imagem.'}};
- document.getElementById('out').onclick=()=>sb.auth.signOut();
+ document.getElementById('out').onclick=()=>{if(DEMO){session=null;me=null;go('./');return}sb.auth.signOut()};
  document.getElementById('fe').onsubmit=async e=>{e.preventDefault();const b=document.getElementById('sv');b.disabled=true;m.className='msg';m.textContent='A guardar…';
   const upd={display_name:document.getElementById('nm').value.trim().slice(0,40)||me.display_name,side:s,updated_at:new Date().toISOString()};
+  if(DEMO){if(file)upd.avatar_url=URL.createObjectURL(file);Object.assign(me,upd);file=null;header();m.className='msg ok';m.textContent='Guardado (só nesta pré-visualização).';b.disabled=false;document.querySelector('.hero h1').textContent=me.display_name;return}
   if(file){const path=`${me.id}/avatar.webp`;const up=await sb.storage.from('avatars').upload(path,file,{upsert:true,contentType:'image/webp',cacheControl:'3600'});
    if(up.error){b.disabled=false;m.className='msg err';m.textContent='A foto não foi carregada: '+up.error.message;return}
    upd.avatar_url=sb.storage.from('avatars').getPublicUrl(path).data.publicUrl+'?v='+Date.now()}
@@ -160,7 +168,8 @@ function square(f,size){return new Promise((ok,ko)=>{const img=new Image();img.o
  c.getContext('2d').drawImage(img,(img.width-k)/2,(img.height-k)/2,k,k,0,0,size,size);c.toBlob(b=>b?ok(b):ko(),'image/webp',.85)};img.onerror=ko;img.src=URL.createObjectURL(f)})}
 
 /* não chamar o Supabase dentro do callback (pode bloquear): adia para fora com setTimeout */
-sb.auth.onAuthStateChange((ev,s)=>{session=s;if(ev==='INITIAL_SESSION'||ev==='SIGNED_IN'||ev==='SIGNED_OUT')setTimeout(async()=>{await loadMe();
+if(DEMO){document.body.insertAdjacentHTML('afterbegin','<div class="demo">Pré-visualização com dados fictícios · nada é gravado · <a href="?eu&demo">ver o meu perfil</a></div>');session={user:{id:DP[0].id}};loadMe().then(route)}
+else sb.auth.onAuthStateChange((ev,s)=>{session=s;if(ev==='INITIAL_SESSION'||ev==='SIGNED_IN'||ev==='SIGNED_OUT')setTimeout(async()=>{await loadMe();
  if(ev==='SIGNED_IN'&&!q().has('id'))history.replaceState(null,'','?eu');if(ev==='SIGNED_OUT')history.replaceState(null,'','./');route()},0)});
 </script>
 </body>
