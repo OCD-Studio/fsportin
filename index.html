@@ -152,6 +152,38 @@ td.pts{color:var(--ink);font-weight:500}
 .stage{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:6px 0 14px}
 .st.wo::before{background:var(--soft)}
 .demo{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:#000;background:var(--y);border-radius:999px;padding:5px 12px;margin-bottom:6px}
+/* estatísticas */
+.hls{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(230px,46%),1fr));gap:var(--gap)}
+@media(max-width:520px){.hl{padding:14px}.hl b{font-size:26px}.hl .dd{font-size:13px}}
+.hl{background:var(--card);border-radius:var(--r);padding:18px 20px;display:flex;flex-direction:column;gap:6px}
+.hl .k{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.hl b{font-size:clamp(28px,3vw,40px);line-height:1;letter-spacing:-.03em;margin:4px 0 2px}
+.hl .dd{font-size:14px;color:var(--ink);line-height:1.35}.hl .dd small,.final-sum small{color:var(--mut);font-size:12px;margin-left:4px}
+.hl .sb{font-size:12px;color:var(--mut)}
+.hl:first-child{background:var(--yd)}.hl:first-child b{color:var(--y)}
+@media(min-width:1024px){.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tscroll{overflow-x:auto}
+.tt td,.tt th{white-space:nowrap}.tt td:nth-child(2){max-width:none;width:auto}.tt{min-width:420px}
+.pbar{display:inline-block;width:44px;height:4px;border-radius:4px;background:var(--line);margin-right:8px;vertical-align:middle;overflow:hidden}.pbar i{display:block;height:100%;background:var(--y)}
+.final-sum{background:var(--card);border-radius:var(--r);padding:24px;margin-top:20px;box-shadow:inset 0 0 0 1px rgba(255,210,31,.45)}
+.final-sum .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--y)}
+.final-sum h2{font-size:clamp(30px,4vw,48px);letter-spacing:-.03em;margin:10px 0 6px;line-height:1}
+.final-sum p{color:var(--soft);margin:0 0 14px}
+.fs-cols{display:flex;flex-wrap:wrap;gap:12px 48px}.fs-cols ul{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.fs-cols .lbl,.fs-row .lbl{margin:0}
+.t3{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:5px;font-size:14px;line-height:1.3}
+.t3 li{display:flex;align-items:baseline;gap:8px}.t3 .n{color:var(--dim);font-size:12px;width:10px;flex:none}.t3 .p{flex:1;min-width:0}
+.t3 .v{margin-left:auto;color:var(--mut);font-size:12px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.t3 li:first-child .n{color:var(--y)}.t3.far{gap:4px}
+.more summary{cursor:pointer;font-size:13px;color:var(--y);margin-top:6px;list-style:none}.more summary::-webkit-details-marker{display:none}
+.more summary::after{content:' ↓'}.more[open] summary::after{content:' ↑'}.more .t3{margin-top:6px}
+tr.gap td{text-align:center;color:var(--dim);padding-block:2px}tr.dimr td{color:var(--dim)}
+.fs-bar{display:flex;height:8px;border-radius:8px;overflow:hidden;gap:2px;margin:4px 0 18px}.fs-bar i{display:block;background:var(--line)}
+.fs-bar .l6{background:var(--y)}.fs-bar .l5{background:var(--y);opacity:.75}.fs-bar .l4{background:var(--y);opacity:.55}.fs-bar .l3{background:var(--y);opacity:.4}.fs-bar .l2{background:var(--y);opacity:.28}.fs-bar .l1{background:var(--y);opacity:.18}
+.fs-stg{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(240px,100%),1fr));gap:18px 32px}
+.fs-row .fs-h{display:flex;align-items:baseline;gap:8px;border-bottom:1px solid var(--line);padding-bottom:6px}.fs-row .fs-h b{margin-left:auto;font-size:14px;color:var(--soft)}
+.fs-row ul{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:5px;font-size:14px}
+.cpos b{font-weight:500;color:var(--ink)}.cpos small{color:var(--dim);font-size:12px}
 .empty{background:var(--card);border-radius:var(--r);padding:40px;text-align:center;color:var(--mut)}
 
 /* rodapé */
@@ -211,6 +243,7 @@ td.pts{color:var(--ink);font-weight:500}
    <button role="tab" data-v="calendario" data-i="tCal">Calendário</button>
    <button role="tab" data-v="categorias" data-i="tDraws">Quadros</button>
    <button role="tab" data-v="duplas" data-i="tPairs">Duplas</button>
+   <button role="tab" data-v="estatisticas" data-i="tStats">Estatísticas</button>
   </nav>
   <label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Procurar jogador" aria-label="Procurar jogador"></label>
   <select id="cat" aria-label="Categoria"><option value="" data-i="allCats">Todas as categorias</option></select>
@@ -317,7 +350,8 @@ function save(){try{localStorage.setItem('fsp',JSON.stringify({q:st.q,cat:st.cat
 function filt(l){const q=st.q.trim().toLowerCase();return l.filter(m=>(!st.cat||m.c===st.cat)&&(!q||(m.a+' '+m.b).toLowerCase().includes(q)))}
 const ours=()=>filt(M.filter(m=>m.us&&(!st.mine||isFavM(m))));
 const DEMO=new URLSearchParams(location.search).has('demo');
-const NOW=()=>DEMO?new Date(2026,11,6,15,0):new Date();
+const FINAL_DEMO=DEMO&&new URLSearchParams(location.search).get('demo')==='final';
+const NOW=()=>FINAL_DEMO?new Date(2026,11,9,10,0):DEMO?new Date(2026,11,6,15,0):new Date();
 function todayStr(){const n=NOW();return String(n.getDate()).padStart(2,'0')+'/'+String(n.getMonth()+1).padStart(2,'0')}
 const today0=()=>new Date(NOW().toDateString());
 
@@ -390,8 +424,98 @@ function stats(){const L=M.filter(m=>m.us);let v=0,d=0;for(const m of L){const w
  const pr=pairs();const nx=L.find(m=>!winner(m)&&dobj(m.d)>=today0());
  document.getElementById('stats').innerHTML=[[pr.length,T().sPairs],[new Set(pr.map(p=>p.c)).size,T().sCats],[L.length,T().sGames],[v+'–'+d,T().sWL],[nx?nx.d+' '+nx.t:'—',T().sNext]].map(([b,s])=>`<div class="stat"><b>${esc(b)}</b><span>${esc(s)}</span></div>`).join('')}
 function render(){stats();document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===st.v));
- document.getElementById('view').innerHTML=(DEMO?`<div class="demo">${T().demo}</div>`:'')+(st.v==='calendario'?vCal():st.v==='categorias'?vDraws():vPairs());
+ document.getElementById('view').innerHTML=(DEMO?`<div class="demo">${T().demo}</div>`:'')+(st.v==='calendario'?vCal():st.v==='categorias'?vDraws():st.v==='estatisticas'?vStats():vPairs());
  document.getElementById('foot').innerHTML=(R.updated?T().updated(esc(new Date(R.updated).toLocaleString(T().loc,{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}))):T().noRes)+T().src}
+/* ---------- estatísticas (FSportIN + equipas) ---------- */
+Object.assign(I18N.pt,{tStats:'Estatísticas',stEmpty:'As estatísticas aparecem com os primeiros resultados (29/11).',stUs:'FSportIN',stTeams:'Equipas',stCats:'Por categoria',sumFinal:'Resumo final',stFinalNote:'Torneio terminado. Os números finais da FSportIN.',stLiveNote:n=>`Actualizado com cada sincronização · ${n} jogos da FSportIN terminados`,
+ kSum:'Balanço da equipa',dSum:(v,d,p)=>`${v} vitórias, ${d} derrotas · ${p}% de vitórias`,kFar:'Quem foi mais longe',kPct:'Melhor % de vitórias',dPct:(p,v,j)=>`${p}% · ${v} de ${j} jogos`,kDiff:'Mais consistente',dDiff:(d,g,p)=>`${d>0?'+':''}${d} de diferença de jogos (${g}–${p})`,kMost:'Mais jogos disputados',dMost:(j,g)=>`${j} jogos · ${g} jogos de padel`,kTb:'Tie-breaks ganhos',dTb:(t,s)=>`${t} tie-break${t===1?'':'s'}${s?` + ${s} super tie-break${s===1?'':'s'}`:''}`,kBack:'Remontadas',dBack:n=>`${n} jogo${n===1?'':'s'} ganho${n===1?'':'s'} depois de perder o 1.º set`,kBig:'Vitória mais clara',dBig:(s,o)=>`${s} contra ${o}`,kNone:'—',dNone:'Ainda sem dados',
+ champ:'Campeões',finalist:'Finalistas',titles:'Títulos',rankPos:(p,n)=>`${p}.ª de ${n} equipas`,byWins:'Vitórias',byPct:'% vitórias',thTeam:'Equipa',thPairs:'Duplas',thVD:'V–D',thPct:'%V',thBest:'Melhor ronda',thAlive:'Em prova',teamsNote:'Equipa lida do nome da dupla no padelteams. Duplas sem equipa ficam de fora. Só jogos terminados.',
+ thCat:'Categoria',stg:['Grupos','1/16','1/8','Quartos','Meias','Final','Campeão'],stgP2:'2.ª fase',minGames:'mín. 2 jogos',seeMore:n=>`Ver mais ${n}`,seeTied:n=>`Ver mais ${n} empatad${n===1?'a':'as'}`,thPos:'Posição',thPosT:'Posição da FSportIN entre as equipas nesta categoria, por vitórias',catsNote:'Ordenado pela % de vitórias da FSportIN. A posição compara a FSportIN com as outras equipas na mesma categoria, por vitórias.',nPairs:n=>`${n} duplas`,gamesAbbr:'jogos de padel',pctNote:n=>`Na % só contam equipas com ${n} ou mais jogos; as outras ficam no fim, a cinzento.`,stgEnd:['Fase de grupos','1/16 de final','Oitavos de final','Quartos de final','Meias-finais'],pairsIn:(a,b)=>`${a} de ${b} duplas em prova`});
+Object.assign(I18N.es,{tStats:'Estadísticas',stEmpty:'Las estadísticas aparecen con los primeros resultados (29/11).',stUs:'FSportIN',stTeams:'Equipos',stCats:'Por categoría',sumFinal:'Resumen final',stFinalNote:'Torneo terminado. Los números finales de FSportIN.',stLiveNote:n=>`Actualizado con cada sincronización · ${n} partidos de FSportIN terminados`,
+ kSum:'Balance del equipo',dSum:(v,d,p)=>`${v} victorias, ${d} derrotas · ${p}% de victorias`,kFar:'Quién llegó más lejos',kPct:'Mejor % de victorias',dPct:(p,v,j)=>`${p}% · ${v} de ${j} partidos`,kDiff:'Más regular',dDiff:(d,g,p)=>`${d>0?'+':''}${d} de diferencia de juegos (${g}–${p})`,kMost:'Más partidos jugados',dMost:(j,g)=>`${j} partidos · ${g} juegos`,kTb:'Tie-breaks ganados',dTb:(t,s)=>`${t} tie-break${t===1?'':'s'}${s?` + ${s} super tie-break${s===1?'':'s'}`:''}`,kBack:'Remontadas',dBack:n=>`${n} partido${n===1?'':'s'} ganado${n===1?'':'s'} tras perder el 1.er set`,kBig:'Victoria más clara',dBig:(s,o)=>`${s} contra ${o}`,kNone:'—',dNone:'Aún sin datos',
+ champ:'Campeones',finalist:'Finalistas',titles:'Títulos',rankPos:(p,n)=>`${p}.º de ${n} equipos`,byWins:'Victorias',byPct:'% victorias',thTeam:'Equipo',thPairs:'Parejas',thVD:'G–P',thPct:'%G',thBest:'Mejor ronda',thAlive:'En juego',teamsNote:'Equipo leído del nombre de la pareja en padelteams. Las parejas sin equipo quedan fuera. Solo partidos terminados.',
+ thCat:'Categoría',stg:['Grupos','1/16','1/8','Cuartos','Semis','Final','Campeón'],stgP2:'2.ª fase',minGames:'mín. 2 partidos',seeMore:n=>`Ver ${n} más`,seeTied:n=>`Ver ${n} más empatad${n===1?'a':'as'}`,thPos:'Posición',thPosT:'Posición de FSportIN entre los equipos en esta categoría, por victorias',catsNote:'Ordenado por el % de victorias de FSportIN. La posición compara FSportIN con los otros equipos de la misma categoría, por victorias.',nPairs:n=>`${n} parejas`,gamesAbbr:'juegos',pctNote:n=>`En el % solo cuentan equipos con ${n} o más partidos; los demás quedan al final, en gris.`,stgEnd:['Fase de grupos','Dieciseisavos','Octavos','Cuartos','Semifinales'],pairsIn:(a,b)=>`${a} de ${b} parejas en juego`});
+Object.assign(I18N.en,{tStats:'Stats',stEmpty:'Stats appear with the first results (29/11).',stUs:'FSportIN',stTeams:'Teams',stCats:'By category',sumFinal:'Final summary',stFinalNote:'Tournament over. FSportIN\'s final numbers.',stLiveNote:n=>`Updated with every sync · ${n} FSportIN matches finished`,
+ kSum:'Team record',dSum:(v,d,p)=>`${v} wins, ${d} losses · ${p}% win rate`,kFar:'Went furthest',kPct:'Best win rate',dPct:(p,v,j)=>`${p}% · ${v} of ${j} matches`,kDiff:'Most consistent',dDiff:(d,g,p)=>`${d>0?'+':''}${d} game difference (${g}–${p})`,kMost:'Most matches played',dMost:(j,g)=>`${j} matches · ${g} games`,kTb:'Tie-breaks won',dTb:(t,s)=>`${t} tie-break${t===1?'':'s'}${s?` + ${s} super tie-break${s===1?'':'s'}`:''}`,kBack:'Comebacks',dBack:n=>`${n} match${n===1?'':'es'} won after losing the 1st set`,kBig:'Biggest win',dBig:(s,o)=>`${s} against ${o}`,kNone:'—',dNone:'No data yet',
+ champ:'Champions',finalist:'Finalists',titles:'Titles',rankPos:(p,n)=>`${p}${p==1?'st':p==2?'nd':p==3?'rd':'th'} of ${n} teams`,byWins:'Wins',byPct:'Win %',thTeam:'Team',thPairs:'Pairs',thVD:'W–L',thPct:'W%',thBest:'Best round',thAlive:'Still in',teamsNote:'Team read from the pair name on padelteams. Pairs without a team are left out. Finished matches only.',
+ thCat:'Category',stg:['Groups','R32','R16','QF','SF','Final','Champion'],stgP2:'2nd phase',minGames:'min. 2 matches',seeMore:n=>`See ${n} more`,seeTied:n=>`See ${n} more tied`,thPos:'Rank',thPosT:'FSportIN rank among teams in this category, by wins',catsNote:'Sorted by FSportIN win rate. Rank compares FSportIN with the other teams in the same category, by wins.',nPairs:n=>`${n} pairs`,gamesAbbr:'games',pctNote:n=>`Win % only ranks teams with ${n}+ matches; the rest sit at the bottom, greyed out.`,stgEnd:['Group stage','Round of 32','Round of 16','Quarter-finals','Semi-finals'],pairsIn:(a,b)=>`${a} of ${b} pairs still in`});
+const STG={'1/16':1,'1/8':2,'1/4':3,'1/2':4,'Final':5};
+const stageOf=ph=>/^Grupo/.test(ph)?0:/fase/i.test(ph)?0.5:(STG[ph]??0);
+const stageLabel=s=>s===0.5?T().stgP2:T().stg[s]||'';
+const realPair=t=>!!t&&!isPh(t)&&!trSlot(t)&&String(t).includes('/');
+const teamOf=t=>{if(isUs(t))return'FSportIN';const c=split(t).c;return c?c.replace(/\s+/g,' ').trim():''};
+const teamKey=s=>s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]/g,'');
+function matchGames(m,side){let g=0,p=0,tb=0,stb=0;const S2=parseSc(m.res?.sc);S2.forEach((s,i)=>{const me=side===1?s.a:s.b,op=side===1?s.b:s.a;const isStb=i===2&&Math.max(s.a,s.b)>=10;
+ if(isStb){if(me>op)stb++;return}g+=me;p+=op;if(me>op&&(s.ta!=null||(me===7&&op===6)||(me===9&&op===8)))tb++});
+ const back=S2.length>=2&&(side===1?S2[0].a<S2[0].b:S2[0].b<S2[0].a);return{g,p,tb,stb,back}}
+function pairStats(list){const P=new Map();const get=(c,t)=>{const k=c+'|'+t;if(!P.has(k))P.set(k,{k,c,t,team:teamOf(t),j:0,v:0,d:0,g:0,p:0,tb:0,stb:0,back:0,best:null,stage:0,champ:false,pending:false,out:false});return P.get(k)};
+ for(const m of list){for(const[t,side]of[[m.a,1],[m.b,2]]){if(!realPair(t))continue;const s=get(m.c,t);const sg0=stageOf(m.ph);if(sg0>s.stage)s.stage=sg0;
+  const w=winner(m);if(!w){s.pending=true;continue}const won=w===side;s.j++;won?s.v++:s.d++;
+  const x=matchGames(m,side);s.g+=x.g;s.p+=x.p;s.tb+=x.tb;s.stb+=x.stb;if(won&&x.back)s.back++;
+  const opp=side===1?m.b:m.a;if(won&&x.g+x.p>0){const dif=x.g-x.p;if(!s.best||dif>s.best.dif)s.best={dif,g:x.g,sc:`${x.g}-${x.p}`,opp,m}}
+  if(isKO(m.ph)&&!won)s.out=true;if(m.ph==='Final'&&won){s.champ=true;s.stage=6}}}
+ return[...P.values()]}
+function teamStats(ps){const T0=new Map();for(const s of ps){if(!s.team)continue;const k=teamKey(s.team);if(!T0.has(k))T0.set(k,{name:s.team,us:s.team==='FSportIN',pairs:0,j:0,v:0,d:0,best:0,alive:0,titles:0});
+ const t=T0.get(k);t.pairs++;t.j+=s.j;t.v+=s.v;t.d+=s.d;if(s.stage>t.best)t.best=s.stage;if(s.pending&&!s.out)t.alive++;if(s.champ)t.titles++}
+ return[...T0.values()].map(t=>({...t,pct:t.j?Math.round(100*t.v/t.j):0}))}
+const pct=(v,j)=>j?Math.round(100*v/j):0;
+const tile=(k,v,d,sub)=>`<div class="hl"><span class="k">${esc(k)}</span><b>${v}</b><span class="dd">${d}</span>${sub?`<span class="sb">${sub}</span>`:''}</div>`;
+const pairLine=s=>`${esc(nm(s.t))} <small>${esc(catLabel(s.c))}</small>`;
+function vStats(){const all=M.filter(m=>!st.cat||m.c===st.cat);const ps=pairStats(all);const us=ps.filter(s=>s.team==='FSportIN');
+ if(!ps.some(s=>s.j))return`<div class="empty">${T().stEmpty}</div>`;
+ let V=0,D=0;for(const m of all){if(!m.us)continue;const w=winner(m);if(!w)continue;w===usSide(m)?V++:D++}
+ /* top 3 com empates: ordena pelo valor principal (key), mostra os 3 primeiros e, em "Ver mais", todos os que empatam com o 3.º */
+ const top3=(arr,key,tie)=>{const l=[...arr].sort((a,b)=>(key(b)-key(a))||(tie?tie(a,b):0));if(!l.length)return[];const cut=key(l[Math.min(2,l.length-1)]);
+  const out=l.filter((s,i)=>i<3||key(s)===cut);out.forEach((s,i)=>{s._r=i&&key(s)===key(out[i-1])?out[i-1]._r:i+1});return out.map(s=>({...s}))};
+ const far=us.length?Math.max(...us.map(s=>s.stage)):0;const farL=us.filter(s=>s.stage===far&&s.j);
+ const bp=top3(us.filter(s=>s.j>=2),s=>pct(s.v,s.j),(a,b)=>(b.j-a.j));
+ const bd=top3(us.filter(s=>s.j),s=>s.g-s.p,(a,b)=>b.g-a.g);
+ const mj=top3(us.filter(s=>s.j),s=>s.j,(a,b)=>(b.g+b.p)-(a.g+a.p));
+ const tbT=us.reduce((n,s)=>n+s.tb,0),stbT=us.reduce((n,s)=>n+s.stb,0);const tbP=top3(us.filter(s=>s.tb+s.stb),s=>s.tb+s.stb,(a,b)=>b.stb-a.stb);
+ const backT=us.reduce((n,s)=>n+s.back,0);const backP=top3(us.filter(s=>s.back),s=>s.back);
+ const big=top3(us.filter(s=>s.best),s=>s.best.dif,(a,b)=>b.best.g-a.best.g);
+ const N=T().kNone,ND=T().dNone;const done=V+D;
+ /* top 3 da equipa: valor do 1.º em grande, lista com o valor de cada dupla */
+ const rank=(l,val)=>{if(!l.length)return ND;const li=s=>`<li><span class="n">${s._r}</span><span class="p">${pairLine(s)}</span><span class="v">${esc(val(s))}</span></li>`;
+  return`<ol class="t3">${l.slice(0,3).map(li).join('')}</ol>`+(l.length>3?`<details class="more"><summary>${esc(T().seeTied(l.length-3))}</summary><ol class="t3">${l.slice(3).map(li).join('')}</ol></details>`:'')};
+ const farList=l=>{const li=s=>`<li><span class="p">${pairLine(s)}</span></li>`;return`<ol class="t3 far">${l.slice(0,4).map(li).join('')}</ol>`+(l.length>4?`<details class="more"><summary>${esc(T().seeMore(l.length-4))}</summary><ol class="t3 far">${l.slice(4).map(li).join('')}</ol></details>`:'')};
+ const tiles=[
+  tile(T().kSum,`${V}–${D}`,esc(T().dSum(V,D,pct(V,D+V)))),
+  tile(T().kFar,farL.length?esc(stageLabel(far)):N,farL.length?farList(farL):ND,farL.length>1?esc(T().nPairs(farL.length)):''),
+  tile(T().kPct,bp[0]?pct(bp[0].v,bp[0].j)+'%':N,rank(bp,s=>`${pct(s.v,s.j)}% · ${s.v}/${s.j}`),esc(T().minGames)),
+  tile(T().kDiff,bd[0]?sg(bd[0].g-bd[0].p):N,rank(bd,s=>`${sg(s.g-s.p)} (${s.g}–${s.p})`)),
+  tile(T().kMost,mj[0]?String(mj[0].j):N,rank(mj,s=>`${s.j} · ${s.g+s.p} ${T().gamesAbbr}`)),
+  tile(T().kTb,String(tbT+stbT),rank(tbP,s=>s.stb?`${s.tb} + ${s.stb} STB`:String(s.tb)),esc(T().dTb(tbT,stbT))),
+  tile(T().kBack,String(backT),rank(backP,s=>String(s.back)),esc(T().dBack(backT))),
+  tile(T().kBig,big[0]?esc(big[0].best.sc):N,rank(big,s=>s.best.sc),big[0]?esc(T().dBig(big[0].best.sc,nm(big[0].best.opp))):'')];
+ /* equipas */
+ const TS=teamStats(ps).filter(t=>t.j);TS.forEach(t=>{if(t.us){t.v=V;t.d=D;t.j=V+D;t.pct=pct(V,V+D)}});const by=st.tby||'v';
+ /* na % só entram no ranking equipas com um mínimo de jogos; as restantes vão para o fim */
+ const MINJ=5;const okP=t=>t.j>=MINJ;
+ TS.sort(by==='pct'?(a,b)=>(okP(b)-okP(a))||(b.pct-a.pct)||(b.v-a.v):(a,b)=>(b.v-a.v)||(b.pct-a.pct)||(a.d-b.d));
+ const pos=TS.findIndex(t=>t.us)+1;const shown=TS.slice(0,10);if(pos>10)shown.push(null,TS[pos-1]);
+ const trow=t=>t===null?`<tr class="gap"><td colspan="7">⋯</td></tr>`:`<tr class="${t.us?'us':''}${by==='pct'&&!okP(t)?' dimr':''}"><td>${TS.indexOf(t)+1}</td><td>${esc(t.name)}</td><td>${t.pairs}</td><td class="pts">${t.v}–${t.d}</td><td>${t.pct}%</td><td>${esc(stageLabel(t.best))}${t.titles?` · ${t.titles}★`:''}</td><td>${t.alive}</td></tr>`;
+ const teams=`<div class="card"><div class="card-h"><h3>${T().stTeams}</h3>${pos?`<span class="tag">FSportIN · ${esc(T().rankPos(pos,TS.length))}</span>`:''}</div>
+  <div class="seg"><button data-tby="v" aria-pressed="${by==='v'}">${T().byWins}</button><button data-tby="pct" aria-pressed="${by==='pct'}">${T().byPct}</button></div>
+  <div class="tscroll"><table class="tt"><thead><tr><th>#</th><th>${T().thTeam}</th><th>${T().thPairs}</th><th>${T().thVD}</th><th>${T().thPct}</th><th>${T().thBest}</th><th>${T().thAlive}</th></tr></thead><tbody>${shown.map(trow).join('')}</tbody></table></div>
+  <p class="meta" style="white-space:normal;margin:0">${by==='pct'?esc(T().pctNote(MINJ))+' ':''}${T().teamsNote}</p></div>`;
+ /* por categoria */
+ const cats=[...new Set(us.map(s=>s.c))].sort((a,b)=>catRank(a)-catRank(b)).map(c=>{const l=us.filter(s=>s.c===c);const v=l.reduce((n,s)=>n+s.v,0),d=l.reduce((n,s)=>n+s.d,0);const CT=teamStats(ps.filter(s=>s.c===c)).filter(t=>t.j).sort((a,b)=>(b.v-a.v)||(b.pct-a.pct)||(a.d-b.d));const pos=CT.findIndex(t=>t.us)+1;
+  return{c,v,d,p:pct(v,v+d),best:Math.max(...l.map(s=>s.stage)),alive:l.filter(s=>s.pending&&!s.out).length,n:l.length,pos,nt:CT.length}}).filter(x=>x.v+x.d).sort((a,b)=>(b.p-a.p)||(b.v-a.v));
+ const catCard=`<div class="card"><div class="card-h"><h3>${T().stCats}</h3></div><p class="meta" style="white-space:normal;margin:0">${esc(T().catsNote)}</p><div class="tscroll"><table class="tt"><thead><tr><th>#</th><th>${T().thCat}</th><th title="${esc(T().thPosT)}">${T().thPos}</th><th>${T().thVD}</th><th>${T().thPct}</th><th>${T().thBest}</th><th>${T().thAlive}</th></tr></thead><tbody>${cats.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(catLabel(x.c))}</td><td class="cpos">${x.pos?`<b>${x.pos}.º</b><small>/${x.nt}</small>`:'—'}</td><td class="pts">${x.v}–${x.d}</td><td><span class="pbar"><i style="width:${x.p}%"></i></span>${x.p}%</td><td>${esc(stageLabel(x.best))}</td><td>${x.alive}/${x.n}</td></tr>`).join('')}</tbody></table></div></div>`;
+ /* resumo final */
+ const ended=FINAL_DEMO||(!DEMO&&NOW()>new Date(2026,11,8,23,59))||(us.length&&us.every(s=>!s.pending));
+ let fin='';if(ended){const ch=us.filter(s=>s.champ),fi=us.filter(s=>s.stage===5&&!s.champ);const tu=TS.find(t=>t.us);
+  fin=`<section class="final-sum"><span class="eyebrow">${T().sumFinal}</span><h2>${ch.length} ${esc(T().titles.toLowerCase())} · ${V}–${D}</h2><p>${T().stFinalNote}${pos?' '+esc(T().rankPos(pos,TS.length))+'.':''}</p>
+   ${(()=>{/* todas as fases: cada dupla aparece na fase onde terminou */
+    const lvls=[6,5,4,3,2,1,0.5,0];const lbl=s=>s===6?T().champ:s===5?T().finalist:T().stgEnd[s]||stageLabel(s);
+    const pl=us.filter(s=>s.j||s.pending);const rows=lvls.map(l=>({l,p:pl.filter(s=>s.stage===l).sort((a,b)=>catRank(a.c)-catRank(b.c))})).filter(r=>r.p.length);
+    const bar=`<div class="fs-bar">${rows.map(r=>`<i class="l${String(r.l).replace('.','_')}" style="flex:${r.p.length}" title="${esc(lbl(r.l))}: ${r.p.length}"></i>`).join('')}</div>`;
+    return bar+`<div class="fs-stg">${rows.map(r=>`<div class="fs-row"><div class="fs-h"><span class="lbl">${esc(lbl(r.l))}</span><b>${r.p.length}</b></div><ul>${r.p.map(s=>`<li>${r.l===6?'★ ':''}${pairLine(s)}</li>`).join('')}</ul></div>`).join('')}</div>`})()}</section>`}
+ const alive=us.filter(s=>s.pending&&!s.out).length;
+ return`${fin}<section class="sec"><h2>${T().stUs}<small>${esc(T().stLiveNote(done))}${!ended&&us.length?' · '+esc(T().pairsIn(alive,us.length)):''}</small></h2><div class="hls">${tiles.join('')}</div></section>
+ <section class="sec"><div class="grid two">${teams}${catCard}</div></section>`}
+
 /* textos fixos da página */
 function applyLang(){document.documentElement.lang=LANG==='pt'?'pt-PT':LANG;document.querySelectorAll('[data-i]').forEach(e=>{e.textContent=T()[e.dataset.i]});const q=document.getElementById('q');q.placeholder=T().search;q.setAttribute('aria-label',T().search);document.getElementById('cat').setAttribute('aria-label',T().cat);document.querySelectorAll('#lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===LANG))}
 document.getElementById('lang').addEventListener('click',e=>{const b=e.target.closest('[data-l]');if(!b)return;LANG=b.dataset.l;try{localStorage.setItem('fsp-lang',LANG)}catch(_){}applyLang();render()});
@@ -400,9 +524,9 @@ const cs=document.getElementById('cat');
 const qi=document.getElementById('q');qi.value=st.q;cs.value=st.cat;
 qi.addEventListener('input',()=>{st.q=qi.value;save();render()});
 cs.addEventListener('change',()=>{st.cat=cs.value;save();render()});
-const VIEWS=['calendario','categorias','duplas'];
+const VIEWS=['calendario','categorias','duplas','estatisticas'];
 document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;st.v=b.dataset.v;location.hash=st.v;render()});
-document.getElementById('view').addEventListener('click',e=>{let b=e.target.closest('[data-day]');if(b){st.day=b.dataset.day;render();return}b=e.target.closest('[data-kc]');if(b){st.kc=b.dataset.kc;render();return}b=e.target.closest('[data-stg]');if(b){(st.stg??={})[st.kc]=b.dataset.stg;render();return}b=e.target.closest('[data-only]');if(b){st.only=b.dataset.only==='1';render();return}b=e.target.closest('[data-fav]');if(b){toggleFav(b.dataset.fav);render();return}b=e.target.closest('[data-mine]');if(b){st.mine=!st.mine;st.day=null;render();return}b=e.target.closest('[data-ics]');if(b){const m=M.find(x=>x.k===b.dataset.ics);if(m)icsFile(m)}});
+document.getElementById('view').addEventListener('click',e=>{let b=e.target.closest('[data-day]');if(b){st.day=b.dataset.day;render();return}b=e.target.closest('[data-kc]');if(b){st.kc=b.dataset.kc;render();return}b=e.target.closest('[data-stg]');if(b){(st.stg??={})[st.kc]=b.dataset.stg;render();return}b=e.target.closest('[data-only]');if(b){st.only=b.dataset.only==='1';render();return}b=e.target.closest('[data-fav]');if(b){toggleFav(b.dataset.fav);render();return}b=e.target.closest('[data-tby]');if(b){st.tby=b.dataset.tby;render();return}b=e.target.closest('[data-mine]');if(b){st.mine=!st.mine;st.day=null;render();return}b=e.target.closest('[data-ics]');if(b){const m=M.find(x=>x.k===b.dataset.ics);if(m)icsFile(m)}});
 const fromHash=()=>{const h=location.hash.slice(1);if(h==='hoje')st.v='calendario';else if(VIEWS.includes(h))st.v=h};
 window.addEventListener('hashchange',()=>{fromHash();render()});fromHash();
 applyLang();
@@ -410,9 +534,11 @@ applyLang();
 function demoData(){const res={},extra=[];let seed=11;const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280};const pick=a=>a[Math.floor(rnd()*a.length)];
  /* pro set a 9 (tie-break aos 8-8) até aos 1/8; melhor de 3 com super tie-break a partir dos quartos */
  const pro=wA=>{if(rnd()<.18){const a=7,b=Math.floor(rnd()*6);return wA?`9-8(${a}-${b})`:`8-9(${b}-${a})`}const l=Math.floor(rnd()*8);return wA?`9-${l}`:`${l}-9`};
- const bo3=wA=>{const s=()=>{const l=Math.floor(rnd()*5);return[6,l]};const a=s(),b=s();if(rnd()<.45){const c=[10,Math.floor(rnd()*8)];return wA?`${a[0]}-${a[1]} ${b[1]}-${b[0]} ${c[0]}-${c[1]}`:`${a[1]}-${a[0]} ${b[0]}-${b[1]} ${c[1]}-${c[0]}`}
+ const bo3=wA=>{const s=()=>{const l=Math.floor(rnd()*5);return[6,l]};const a=s(),b=s();if(rnd()<.55){const c=[10,Math.floor(rnd()*8)];const back=rnd()<.6;/* back: o vencedor perdeu o 1.º set (remontada) */
+   const s1=back?`${b[1]}-${b[0]}`:`${a[0]}-${a[1]}`,s2=back?`${a[0]}-${a[1]}`:`${b[1]}-${b[0]}`;const inv=x=>x.split('-').reverse().join('-');
+   return wA?`${s1} ${s2} ${c[0]}-${c[1]}`:`${inv(s1)} ${inv(s2)} ${c[1]}-${c[0]}`}
   return wA?`${a[0]}-${a[1]} 7-6(7-${Math.floor(rnd()*6)})`:`${a[1]}-${a[0]} 6-7(${Math.floor(rnd()*6)}-7)`};
- for(const r of S){const[c,n,ph,a,b]=r;if(!/^Grupo/.test(ph)||isPh(a)||isPh(b))continue;const wA=isUs(a)?rnd()<.75:isUs(b)?rnd()<.25:rnd()<.5;res[c+'|'+n]={sc:pro(wA),w:wA?1:2,st:'fim'}}
+ for(const r of S){const[c,n,ph,a,b]=r;if(!/^Grupo/.test(ph)||isPh(a)||isPh(b))continue;const wA=isUs(a)?rnd()<.58:isUs(b)?rnd()<.42:rnd()<.5;res[c+'|'+n]={sc:pro(wA),w:wA?1:2,st:'fim'}}
  /* dois jogos nossos com hora/campo alterados e um W.O. */
  const ourG=S.filter(r=>/^Grupo/.test(r[2])&&(isUs(r[3])||isUs(r[4])));
  if(ourG[3]){const r=[...ourG[3]];r[7]='18:30';r[5]='6';extra.push(r)}
@@ -421,18 +547,19 @@ function demoData(){const res={},extra=[];let seed=11;const rnd=()=>{seed=(seed*
  const FN=['Rui','Tiago','Ana','Sara','João','Luís','Inês','Rita','Paulo','Nuno','Marta','Joana','Pedro','Hugo','Carla','Sofia','Diogo','Vasco'];const LN=['Costa','Lima','Reis','Melo','Pinto','Sá','Rocha','Paz','Dias','Vaz','Gil','Cruz','Neves','Mota','Faria','Lopes'];const CL=['Padel Norte','Clube Sul','Arena Padel','Box Padel','Smash Club','Padel One'];
  const fake=()=>{const a=`${pick(FN)} ${pick(LN)}`;let b;do{b=`${pick(FN)} ${pick(LN)}`}while(b===a);return`${a} / ${b} - ${pick(CL)}`};
  const cats=[...new Set(S.filter(r=>(isUs(r[3])||isUs(r[4]))&&/^Grupo/.test(r[2])).map(r=>r[0]))].filter(c=>c!=='F7'&&c!=='M7');
+ const EXIT=[4,2,7,1,3,5,2,6,3,4,1,2,5,3,7,2,4,6,3,1,2,4,5,3,2,7,3,4,1,2];let ei=0;const exitOf=new Map();
  for(const c of cats){const us=[...new Set(S.filter(r=>r[0]===c&&/^Grupo/.test(r[2])).flatMap(r=>[r[3],r[4]]).filter(isUs))];
   const oth=[...new Set(S.filter(r=>r[0]===c&&/^Grupo/.test(r[2])).flatMap(r=>[r[3],r[4]]).filter(x=>!isUs(x)&&!isPh(x)))];
   const small=c==='MX3'||c==='KIDS 2';const size=small?16:32;
-  const pool=[];us.forEach((u,i)=>pool[i*(size/2)]=u);let k=0;for(let i=0;i<size;i++)if(!pool[i])pool[i]=oth[k++]||fake();
+  const pool=[];us.forEach((u,i)=>{let e=EXIT[ei++%EXIT.length];if(small&&e===2)e=3;exitOf.set(c+'|'+u,e);if(e>1)pool[i*(size/2)]=u});let k=0;for(let i=0;i<size;i++)if(!pool[i])pool[i]=oth[k++]||fake();
   let round=small?3:2,cur=pool,start=small?'1/8':'1/16';const phs=['1/16','1/8','1/4','1/2','Final'];let pi=phs.indexOf(start);
   const plan={2:['05/12',9,0,20],3:['06/12',9,0,20],4:['06/12',14,0,40],5:['07/12',18,0,60],6:['08/12',17,0,0]};
   while(cur.length>=2){const ph=phs[pi],nx=[];const[d,h0]=plan[round];
    for(let g=0;g<cur.length/2;g++){const A=cur[2*g],B=cur[2*g+1];const n='#'+round+'.'+(g+1);const mins=h0*60+(round===4?g*40:g*20);const tm=String(Math.floor(mins/60)).padStart(2,'0')+':'+String(mins%60).padStart(2,'0');
     const placeholder=x=>x.startsWith('Vencedor');extra.push([c,n,ph,A,B,String(1+(g%11)),d,tm]);
-    if(placeholder(A)||placeholder(B)||round>=5){nx.push('Vencedor do jogo '+round+'.'+(g+1));continue}
-    if(round===4&&g>=2){if(g===2)res[c+'|'+n]={sc:'6-3 2-1',st:'a jogar'};nx.push('Vencedor do jogo '+round+'.'+(g+1));continue}
-    const lose=c==='F5'&&round===3;const wA=isUs(A)?!lose:isUs(B)?lose:rnd()<.5;
+    if(placeholder(A)||placeholder(B)||(round>=5&&!FINAL_DEMO)){nx.push('Vencedor do jogo '+round+'.'+(g+1));continue}
+    if(round===4&&g>=2&&!FINAL_DEMO){if(g===2)res[c+'|'+n]={sc:'6-3 2-1',st:'a jogar'};nx.push('Vencedor do jogo '+round+'.'+(g+1));continue}
+    const ex=x=>exitOf.get(c+'|'+x)||0;const wA=isUs(A)&&isUs(B)?ex(A)>=ex(B):isUs(A)?round<ex(A):isUs(B)?round>=ex(B):rnd()<.5;
     if(round===2&&g===5&&!isUs(A)&&!isUs(B)){res[c+'|'+n]={sc:'',w:1,st:'W.O.'};nx.push(A);continue}
     res[c+'|'+n]={sc:round>=4?bo3(wA):pro(wA),w:wA?1:2,st:'fim'};nx.push(wA?A:B)}
    cur=nx;round++;pi++;if(pi>=phs.length)break}}
